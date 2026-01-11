@@ -301,11 +301,11 @@
       },
       "D": {
         "complete": 14,
-        "proficient": null
+        "proficient": 0
       },
       "F": {
-        "complete": null,
-        "proficient": null
+        "complete": 0,
+        "proficient": 0
       }
     },
     "math197_thresholds": {},
@@ -332,7 +332,7 @@
         {
           "threshold": 750,
           "mods": 3,
-          "label": "More than 800 XP",
+          "label": "750 or more XP",
           "max_mods": 3
         }
       ],

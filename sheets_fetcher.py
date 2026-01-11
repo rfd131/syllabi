@@ -31,9 +31,60 @@ class SheetsFetcher:
             scopes=SCOPES,
         )
         self._client = gspread.authorize(self._credentials)
+        self._worksheet_cache: Dict[str, List[Dict[str, Any]]] = {}
+        self._current_sheet_id: Optional[str] = None
+
+    def _prefetch_all_worksheets(self, sheet_id: str):
+        """Fetch all worksheets from a spreadsheet in batch and cache them.
+
+        This dramatically reduces API calls by fetching everything at once
+        instead of one worksheet at a time.
+
+        Args:
+            sheet_id: Google Sheets document ID
+        """
+        if self._current_sheet_id == sheet_id and self._worksheet_cache:
+            return  # Already cached
+
+        self._worksheet_cache = {}
+        self._current_sheet_id = sheet_id
+
+        try:
+            spreadsheet = self._client.open_by_key(sheet_id)
+            worksheets = spreadsheet.worksheets()
+
+            print(f"  Fetching {len(worksheets)} worksheets in batch...")
+
+            for ws in worksheets:
+                try:
+                    # Get all values and convert to records format
+                    values = ws.get_all_values()
+                    if values and len(values) > 1:
+                        headers = values[0]
+                        records = []
+                        for row in values[1:]:
+                            # Create dict from headers and row values
+                            record = {}
+                            for i, header in enumerate(headers):
+                                if header:  # Skip empty headers
+                                    record[header] = row[i] if i < len(row) else ""
+                            if any(record.values()):  # Skip empty rows
+                                records.append(record)
+                        self._worksheet_cache[ws.title] = records
+                    else:
+                        self._worksheet_cache[ws.title] = []
+                except Exception as e:
+                    print(f"  Warning: Could not fetch worksheet '{ws.title}': {e}")
+                    self._worksheet_cache[ws.title] = []
+
+        except Exception as e:
+            print(f"  Error prefetching worksheets: {e}")
+            raise
 
     def get_all_records(self, sheet_id: str, worksheet_name: str) -> List[Dict[str, Any]]:
         """Get all records from a worksheet as list of dicts.
+
+        Uses cached data if available, otherwise fetches directly.
 
         Args:
             sheet_id: Google Sheets document ID
@@ -42,6 +93,11 @@ class SheetsFetcher:
         Returns:
             List of dictionaries (one per row, keys from header row)
         """
+        # Use cache if available
+        if self._current_sheet_id == sheet_id and worksheet_name in self._worksheet_cache:
+            return self._worksheet_cache[worksheet_name]
+
+        # Fallback to direct fetch (shouldn't normally happen after prefetch)
         spreadsheet = self._client.open_by_key(sheet_id)
         worksheet = spreadsheet.worksheet(worksheet_name)
         return worksheet.get_all_records()
@@ -57,6 +113,9 @@ class SheetsFetcher:
         Returns:
             Dictionary matching the syllabus YAML structure
         """
+        # Prefetch all worksheets at once to minimize API calls
+        self._prefetch_all_worksheets(config_sheet_id)
+
         config = {
             "course": self._fetch_course_info(config_sheet_id, course_code, term),
             "instructors": self._fetch_instructors(config_sheet_id),
@@ -506,7 +565,8 @@ class SheetsFetcher:
                 if i == 0:
                     label = f"Less than {xp_per_mod} XP"
                 elif i == max_mods:
-                    label = "More than 800 XP"
+                    threshold = max_mods * xp_per_mod
+                    label = f"{threshold} or more XP"
                 else:
                     low = i * xp_per_mod
                     high = (i + 1) * xp_per_mod - 1
@@ -525,7 +585,7 @@ class SheetsFetcher:
                 {"threshold": 0, "mods": 0, "label": "Less than 250 XP", "max_mods": 3},
                 {"threshold": 250, "mods": 1, "label": "250-499 XP", "max_mods": 3},
                 {"threshold": 500, "mods": 2, "label": "500-749 XP", "max_mods": 3},
-                {"threshold": 750, "mods": 3, "label": "More than 800 XP", "max_mods": 3},
+                {"threshold": 750, "mods": 3, "label": "750 or more XP", "max_mods": 3},
             ]
 
         return grading

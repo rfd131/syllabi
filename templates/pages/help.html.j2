@@ -1,0 +1,265 @@
+{% extends "base.html.j2" %}
+
+{% block subtitle %}Getting Help{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* Help Section Styles */
+    .help-section {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .help-section h2 {
+        color: var(--penn-state-navy);
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+
+    .help-section h3 {
+        color: var(--light-blue);
+        font-size: 1.3rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+
+    /* Office Hours Card */
+    .office-hours-card {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .office-hours-card h4 {
+        color: var(--penn-state-navy);
+        margin-bottom: 1rem;
+    }
+
+    /* LA Sessions Card */
+    .la-sessions-card {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border: 1px solid #90caf9;
+    }
+
+    .la-sessions-card h4 {
+        color: var(--penn-state-navy);
+        margin-bottom: 1rem;
+    }
+
+    /* GSG Sessions Card */
+    .gsg-card {
+        background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border: 1px solid #ce93d8;
+    }
+
+    .gsg-card h4 {
+        color: var(--penn-state-navy);
+        margin-bottom: 1rem;
+    }
+
+    /* Tutoring Card */
+    .tutoring-card {
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border: 1px solid #a5d6a7;
+    }
+
+    .tutoring-card h4 {
+        color: var(--penn-state-navy);
+        margin-bottom: 1rem;
+    }
+
+    /* Lists */
+    ul {
+        margin: 1rem 0 1rem 2rem;
+    }
+
+    li {
+        margin-bottom: 0.5rem;
+    }
+
+    /* Links */
+    a {
+        color: var(--penn-state-blue);
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* Schedule iframe */
+    .schedule-iframe {
+        width: 100%;
+        height: 400px;
+        border: 1px solid var(--border-gray);
+        border-radius: 4px;
+        margin: 1rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>Getting Help in {{ course.code }}</h2>
+
+<p>Success in {{ course.code }} comes from actively engaging with the material and seeking help when needed. We offer multiple resources to support your learning throughout the semester. Don't wait until you're struggling - use these resources early and often!</p>
+
+<div class="alert">
+    <strong>Remember:</strong> For the first 9 foundational learning targets (LT1F-LT9F), if you don't earn a Success during the first two attempts, you'll need to visit an LA or instructor office hour before attempting again. This requirement helps ensure you get the support needed to succeed.
+</div>
+
+<!-- Instructor Office Hours Section -->
+<section class="help-section" id="instructor-office-hours">
+    <h3>Instructor Office Hours</h3>
+
+    <p>Each instructor holds regular office hours where you can get one-on-one help with course material, review quiz feedback, or discuss any concerns about the course. No appointment is needed during scheduled hours.</p>
+
+    <div class="office-hours-card">
+        <h4>Individual Instructor Office Hours:</h4>
+        <p>Navigate to an individual instructor to find their office hour information:</p>
+        <ul>
+            {% for instructor in instructors %}
+            <li><a href="instructors.html#{{ instructor.id }}"><strong>{{ instructor.name }}</strong></a> ({{ instructor.title }}{% if instructor.sections %}, Section{% if instructor.sections|length > 1 %}s{% endif %} {% for section in instructor.sections %}{{ section.number }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %})</li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+<!-- Common Office Hours Section -->
+<section class="help-section" id="common-office-hours">
+    <h3>Common Instructor and LA Office Hours</h3>
+
+    <p>Common office hours are open to students from all sections, regardless of who teaches your section. This includes office hours held by Learning Assistants (LAs) and Teaching Assistants (TAs).</p>
+
+    {% if office_hours_embed_url %}
+    <div class="office-hours-card">
+        <p style="margin-top: 1rem;"><strong>Common Office Hour Schedule:</strong></p>
+        <iframe src="{{ office_hours_embed_url }}"
+                class="schedule-iframe"></iframe>
+    </div>
+    {% endif %}
+</section>
+
+<!-- LA Community Learning Sessions Section -->
+<section class="help-section" id="la-sessions">
+    <h3>LA Community Learning Sessions</h3>
+
+    <div class="la-sessions-card">
+        <h4>Structured Group Learning with Learning Assistants</h4>
+
+        <p>Learning Assistants run community learning sessions most weeks during the semester. These are structured problem-solving sessions where students work in groups reviewing recently covered class material.</p>
+
+        <h4>What to Expect:</h4>
+        <ul>
+            <li>Work in small groups with guidance and support from Course LAs</li>
+            <li>Practice and review concepts and skills from recent classes</li>
+            <li>Form peer study groups that extend beyond the classroom and LA Sessions</li>
+            <li>Earn 20 XP per week for attending!</li>
+        </ul>
+
+        <h4>Schedule:</h4>
+        <p><strong>Times and Locations: TBD</strong></p>
+        <p>Complete schedule and room locations will be posted on Canvas at the beginning of the semester.</p>
+
+        <div class="alert" style="margin-top: 1rem;">
+            <strong>Earn XP:</strong> Attending LA Community Learning Sessions earns you 20 Experience Points per week, contributing to potential grade modifications!
+        </div>
+    </div>
+</section>
+
+<!-- Guided Study Groups Section -->
+<section class="help-section" id="gsg">
+    <h3>Guided Study Groups (GSG Sessions)</h3>
+
+    <div class="gsg-card">
+        <h4>Peer-Led Study Sessions</h4>
+
+        <p>Guided Study Groups are peer-facilitated study sessions designed to help you master course content through collaborative learning. These sessions are led by undergraduate students who have previously excelled in {{ course.code }}.</p>
+
+        <h4>What GSG Sessions Offer:</h4>
+        <ul>
+            <li>Review of key concepts from recent lectures</li>
+            <li>Practice problems similar to Learning Target Quizzes</li>
+            <li>Study strategies specific to {{ course.code }}</li>
+            <li>A supportive environment to ask questions</li>
+            <li>Opportunity to learn from peers who recently succeeded in the course</li>
+        </ul>
+
+        <h4>Schedule Information:</h4>
+        <p>GSG sessions meet once per week. Information about our GSG sessions will be announced on Canvas during the first week of classes.</p>
+
+        <p style="margin-top: 1rem;"><em>GSG sessions are free and open to all {{ course.code }} students. No registration required - just show up!</em></p>
+    </div>
+</section>
+
+<!-- Penn State Learning Section -->
+<section class="help-section" id="tutoring">
+    <h3>The Math Center @ Penn State Learning (Free Drop-in Tutoring)</h3>
+
+    <div class="tutoring-card">
+        <h4>Drop-in Tutoring at 7 Sparks Building</h4>
+
+        <p>The Math Center offers free drop-in tutoring where students work individually or in small groups with undergraduate peer tutors who have excelled in {{ course.code }}. Sessions are designed to address specific needs including homework help, quiz and exam preparation, and understanding particular concepts.</p>
+
+        <h4>What to Expect:</h4>
+        <ul>
+            <li><strong>Session Length:</strong> Typically up to 30 minutes per student if there's a wait</li>
+            <li><strong>Location:</strong> 7 Sparks Building</li>
+            <li><strong>Format:</strong> Individual or small group tutoring</li>
+            <li><strong>Come Prepared:</strong> Bring questions and course materials</li>
+        </ul>
+
+        <h4>How Tutors Help:</h4>
+        <ul>
+            <li>Clarify course concepts with alternative explanations</li>
+            <li>Work through similar practice problems</li>
+            <li>Review material from the week</li>
+            <li>Address prerequisite knowledge gaps</li>
+            <li>Help with quiz and exam preparation</li>
+        </ul>
+
+        <p style="margin-top: 1rem;"><strong>Note:</strong> Tutors do not provide direct answers to graded homework assignments but will help you practice similar problems to build understanding.</p>
+
+        <div class="alert" style="margin-top: 1rem;">
+            <strong>High Demand:</strong> The Math Center is usually very busy during fall semester. Consider also attending GSG sessions for weekly review. All Penn State Learning services are included in tuition and free to access as often as needed.
+        </div>
+
+        <p>For more information, visit: <a href="https://pennstatelearning.psu.edu/tutoring/mathematics" target="_blank">pennstatelearning.psu.edu/tutoring/mathematics</a></p>
+    </div>
+</section>
+
+<!-- Additional Tips Section -->
+<section class="help-section">
+    <h3>Tips for Getting the Most Out of Help Resources</h3>
+
+    <ul>
+        <li><strong>Start early:</strong> Don't wait to seek help.</li>
+        <li><strong>Be consistent:</strong> Regular in-class attendance and participation, consistent participation in LA Community Learning Sessions, and consistently working in study groups with your peers are more effective than cramming.</li>
+        <li><strong>Form study groups:</strong> Connect with classmates during class and in LA sessions or GSG sessions.</li>
+        <li><strong>Review quiz feedback:</strong> Prepare for office hours by reviewing previous quiz attempts and preparing questions.</li>
+        <li><strong>Ask questions in class:</strong> Your instructors want to help - don't be shy about asking for clarification.</li>
+    </ul>
+</section>
+{% endblock %}

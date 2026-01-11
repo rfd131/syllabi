@@ -1,0 +1,234 @@
+{% extends "base.html.j2" %}
+
+{% block subtitle %}Quiz Session Summary{% endblock %}
+
+{% block extra_styles %}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header {
+        background: transparent;
+        padding: 1rem 0;
+    }
+
+    .page-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: transparent;
+    }
+
+    .container {
+        max-width: 900px;
+        width: 100%;
+        padding: 0;
+        display: block;
+    }
+
+    /* Hide default navigation for this page */
+    #sidebar-navigation,
+    #quick-links-sidebar,
+    nav {
+        display: none;
+    }
+
+    main {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 60px;
+        width: 100%;
+    }
+
+    main h1 {
+        color: #2d3748;
+        font-size: 48px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+        border-bottom: 4px solid #667eea;
+        padding-bottom: 20px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #718096;
+        font-size: 24px;
+        margin-bottom: 40px;
+        font-weight: 500;
+    }
+
+    .rules-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .rule-item {
+        font-size: 26px;
+        line-height: 1.6;
+        color: #2d3748;
+        margin-bottom: 30px;
+        padding-left: 45px;
+        position: relative;
+        font-weight: 500;
+    }
+
+    .rule-item:before {
+        content: "\25B8";
+        position: absolute;
+        left: 10px;
+        color: #667eea;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .highlight {
+        background: linear-gradient(to right, #fbbf24, #f59e0b);
+        color: white;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    .sub-list {
+        list-style: none;
+        margin-top: 15px;
+        margin-left: 0;
+        background: #f7fafc;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+    }
+
+    .sub-item {
+        font-size: 22px;
+        line-height: 1.5;
+        color: #4a5568;
+        margin-bottom: 12px;
+        padding-left: 30px;
+        position: relative;
+    }
+
+    .sub-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .sub-item:before {
+        content: "\2022";
+        position: absolute;
+        left: 10px;
+        color: #9f7aea;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .warning {
+        color: #dc2626;
+        font-weight: 600;
+    }
+
+    .emphasis {
+        color: #667eea;
+        font-weight: 600;
+    }
+
+    footer {
+        background: transparent;
+        color: white;
+        margin-top: 0;
+    }
+
+    footer a {
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        main {
+            padding: 40px 30px;
+        }
+
+        main h1 {
+            font-size: 36px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+        }
+
+        .rule-item {
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+
+        .sub-item {
+            font-size: 18px;
+        }
+    }
+
+    @media print {
+        body {
+            background: white;
+            padding: 20px;
+        }
+
+        main {
+            box-shadow: none;
+            max-width: 100%;
+            padding: 20px;
+        }
+
+        main h1 {
+            font-size: 36px;
+            page-break-after: avoid;
+        }
+
+        .rule-item {
+            page-break-inside: avoid;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Tuesday Quiz Sessions</h1>
+<div class="subtitle">{{ course.code }} - {{ course.term }}</div>
+
+<ul class="rules-list">
+    <li class="rule-item">
+        <span class="emphasis">Sign up for quizzes weekly.</span> Sign up form for Week 2 available Thursday.
+    </li>
+
+    <li class="rule-item">
+        <span class="warning">Didn't sign up?</span> - Attend anyway.
+    </li>
+
+    <li class="rule-item">
+        Attend the <span class="highlight">Recitation section you are enrolled in</span>.
+    </li>
+
+    <li class="rule-item">
+        When you arrive:
+        <ul class="sub-list">
+            <li class="sub-item">Bags/backpacks at the front of the room.</li>
+            <li class="sub-item"><span class="warning">No phone, calculators, smart watches or notes.</span> Pencil(s) and Student ID only.</li>
+            <li class="sub-item">Sit according to seating chart.</li>
+        </ul>
+    </li>
+
+    <li class="rule-item">
+        When you are done turn in your packet. <span class="emphasis">Show your ID</span> to a proctor. Retrieve your things.
+    </li>
+
+    <li class="rule-item">
+        If you stay, you must <span class="emphasis">sit quietly</span> and retrieve your things at the end of the session.
+    </li>
+</ul>
+{% endblock %}

@@ -1,0 +1,545 @@
+{% extends "base.html.j2" %}
+
+{% block subtitle %}Learning Targets List{% endblock %}
+
+{% block extra_styles %}
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+
+    main h3 {
+        color: var(--penn-state-navy);
+        font-size: 1.4rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Accordion LT Card Styles */
+    .lt-accordion {
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .lt-accordion-header {
+        background-color: var(--white);
+        padding: 1.25rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-left: 4px solid var(--penn-state-blue);
+        transition: background-color 0.2s ease;
+        user-select: none;
+    }
+
+    .lt-accordion-header:hover {
+        background-color: var(--light-gray);
+    }
+
+    .lt-accordion.two-part .lt-accordion-header {
+        border-left-color: var(--penn-state-blue);
+    }
+
+    .lt-accordion.one-time .lt-accordion-header {
+        border-left-color: #9B59B6;
+    }
+
+    .lt-accordion.group .lt-accordion-header {
+        border-left-color: #E74C3C;
+    }
+
+    .lt-accordion.expanded .lt-accordion-header {
+        background-color: var(--light-gray);
+        border-bottom: 1px solid #ddd;
+    }
+
+    .lt-id {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        min-width: 55px;
+    }
+
+    .lt-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        flex: 1;
+    }
+
+    .expand-icon {
+        font-size: 1.2rem;
+        color: var(--penn-state-blue);
+        transition: transform 0.3s ease;
+        margin-left: auto;
+    }
+
+    .lt-accordion.expanded .expand-icon {
+        transform: rotate(180deg);
+    }
+
+    /* Type Badges */
+    .type-badge {
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: var(--white);
+        white-space: nowrap;
+    }
+
+    .type-badge.two-part {
+        background-color: var(--penn-state-blue);
+    }
+
+    .type-badge.one-time {
+        background-color: #9B59B6;
+    }
+
+    .type-badge.group {
+        background-color: #E74C3C;
+    }
+
+    /* Accordion Content */
+    .lt-accordion-content {
+        display: none;
+        background-color: var(--white);
+        border-left: 4px solid var(--penn-state-blue);
+        padding: 0;
+    }
+
+    .lt-accordion.two-part .lt-accordion-content {
+        border-left-color: var(--penn-state-blue);
+    }
+
+    .lt-accordion.one-time .lt-accordion-content {
+        border-left-color: #9B59B6;
+    }
+
+    .lt-accordion.group .lt-accordion-content {
+        border-left-color: #E74C3C;
+    }
+
+    .lt-accordion.expanded .lt-accordion-content {
+        display: block;
+    }
+
+    /* Section styling for F and Adv */
+    .lt-section {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .lt-section:last-child {
+        border-bottom: none;
+    }
+
+    .lt-section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .lt-section-badge {
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        color: var(--white);
+    }
+
+    .lt-section-badge.foundational {
+        background-color: #17A2B8;
+    }
+
+    .lt-section-badge.advanced {
+        background-color: #6610F2;
+    }
+
+    .lt-section-badge.one-time-section {
+        background-color: #9B59B6;
+    }
+
+    .lt-section-badge.group-section {
+        background-color: #E74C3C;
+    }
+
+    .lt-description {
+        color: #333;
+        font-style: italic;
+        margin-bottom: 1rem;
+        padding: 0.75rem 1rem;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        border-left: 3px solid #ddd;
+        line-height: 1.5;
+    }
+
+    .lt-objectives-title {
+        font-weight: 600;
+        color: var(--penn-state-navy);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .lt-objectives {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .lt-objectives li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #555;
+        line-height: 1.5;
+    }
+
+    .lt-objectives li:before {
+        content: "\2713";
+        position: absolute;
+        left: 0;
+        color: var(--penn-state-blue);
+        font-weight: bold;
+    }
+
+    /* Simple description fallback */
+    .lt-simple-description {
+        padding: 1.25rem 1.5rem;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    /* Legend */
+    .legend {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .legend h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .legend-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .legend-description {
+        color: #555;
+        font-size: 0.9rem;
+    }
+
+    /* Summary Stats */
+    .summary-stats {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--penn-state-blue) 0%, var(--penn-state-navy) 100%);
+        color: var(--white);
+        padding: 1.25rem;
+        border-radius: 8px;
+        text-align: center;
+        min-width: 130px;
+        flex: 1;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+
+    /* Back Link */
+    .back-link {
+        display: inline-block;
+        color: var(--penn-state-blue);
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    .back-link::before {
+        content: "\2190 ";
+    }
+
+    /* Expand/Collapse All Button */
+    .toggle-all-btn {
+        background-color: var(--penn-state-blue);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .toggle-all-btn:hover {
+        background-color: var(--penn-state-navy);
+    }
+
+    /* Info box */
+    .info-box {
+        background-color: #e7f3ff;
+        border-left: 4px solid var(--penn-state-blue);
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        border-radius: 4px;
+        font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+        .lt-accordion-header {
+            flex-wrap: wrap;
+        }
+
+        .summary-stats {
+            flex-direction: column;
+        }
+
+        .stat-card {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="learning-targets.html" class="back-link">Back to Learning Targets Overview</a>
+
+<h2>{{ course.code }} Learning Targets</h2>
+
+<p>This page lists all {{ learning_targets.total }} Learning Targets for {{ course.code }}. Click on any learning target to expand and see detailed learning objectives.</p>
+
+{% set two_part_count = learning_targets.targets | selectattr('type', 'equalto', 'Two-Part') | list | length %}
+{% set one_time_count = learning_targets.targets | selectattr('type', 'equalto', 'One-Time') | list | length %}
+{% set group_count = learning_targets.targets | selectattr('type', 'equalto', 'Group') | list | length %}
+
+<div class="summary-stats">
+    <div class="stat-card">
+        <span class="stat-number">{{ learning_targets.total }}</span>
+        <span class="stat-label">Total Learning Targets</span>
+    </div>
+    {% if two_part_count > 0 %}
+    <div class="stat-card" style="background: linear-gradient(135deg, #17A2B8 0%, #0d6efd 100%);">
+        <span class="stat-number">{{ two_part_count }}</span>
+        <span class="stat-label">Two-Part</span>
+    </div>
+    {% endif %}
+    {% if one_time_count > 0 %}
+    <div class="stat-card" style="background: linear-gradient(135deg, #9B59B6 0%, #6f42c1 100%);">
+        <span class="stat-number">{{ one_time_count }}</span>
+        <span class="stat-label">One-Time</span>
+    </div>
+    {% endif %}
+    {% if group_count > 0 %}
+    <div class="stat-card" style="background: linear-gradient(135deg, #E74C3C 0%, #c0392b 100%);">
+        <span class="stat-number">{{ group_count }}</span>
+        <span class="stat-label">Group</span>
+    </div>
+    {% endif %}
+</div>
+
+<div class="legend">
+    <h3>Learning Target Types</h3>
+    <div class="legend-items">
+        <div class="legend-item">
+            <span class="type-badge two-part">Two-Part</span>
+            <span class="legend-description">Foundational (F) + Advanced (Adv) versions</span>
+        </div>
+        <div class="legend-item">
+            <span class="type-badge one-time">One-Time</span>
+            <span class="legend-description">One success = Complete + Proficient</span>
+        </div>
+        <div class="legend-item">
+            <span class="type-badge group">Group</span>
+            <span class="legend-description">Assessed as group quizzes</span>
+        </div>
+    </div>
+</div>
+
+<div class="info-box">
+    <strong>Tip:</strong> Click on any learning target below to expand and see detailed learning objectives for each quiz type.
+</div>
+
+<button class="toggle-all-btn" onclick="toggleAllAccordions()">Expand All</button>
+
+<section id="all-targets">
+    {% for target in learning_targets.targets %}
+    {% set type_class = target.type | lower | replace(' ', '-') %}
+    <div class="lt-accordion {{ type_class }}" id="lt-{{ target.id | lower }}">
+        <div class="lt-accordion-header" onclick="toggleAccordion(this.parentElement)">
+            <span class="lt-id">{{ target.id }}</span>
+            <span class="type-badge {{ type_class }}">{{ target.type }}</span>
+            <span class="lt-title">{{ target.title }}</span>
+            <span class="expand-icon">&#9660;</span>
+        </div>
+        <div class="lt-accordion-content">
+            {% if target.type == 'Two-Part' %}
+                {# Two-Part targets have Foundational and Advanced sections #}
+                {% if target.f_description or target.f_objectives %}
+                <div class="lt-section">
+                    <div class="lt-section-header">
+                        <span class="lt-section-badge foundational">Foundational ({{ target.id }}F)</span>
+                    </div>
+                    {% if target.f_description %}
+                    <div class="lt-description">"{{ target.f_description }}"</div>
+                    {% endif %}
+                    {% if target.f_objectives %}
+                    <div class="lt-objectives-title">Learning Objectives:</div>
+                    <ul class="lt-objectives">
+                        {% for obj in target.f_objectives %}
+                        <li>{{ obj }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% if target.adv_description or target.adv_objectives %}
+                <div class="lt-section">
+                    <div class="lt-section-header">
+                        <span class="lt-section-badge advanced">Advanced ({{ target.id }}Adv)</span>
+                    </div>
+                    {% if target.adv_description %}
+                    <div class="lt-description">"{{ target.adv_description }}"</div>
+                    {% endif %}
+                    {% if target.adv_objectives %}
+                    <div class="lt-objectives-title">Learning Objectives:</div>
+                    <ul class="lt-objectives">
+                        {% for obj in target.adv_objectives %}
+                        <li>{{ obj }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {# Fallback to simple description if no detailed info #}
+                {% if not target.f_description and not target.f_objectives and not target.adv_description and not target.adv_objectives %}
+                    {% if target.description %}
+                    <div class="lt-simple-description">{{ target.description }}</div>
+                    {% endif %}
+                {% endif %}
+            {% elif target.type == 'One-Time' %}
+                {# One-Time targets have a single section #}
+                <div class="lt-section">
+                    <div class="lt-section-header">
+                        <span class="lt-section-badge one-time-section">One-Time Proficiency ({{ target.id }})</span>
+                    </div>
+                    {% if target.f_description or target.description %}
+                    <div class="lt-description">"{{ target.f_description or target.description }}"</div>
+                    {% endif %}
+                    {% if target.f_objectives %}
+                    <div class="lt-objectives-title">Learning Objectives:</div>
+                    <ul class="lt-objectives">
+                        {% for obj in target.f_objectives %}
+                        <li>{{ obj }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% elif target.description and not target.f_description %}
+                    {# No objectives, show description as content #}
+                    {% endif %}
+                </div>
+            {% elif target.type == 'Group' %}
+                {# Group targets #}
+                <div class="lt-section">
+                    <div class="lt-section-header">
+                        <span class="lt-section-badge group-section">Group Assessment ({{ target.id }})</span>
+                    </div>
+                    {% if target.f_description or target.description %}
+                    <div class="lt-description">"{{ target.f_description or target.description }}"</div>
+                    {% endif %}
+                    {% if target.f_objectives %}
+                    <div class="lt-objectives-title">Learning Objectives:</div>
+                    <ul class="lt-objectives">
+                        {% for obj in target.f_objectives %}
+                        <li>{{ obj }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% if target.notes %}
+                    <p style="margin-top: 1rem; font-style: italic; color: #666;">{{ target.notes }}</p>
+                    {% endif %}
+                </div>
+            {% else %}
+                {# Fallback for unknown types #}
+                {% if target.description %}
+                <div class="lt-simple-description">{{ target.description }}</div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="learning-targets.html" class="back-link" style="font-size: 1.1rem;">Back to Learning Targets Overview</a>
+</div>
+
+<script>
+function toggleAccordion(accordion) {
+    accordion.classList.toggle('expanded');
+}
+
+function toggleAllAccordions() {
+    const accordions = document.querySelectorAll('.lt-accordion');
+    const btn = document.querySelector('.toggle-all-btn');
+    const allExpanded = Array.from(accordions).every(a => a.classList.contains('expanded'));
+
+    accordions.forEach(accordion => {
+        if (allExpanded) {
+            accordion.classList.remove('expanded');
+        } else {
+            accordion.classList.add('expanded');
+        }
+    });
+
+    btn.textContent = allExpanded ? 'Expand All' : 'Collapse All';
+}
+
+// Allow direct linking to specific LTs
+document.addEventListener('DOMContentLoaded', function() {
+    const hash = window.location.hash;
+    if (hash) {
+        const target = document.querySelector(hash);
+        if (target && target.classList.contains('lt-accordion')) {
+            target.classList.add('expanded');
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 140B: Calculus with Applications to Biology - Spring 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+
+    main h3 {
+        color: var(--penn-state-navy);
+        font-size: 1.4rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Resource Cards */
+    .resource-card {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid var(--penn-state-blue);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .resource-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .resource-title {
+        font-size: 1.2rem;
+        color: var(--penn-state-navy);
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .resource-subtitle {
+        color: var(--light-blue);
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .resource-description {
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .resource-link {
+        display: inline-block;
+        color: var(--penn-state-blue);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        margin-right: 1rem;
+        margin-top: 0.5rem;
+        border: 1px solid var(--penn-state-blue);
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .resource-link:hover {
+        background-color: var(--penn-state-blue);
+        color: var(--white);
+    }
+
+    /* Badges */
+    .free-badge {
+        background-color: var(--success-green);
+        color: var(--white);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-left: 0.5rem;
+    }
+
+    .recommended-badge {
+        background-color: var(--penn-state-navy);
+        color: var(--white);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-left: 0.5rem;
+    }
+
+    /* Textbook List */
+    .textbook-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .textbook-list li {
+        margin-bottom: 1.5rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .textbook-list li:before {
+        content: "\1F4DA";
+        position: absolute;
+        left: 0;
+    }
+
+    /* Canvas Materials Section */
+    .canvas-section {
+        background-color: var(--info-blue);
+        border-left: 4px solid var(--penn-state-blue);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .canvas-list {
+        list-style: none;
+        margin: 1rem 0 0 0;
+        padding: 0;
+    }
+
+    .canvas-list li {
+        margin-bottom: 0.75rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .canvas-list li:before {
+        content: "\2713";
+        position: absolute;
+        left: 0;
+        color: var(--penn-state-blue);
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 140B: Calculus with Applications to Biology - Spring 2026</h1>
+        <div class="subtitle">Course Materials</div>
+    </header>
+
+    <!-- Top Navigation will be inserted here by JavaScript -->
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Sidebar Navigation will be inserted here by JavaScript -->
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<h2>Course Materials</h2>
+
+<p>We provide video lectures, online homework problems, handouts and lecture notes for in-class activities, self-guided activities associated with each Learning Target, and other resources through Canvas. It is still helpful to have a calculus textbook as a reference and a source of additional practice problems.</p>
+
+<section id="textbooks">
+    <h3>Free Online Textbooks</h3>
+
+    <div class="resource-card">
+        <div class="resource-title">Calculus for Biological Scientists
+            <span class="free-badge">FREE</span>
+            <span class="recommended-badge">PRIMARY TEXT</span>
+        </div>
+        <div class="resource-subtitle">by Jeff Shriner</div>
+        <div class="resource-description">
+            This online interactive textbook is based on <em>Modeling the Dynamics of Life</em> by Fred Adler. It is an excellent source for definitions, interactive examples, and additional practice problems with solutions. Our course is well-aligned with this textbook, but the text does not include all topics that we will cover.
+        </div>
+        <a href="https://jshriner6.github.io/bio-calc1/root-1-2.html" target="_blank" rel="noopener noreferrer" class="resource-link">Access Textbook</a>
+    </div>
+
+    <div class="resource-card">
+        <div class="resource-title">Differential Calculus for the Life Sciences
+            <span class="free-badge">FREE</span>
+        </div>
+        <div class="resource-subtitle">by Leah Edelstein-Keshet (2019)</div>
+        <div class="resource-description">
+            An excellent open source textbook that overlaps significantly with our course but does not include all topics that we will cover. This is another great source of practice problems and interesting applications. Available both as a PDF and through LibreText.
+        </div>
+        <a href="http://www.math.ubc.ca/~keshet/OpenBook.pdf" target="_blank" rel="noopener noreferrer" class="resource-link">Download PDF</a>
+        <a href="https://math.libretexts.org/Bookshelves/Calculus/Differential_Calculus_for_the_Life_Sciences_(Edelstein-Keshet)" target="_blank" rel="noopener noreferrer" class="resource-link">View on LibreText</a>
+    </div>
+
+    <div class="resource-card">
+        <div class="resource-title">Calculus
+            <span class="free-badge">FREE</span>
+        </div>
+        <div class="resource-subtitle">by Gilbert Strang, Wellesley-Cambridge Press (1991)</div>
+        <div class="resource-description">
+            Available through MIT OpenCourseWare. The first 7 chapters of this text overlap with topics we cover in MATH 140B. It is an excellent source of problems for additional practice. It does not focus on biology, but does include some biological applications. You can download a PDF of this text at the link below. Also available on Canvas.
+        </div>
+        <a href="https://ocw.mit.edu/courses/res-18-001-calculus-fall-2023/resources/mitres_18_001_f17_full_book_pdf/" target="_blank" rel="noopener noreferrer" class="resource-link">Download PDF</a>
+        <a href="https://ocw.mit.edu/courses/res-18-001-calculus-fall-2023/" target="_blank" rel="noopener noreferrer" class="resource-link">View on MIT OCW</a>
+    </div>
+</section>
+
+<section id="optional-textbooks">
+    <h3>Optional Hardcover Textbooks</h3>
+
+    <p>If you prefer to have a hardcover Calculus text for reference, the following textbooks available through online sellers are all good choices for reference or as a source for more practice problems:</p>
+
+    <ul class="textbook-list">
+        <li><strong>Calculus for Biology and Medicine</strong> by Claudia Neuhauser<br>
+            <em>Comprehensive coverage with biological applications throughout</em></li>
+        <li><strong>Modeling the Dynamics of Life</strong> by Fred Adler<br>
+            <em>The basis for the Shriner online textbook, with extensive biological modeling</em></li>
+        <li><strong>Calculus for the Life Sciences</strong> by Sebastian Schreiber et al.<br>
+            <em>Modern approach with contemporary biological examples</em></li>
+    </ul>
+</section>
+
+<section id="canvas">
+    <div class="canvas-section">
+        <h3 style="margin-top: 0;">Canvas Materials</h3>
+        <p>The following materials are provided through Canvas:</p>
+
+        <ul class="canvas-list">
+            <li>Video lectures for each topic</li>
+            <li>Pre-lecture assignments (PLAs) due before each class</li>
+            <li>Online homework problems (due weekly on Mondays)</li>
+            <li>Self-guided activities for each Learning Target with additional practice problems</li>
+            <li>Handouts and lecture notes for in-class activities, with solutions posted after class</li>
+            <li>Online practice problems for each Learning Target</li>
+        </ul>
+
+        <p style="margin-top: 1rem;"><strong>Access Canvas:</strong> <a href="https://canvas.psu.edu" target="_blank" rel="noopener noreferrer">canvas.psu.edu</a></p>
+    </div>
+</section>
+            </main>
+
+            <!-- Quick Links Sidebar will be inserted here by JavaScript -->
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 140B Spring 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <!-- External JavaScript for navigation -->
+    <script src="static/navigation.js"></script>
+
+    <!-- Initialize navigation with current page highlighted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('materials.html');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 140B: Calculus with Applications to Biology - Spring 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    /* Welcome section specific to homepage */
+    .welcome-section {
+        background-color: var(--light-gray);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .overview-section {
+        background-color: var(--light-gray);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .feedback-container {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .feedback-text {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .feedback-diagram {
+        flex: 0 0 auto;
+        text-align: center;
+    }
+
+    .feedback-title {
+        color: var(--penn-state-navy);
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .gen-ed-objective {
+        background-color: #F8F9FA;
+        border-left: 3px solid var(--light-blue);
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+    }
+
+    .gen-ed-objective h4 {
+        color: var(--penn-state-navy);
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    .gen-ed-objective p {
+        margin-bottom: 0;
+        line-height: 1.7;
+    }
+
+    .alert {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 140B: Calculus with Applications to Biology - Spring 2026</h1>
+        <div class="subtitle">Spring 2026 Syllabus</div>
+    </header>
+
+    <!-- Top Navigation will be inserted here by JavaScript -->
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Sidebar Navigation will be inserted here by JavaScript -->
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<!-- Main Content -->
+<section class="welcome-section" id="welcome">
+    <h2>Welcome to MATH 140B!</h2>
+    <p>Welcome to Calculus with Applications to Biology. Throughout the semester we will focus on developing and understanding the tools of calculus and applying these tools to problems in biology.</p>
+
+    <div class="alert">
+        <strong>Course Format:</strong> The Spring 2026 semester runs as a "3+1" hybrid course with 3 credits of in-person instruction (MWF) and 1 WEB credit corresponding to online asynchronous content.
+    </div>
+
+    <div class="feedback-container">
+        <div class="feedback-text">
+            <div class="alert">
+                <strong>Specifications Grading:</strong> This course uses a specifications grading scheme. Your grade is NOT based on points or percentages, but on proficiency in learning objectives assessed through Learning Target Quizzes.
+            </div>
+        </div>
+
+        <div class="feedback-diagram">
+            <div class="feedback-title">Feedback Loop of Learning</div>
+            <svg width="350" height="300" viewBox="0 0 350 300" xmlns="http://www.w3.org/2000/svg">
+                <!-- Define arrow marker -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7"
+                            refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#1E407C" />
+                    </marker>
+                </defs>
+
+                <!-- Circle nodes -->
+                <g id="nodes">
+                    <!-- LT Quiz node (top) -->
+                    <circle cx="175" cy="60" r="45" fill="#96BEE6" stroke="#1E407C" stroke-width="2"/>
+                    <text x="175" y="55" text-anchor="middle" font-size="13" fill="#001E44">
+                        <tspan x="175" dy="0">LT Quiz</tspan>
+                        <tspan x="175" dy="15">(Re)-Attempt</tspan>
+                    </text>
+
+                    <!-- Instructor Feedback node (bottom right) -->
+                    <circle cx="260" cy="200" r="45" fill="#96BEE6" stroke="#1E407C" stroke-width="2"/>
+                    <text x="260" y="195" text-anchor="middle" font-size="13" fill="#001E44">
+                        <tspan x="260" dy="0">Instructor</tspan>
+                        <tspan x="260" dy="15">Feedback</tspan>
+                    </text>
+
+                    <!-- Reflection node (bottom left) -->
+                    <circle cx="90" cy="200" r="45" fill="#96BEE6" stroke="#1E407C" stroke-width="2"/>
+                    <text x="90" y="195" text-anchor="middle" font-size="13" fill="#001E44">
+                        <tspan x="90" dy="0">Reflection and</tspan>
+                        <tspan x="90" dy="15">Improvement</tspan>
+                    </text>
+                </g>
+
+                <!-- Curved arrows -->
+                <g id="arrows">
+                    <!-- From Quiz to Feedback -->
+                    <path d="M 210 80 Q 250 130 245 160"
+                          fill="none" stroke="#1E407C" stroke-width="2"
+                          marker-end="url(#arrowhead)"/>
+
+                    <!-- From Feedback to Reflection -->
+                    <path d="M 220 210 Q 175 230 130 210"
+                          fill="none" stroke="#1E407C" stroke-width="2"
+                          marker-end="url(#arrowhead)"/>
+
+                    <!-- From Reflection to Quiz -->
+                    <path d="M 105 160 Q 100 100 140 80"
+                          fill="none" stroke="#1E407C" stroke-width="2"
+                          marker-end="url(#arrowhead)"/>
+                </g>
+
+                <!-- Description text -->
+                <text x="175" y="270" text-anchor="middle" font-size="12" fill="#333">
+                    <tspan x="175" dy="0">Use feedback to improve and work</tspan>
+                    <tspan x="175" dy="15">toward proficiency in each Learning Target</tspan>
+                </text>
+            </svg>
+        </div>
+    </div>
+
+</section>
+
+<section id="course-overview">
+    <h2>Course Overview</h2>
+
+    <div class="overview-section" id="prerequisites">
+        <h3>Prerequisites</h3>
+        <ul>
+            <li>Math 022, Math 026; or</li>
+            <li>Math 040 or Math 041 or equivalent</li>
+        </ul>
+    </div>
+
+    <div class="overview-section">
+        <h3>Class Structure</h3>
+        <ul>
+            <li><strong>Monday, Wednesday, Friday:</strong> Interactive in-class sessions with direct instruction, group problem-solving, and review.</li>
+            <li><strong>Tuesday Recitations:</strong> Required weekly Learning Target Quiz sessions. This may be at a different time than your MWF class time.</li>
+            <li><strong>Online Components:</strong> Video lectures, pre-lecture assignments (PLAs), online homework, and other course resources.</li>
+        </ul>
+    </div>
+
+    <div class="overview-section">
+        <h3>Assessment Components</h3>
+        <ul>
+            <li><strong>25 Learning Targets</strong> assessed through weekly quiz sessions and exams</li>
+            <li><strong>Experience Points (XP)</strong> earned through:
+                <ul>
+                    <li>Participation in LA Community Learning Sessions</li>
+                    <li>Online homework (weekly)</li>
+                    <li>Pre-lecture assignments (PLAs)</li>
+                    <li>Online Practice Problems</li>
+                    <li>Surveys</li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="alert">
+            <strong>Note:</strong> There are over 800 XP available throughout the semester. XP can modify your final grade through earned modifications.
+        </div>
+    </div>
+
+    <div class="overview-section" id="gen-ed">
+        <h3>General Education Objectives</h3>
+        <p>MATH 140B is part of Penn State's <strong>General Education</strong> curriculum and addresses the following general education objectives:</p>
+
+        <div class="gen-ed-objective">
+            <h4>Key Literacies</h4>
+            <p>The ability to identify, interpret, create, communicate and compute using materials in a variety of media and contexts. Literacy acquired in multiple areas, such as textual, quantitative, information/technology, health, intercultural, historical, aesthetic, linguistic (world languages), and scientific, enables individuals to achieve their goals, to develop their knowledge and potential, to lead healthy and productive lives, and to participate fully in their community and wider society.</p>
+        </div>
+
+        <div class="gen-ed-objective">
+            <h4>Critical and Analytical Thinking</h4>
+            <p>The habit of mind characterized by comprehensive exploration of issues, ideas, artifacts, and events before accepting or formulating a conclusion. It is the intellectually disciplined process of conceptualizing, applying, analyzing, synthesizing, and/or evaluating information gathered from, or generated by, observation, experience, reflection, reasoning, or communication, as a guide to belief and action.</p>
+        </div>
+    </div>
+
+</section>
+            </main>
+
+            <!-- Quick Links Sidebar will be inserted here by JavaScript -->
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 140B Spring 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <!-- External JavaScript for navigation -->
+    <script src="static/navigation.js"></script>
+
+    <!-- Initialize navigation with current page highlighted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('index.html');
+        });
+    </script>
+</body>
+</html>

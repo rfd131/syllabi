@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 140B: Calculus with Applications to Biology - Spring 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+
+    main h3 {
+        color: var(--penn-state-navy);
+        font-size: 1.4rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    main h4 {
+        color: var(--penn-state-navy);
+        font-size: 1.2rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Policy Cards */
+    .policy-card {
+        background-color: var(--white);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .policy-card h3 {
+        color: var(--penn-state-navy);
+        border-bottom: 2px solid var(--penn-state-blue);
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Warning and Important Boxes */
+    .warning-box {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+
+    .important-policy {
+        background-color: var(--light-gray);
+        border-left: 4px solid var(--penn-state-blue);
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+
+    /* Makeup Days Box */
+    .makeup-days-box {
+        background-color: #E8F4FD;
+        border: 2px solid var(--penn-state-blue);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .makeup-days-box h4 {
+        color: var(--penn-state-navy);
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .makeup-day {
+        background-color: var(--white);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+    .makeup-day:last-child {
+        margin-bottom: 0;
+    }
+
+    .makeup-day-title {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    /* Thursday Quiz Hours Box */
+    .thursday-hours-box {
+        background-color: #F0F8FF;
+        border: 2px solid var(--penn-state-light-blue);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .thursday-hours-box h4 {
+        color: var(--penn-state-navy);
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    .hours-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .hour-slot {
+        background-color: var(--white);
+        padding: 1rem;
+        border-radius: 4px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .hour-time {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .hour-location {
+        color: var(--text-gray);
+    }
+
+    .hours-note {
+        margin-top: 1.25rem;
+        margin-bottom: 0;
+        padding: 0.75rem;
+        background-color: var(--warning-yellow);
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    /* AI Policy Grid */
+    .usage-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .permitted-box,
+    .not-permitted-box {
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+
+    .permitted-box {
+        background-color: #E8F5E9;
+        border: 2px solid #4CAF50;
+    }
+
+    .not-permitted-box {
+        background-color: #FFEBEE;
+        border: 2px solid #F44336;
+    }
+
+    .permitted-box h4,
+    .not-permitted-box h4 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+
+    /* Exam Sections Styling */
+    .midterm-section {
+        background-color: #F0F8FF;
+        border: 1px solid #4A90E2;
+        border-radius: 6px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .midterm-section h5 {
+        color: #1E3A5F;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        border-bottom: 2px solid #4A90E2;
+        padding-bottom: 0.5rem;
+    }
+
+    .exam-dates-box {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .exam-date-item {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 1rem;
+    }
+
+    .exam-title {
+        font-weight: bold;
+        color: #1E3A5F;
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #E0E0E0;
+    }
+
+    .exam-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .exam-main,
+    .exam-makeup {
+        padding: 0.5rem;
+    }
+
+    .exam-main {
+        background-color: #E8F4FD;
+        border-radius: 4px;
+    }
+
+    .exam-makeup {
+        background-color: #FFF9E6;
+        border-radius: 4px;
+    }
+
+    .midterm-policies {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background-color: white;
+        border-radius: 4px;
+    }
+
+    .midterm-policies h6 {
+        color: #1E3A5F;
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .final-exam-section {
+        background-color: #FFF9F0;
+        border: 1px solid #FF8C00;
+        border-radius: 6px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .final-exam-section h5 {
+        color: #1E3A5F;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        border-bottom: 2px solid #FF8C00;
+        padding-bottom: 0.5rem;
+    }
+
+    .final-exam-content {
+        padding: 0.5rem;
+    }
+
+    .final-exam-date {
+        background-color: #FFE4B5;
+        padding: 1rem;
+        border-radius: 4px;
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .travel-warning {
+        background-color: #FFF3CD;
+        border: 2px solid #FFC107;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .travel-warning strong {
+        color: #856404;
+    }
+
+    @media (max-width: 768px) {
+        .hours-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .usage-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .exam-details {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 140B: Calculus with Applications to Biology - Spring 2026</h1>
+        <div class="subtitle">Course Policies</div>
+    </header>
+
+    <!-- Top Navigation will be inserted here by JavaScript -->
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Sidebar Navigation will be inserted here by JavaScript -->
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<h2>Course Policies</h2>
+
+<section id="quiz-exam-policies">
+    <div class="policy-card">
+        <h3>Learning Target Quiz Session Policies</h3>
+
+        <h4 id="Tuesday-Sessions">Tuesday Quiz Sessions (Recitations)</h4>
+        <p>Learning Target Quizzes are held on <strong>Tuesdays</strong> throughout the semester beginning in Week 2. These sessions are <strong>required</strong> and are the primary way you demonstrate proficiency on Learning Targets.</p>
+
+        <div class="warning-box">
+            <strong>Tuesday Quiz Session Policies:</strong>
+            <ul style="margin: 1rem;">
+                <li>You will submit a form available through Canvas indicating the LT quizzes you wish to attempt in the session (Due Sunday night before the Tuesday session).</li>
+                <li>If you do not submit the quiz sign up form you should still attend your Tuesday recitation. A packet will be printed for you, but without signing up, you cannot be certain that it includes the LT Quizzes you wish to attempt that week.</li>
+                <li>You must attend the Tuesday recitation you are enrolled in.</li>
+                <li>To facilitate efficient distribution of the quiz packets, you will be seated according to a seating chart that is established in the Week 1 session.</li>
+                <li>When you arrive at the Tuesday Quiz Session, you will leave bags/backpacks at the front of the room and take your seat according to the seating chart. Phones, calculators, notes, smart watches, electronic devices, or any study aids are not permitted during the quiz session. At your seat, you should need only pencil(s)/pen(s) and your student id. Your phone should be left in your bag.</li>
+                <li>When you are done with your quiz packet, you will turn the quiz packet in to one of the proctors and show your id.</li>
+                <li>If you complete your quiz packet with 15 minutes or more remaining in the session, you may request a copy of an LT quiz that was not part of your packet.</li>
+                <li>Any quizzes or quiz packets distributed during the session must be turned in regardless of the status of completion.</li>
+                <li>When you have turned in your quiz packet you may retrieve your things and leave the session. If you wish to remain in the session, you will need to sit quietly and retrieve your things at the end of the session.</li>
+            </ul>
+        </div>
+
+        <h4 id="makeup-sessions" style="margin-top: 1.5rem;">Make-up Quiz Sessions</h4>
+        <p>We understand that sometimes you may need to miss a Tuesday quiz session due to illness or other unavoidable circumstances. LTs that you miss on one particular Tuesday will still be available at a later time. In addition, we offer <strong>two designated make-up quiz sessions during the semester.</strong> This provides a fair opportunity to make-up missed LT quizzes for students who miss up to 2-3 Tuesday quiz sessions during the semester. We cannot accommodate students who routinely and repeatedly miss Tuesday quiz sessions.</p>
+
+        <div class="makeup-days-box">
+            <h4>Semester Make-up Quiz Sessions</h4>
+
+            <div class="makeup-day">
+                <div class="makeup-day-title">Make-up Quiz Session 1</div>
+                <p>Date: 3/18/2026, 4:30 - 8:30 PM<br>Location: 101 Chambers</p>
+            </div>
+            <div class="makeup-day">
+                <div class="makeup-day-title">Make-up Quiz Session 2</div>
+                <p>Date: 4/22/2026, 4:30 - 8:30 PM<br>Location: 100 Huck Life Sciences</p>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>Important Make-up Quiz Details:</strong>
+            <ul style="margin: 1rem;">
+                <li>You can attempt Learning Targets from the Tuesday session(s) you missed (maximum of 6 LTs).</li>
+                <li>You may not need the make-up session by the time it becomes available. For example, if you miss the Week 2 quiz session, when LT1F, LT2F, and LT3F are available and you succeed on these LTs before the make-up, you will not need the make-up session for Week 2.</li>
+                <li>These make-ups accommodate students who miss 2-3 Tuesday sessions during the semester. We cannot accommodate students who routinely or repeatedly miss Tuesday quiz sessions.</li>
+                <li>Sign-up is required. Forms will be posted on Canvas</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="thursday-hours-box" id="Thursday-Sessions">
+        <h4>Thursday Quiz Hours</h4>
+        <p>These are additional sessions available for Learning targets that you have not yet been successful in during a Tuesday or midterm exam session. Learning targets become available in quiz hours after they have been available at least twice in either a Tuesday session or on a Midterm Exam. LTs remain available during Thursday quiz hours for the rest of the semester according to a schedule.</p>
+
+        <div class="hours-grid">
+            <div class="hour-slot">
+                <div class="hour-time">12:15 - 1:15 PM</div>
+                <div class="hour-location">22 BBH</div>
+            </div>
+            <div class="hour-slot">
+                <div class="hour-time">4:30 - 5:30 PM</div>
+                <div class="hour-location">22 Deike</div>
+            </div>
+            <div class="hour-slot">
+                <div class="hour-time">7:30 - 8:30 PM</div>
+                <div class="hour-location">110 Business</div>
+            </div>
+        </div>
+
+        <p class="hours-note"><strong>Note:</strong> It is not required that you attend Thursday Quiz Hours, but most students will use quiz hours at least a few times during the semester and you should plan space in your schedule.</p>
+
+        <p class="hours-note"><strong>Note:</strong> Sign up for Quiz Hours through the same quiz sign up form you use for Tuesday sessions.</p>
+    </div>
+</section>
+
+<section id="exams">
+    <div class="policy-card">
+        <h3>Exams</h3>
+        <p>We have two midterm exams and a final exam in MATH 140B. Each exam provides additional opportunities to attempt Learning Targets.</p>
+
+        <!-- Midterm Exams Section -->
+        <div class="midterm-section" id="midterm-section">
+            <h5>Midterm Exams</h5>
+            <p>Midterm exams are important opportunities to succeed on a larger number of LTs than are available in a typical Tuesday quiz session.</p>
+
+            <div class="exam-dates-box">
+                <div class="exam-date-item">
+                    <div class="exam-title">Midterm One</div>
+                    <div class="exam-details">
+                        <div class="exam-main">
+                            <strong>Regular Exam:</strong> 2/10/2026<br>
+                            <strong>Time:</strong> 6:15 - 7:30 PM<br>
+                            <strong>Location:</strong> TBD                        </div>
+                        <div class="exam-makeup">
+                            <strong>Conflict/Make-up:</strong> 2/12/2026<br>
+                            <strong>Time:</strong> 4:30 - 8:30 PM<br>
+                            <strong>Location:</strong> 121 Sparks                        </div>
+                    </div>
+                </div>
+                <div class="exam-date-item">
+                    <div class="exam-title">Midterm Two</div>
+                    <div class="exam-details">
+                        <div class="exam-main">
+                            <strong>Regular Exam:</strong> 3/24/2026<br>
+                            <strong>Time:</strong> 6:15 - 7:30 PM<br>
+                            <strong>Location:</strong> TBD                        </div>
+                        <div class="exam-makeup">
+                            <strong>Conflict/Make-up:</strong> 3/26/2026<br>
+                            <strong>Time:</strong> 4:30 - 8:30 PM<br>
+                            <strong>Location:</strong> 121 Sparks                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="midterm-policies">
+                <h6>Midterm Conflict and Make-up Policy</h6>
+                <ul>
+                    <li>If you have an academic conflict during the scheduled evening midterm or need to make up the midterm due to a valid reason, we will schedule a make-up exam.</li>
+                    <li>The scheduled conflict/make-up opportunity takes place on Thursday during the same week as the regularly scheduled exam.</li>
+                    <li>Students who are not able to use this scheduled make-up opportunity will be scheduled for a make-up individually. This make-up opportunity must be completed within two weeks of the regularly scheduled exam.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Final Exam Section -->
+        <div class="final-exam-section" id="final-section">
+            <h5>Final Exam</h5>
+            <div class="final-exam-content">
+                <p><strong>Important Final Exam Information:</strong></p>
+                <ul>
+                    <li>Your final exam will consist of any learning targets that you have not yet earned a Success on.</li>
+                    <li>Prior to finals week, your Progress Report will indicate your course letter grade without the final exam.</li>
+                    <li>If you meet the requirements for an A in the course prior to the final, no final exam will be printed for you.</li>
+                    <li>The final exam is your last opportunity to demonstrate proficiency on any remaining Learning Targets.</li>
+                </ul>
+
+                <div class="final-exam-date">
+                    <strong>Final Exam Date:</strong> TBD
+                </div>
+            </div>
+        </div>
+
+        <div class="travel-warning">
+            <strong>Important Travel Policy:</strong> Personal travel plans (including early departure for breaks) are NOT considered excused absences for quizzes or exams. Please plan your travel accordingly.
+        </div>
+    </div>
+</section>
+
+<section id="academic-integrity">
+    <div class="important-policy">
+        <h4>Academic Integrity</h4>
+
+        <p>All <a href="https://integrity.psu.edu/academic-integrity" target="_blank" rel="noopener noreferrer">Penn State Policies</a> regarding ethics and academic integrity apply to this course. Academic integrity is the pursuit of scholarly activity free from fraud and deception and is an educational objective of this institution.</p>
+
+        <p style="margin-top: 1rem;">Academic dishonesty includes, but is not limited to:</p>
+        <ul style="margin: 1rem;">
+            <li>Cheating</li>
+            <li>Plagiarizing</li>
+            <li>Fabricating of information or citations</li>
+            <li>Facilitating acts of academic dishonesty by others</li>
+            <li>Having unauthorized possession of examinations</li>
+            <li>Submitting work of another person or work previously used without informing the instructor</li>
+            <li>Tampering with the academic work of other students</li>
+        </ul>
+
+        <p style="margin-top: 1rem;">For any material or ideas obtained from other sources, such as text or things you see on the web, in the library, etc., a source reference must be given. Direct quotes from any source must be identified as such. All exam answers must be your own, and you must not provide any assistance to other students during exams.</p>
+
+        <p style="margin-top: 1rem;"><strong>Any instances of academic dishonesty WILL be pursued under the University and Eberly College of Science regulations concerning academic integrity.</strong></p>
+    </div>
+</section>
+
+<section id="ai-policy">
+    <div class="policy-card">
+        <h3>Generative AI Policy</h3>
+
+        <p><strong>AI as a Learning Tool:</strong> When used appropriately, generative AI tools (such as ChatGPT, Claude, Copilot, etc.) can be powerful resources to enhance your learning experience. We encourage you to explore these tools in ways that support genuine understanding and skill development. Instructors may periodically discuss effective strategies for using AI to strengthen your mathematical understanding.</p>
+
+        <p style="margin-top: 1rem;">To maintain academic integrity while leveraging AI's benefits, please follow these guidelines:</p>
+
+        <div class="usage-grid">
+            <div class="permitted-box">
+                <h4>Permitted Uses</h4>
+                <ul>
+                    <li>Clarifying mathematical concepts outside of class</li>
+                    <li>Generating additional practice problems for self-study</li>
+                    <li>Checking your understanding of definitions and theorems</li>
+                    <li>Getting help with study strategies</li>
+                    <li>Understanding error messages in approved software</li>
+                </ul>
+            </div>
+
+            <div class="not-permitted-box">
+                <h4>Not Permitted</h4>
+                <ul>
+                    <li>Using AI to complete graded assignments and as a substitute for authentic demonstrations of your understanding.</li>
+                    <li>Generating solutions for homework</li>
+                    <li>Accessing AI during any in-person assessments.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <strong>Academic Integrity Violation:</strong> Using generative AI to complete graded work constitutes academic dishonesty and will be treated as such. This includes both direct copying and substantial paraphrasing of AI-generated content.
+        </div>
+
+        <p style="margin-top: 1rem;"><strong>Why this policy?</strong> Learning calculus requires developing your own problem-solving skills and mathematical intuition. Using AI to complete assignments prevents you from developing these essential skills and undermines the learning objectives of the course.</p>
+
+        <p style="margin-top: 1rem;"><strong>If you're unsure:</strong> Please ask your instructor before using AI tools for any course-related work. We're happy to clarify what is and isn't appropriate.</p>
+    </div>
+</section>
+
+<section id="attendance">
+    <div class="policy-card">
+        <h3>Attendance Policy</h3>
+
+        <p><strong>In-Person Classes (MWF):</strong> While attendance is strongly encouraged and contributes to your success, it is not directly graded. However, active participation and engagement during class will help you become proficient in the material.</p>
+
+        <p style="margin-top: 1rem;"><strong>Tuesday Learning Target Quiz Sessions:</strong> Attendance is <strong>REQUIRED</strong>. These sessions are the primary way you demonstrate proficiency on Learning Targets, which directly determines your grade. Missing more than 2-3 sessions will likely be detrimental to your grade.</p>
+    </div>
+</section>
+
+<section id="late-work">
+    <div class="important-policy">
+        <h4>Late Work Policy</h4>
+        <p style="margin-top: 1rem;"><strong>Online Homeworks and PLAs:</strong> At the start of the semester you have 15 Late Passes. Using a late pass grants an automatic 1 week extension on the PLA or the Online Homework. After this one week extension (if used) these assignments remain available for ungraded practice but will not count toward XP. Late passes are used only for these online assignments and are automatically tracked by our online homework platform (MyOpenMath).</p>
+    </div>
+</section>
+
+<section id="disability">
+    <div class="policy-card">
+        <h3>Disability Accommodation</h3>
+
+        <p>Penn State welcomes students with disabilities into the University's educational programs. Every Penn State campus has an office for students with disabilities. The Office for Disability Services (ODS) Web site provides contact information for every Penn State campus.</p>
+
+        <p style="margin-top: 1rem;">For further information, please visit the Office for Disability Services Web site: <a href="http://equity.psu.edu/ods" target="_blank" rel="noopener noreferrer">http://equity.psu.edu/ods</a></p>
+
+        <p style="margin-top: 1rem;">In order to receive consideration for reasonable accommodations, you must contact the appropriate disability services office at the campus where you are officially enrolled, participate in an intake interview, and provide documentation: <a href="http://equity.psu.edu/ods/doc-guidelines" target="_blank" rel="noopener noreferrer">http://equity.psu.edu/ods/doc-guidelines</a></p>
+
+        <p style="margin-top: 1rem;">If the documentation supports your request for reasonable accommodations, your campus's disability services office will provide you with an accommodation letter. Please share this letter with your instructors and discuss the accommodations with them as early as possible. You must follow this process for every semester that you request accommodations.</p>
+    </div>
+</section>
+            </main>
+
+            <!-- Quick Links Sidebar will be inserted here by JavaScript -->
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 140B Spring 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <!-- External JavaScript for navigation -->
+    <script src="static/navigation.js"></script>
+
+    <!-- Initialize navigation with current page highlighted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('policies.html');
+        });
+    </script>
+</body>
+</html>

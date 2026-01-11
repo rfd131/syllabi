@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 140B: Calculus with Applications to Biology - Spring 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+
+    main h3 {
+        color: var(--penn-state-navy);
+        font-size: 1.4rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    /* LT Overview Cards */
+    .lt-overview-card {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid var(--penn-state-blue);
+    }
+
+    .lt-overview-card h3 {
+        margin-top: 0;
+        color: var(--penn-state-navy);
+    }
+
+    /* Process Timeline */
+    .process-timeline {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin: 2rem 0;
+        padding: 2rem;
+        background-color: var(--light-gray);
+        border-radius: 8px;
+    }
+
+    .timeline-step {
+        text-align: center;
+        position: relative;
+        flex: 1;
+    }
+
+    .timeline-step:not(:last-child)::after {
+        content: "\2192";
+        position: absolute;
+        right: -20px;
+        top: 25px;
+        font-size: 2rem;
+        color: var(--penn-state-blue);
+    }
+
+    .step-number {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        background-color: var(--penn-state-blue);
+        color: var(--white);
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .step-title {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        margin-bottom: 0.25rem;
+    }
+
+    .step-description {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    /* Badges */
+    .success-badge {
+        background-color: var(--success-green);
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+
+    .not-yet-badge {
+        background-color: #FFA500;
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+
+    .foundational-badge {
+        background-color: #17A2B8;
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+
+    .advanced-badge {
+        background-color: #6610F2;
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+
+    .one-time-badge {
+        background-color: #9B59B6;
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+
+    .group-badge {
+        background-color: #E74C3C;
+        color: #ffffff;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+
+    .complete-badge {
+        background-color: #2ECC71;
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+
+    .proficient-badge {
+        background-color: #27AE60;
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5rem;
+    }
+
+    /* Document Link Button */
+    .doc-link-button {
+        display: inline-block;
+        background-color: var(--penn-state-blue);
+        color: var(--white);
+        padding: 1rem 2rem;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin: 0.5rem;
+    }
+
+    .doc-link-button:hover {
+        background-color: var(--penn-state-navy);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .doc-link-button .icon {
+        margin-right: 0.5rem;
+    }
+
+    /* Important Note */
+    .important-note {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+
+    /* FAQ Styles */
+    .faq-item {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 3px solid var(--penn-state-blue);
+    }
+
+    .faq-question {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .faq-answer {
+        color: #333;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .process-timeline {
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .timeline-step:not(:last-child)::after {
+            content: "\2193";
+            right: auto;
+            top: auto;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 140B: Calculus with Applications to Biology - Spring 2026</h1>
+        <div class="subtitle">Learning Targets</div>
+    </header>
+
+    <!-- Top Navigation will be inserted here by JavaScript -->
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Sidebar Navigation will be inserted here by JavaScript -->
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<h2 id="overview">Learning Targets Overview</h2>
+
+<p>There are <strong>25 Learning Targets</strong> in MATH 140B. You are assessed on these learning targets through weekly "Learning Target Quiz Sessions" every Tuesday beginning in Week 2. This page provides a comprehensive overview of the Learning Target system and how it works.</p>
+
+<div style="text-align: center; margin: 2rem 0;">
+    <a href="learning-targets-list.html" class="doc-link-button">
+        <span class="icon">📋</span>
+        View All Learning Targets with Descriptions
+    </a>
+</div>
+
+<section id="how-it-works">
+    <h3>How Learning Target Quizzes Work</h3>
+
+    <div class="lt-overview-card">
+        <h3>Grading System</h3>
+        <p>Learning Target Quizzes are graded on a <strong>Success/Not Yet</strong> basis:</p>
+
+        <div style="margin: 1rem 0;">
+            <div style="margin-bottom: 1rem;">
+                <span class="success-badge">Success!</span>
+                Solutions for all problems are free from conceptual errors and contain few or no computational errors.
+            </div>
+            <div>
+                <span class="not-yet-badge">Not Yet</span>
+                The quiz attempt shows that additional skill development or conceptual understanding is needed. This is an opportunity to learn and improve!
+            </div>
+        </div>
+    </div>
+
+    <div class="lt-overview-card">
+        <h3>Quiz Types</h3>
+        <p>There are three main types of Learning Target quizzes:</p>
+
+        <div style="margin: 1rem 0;">
+            <div style="margin-bottom: 1rem;">
+                <span class="foundational-badge">Foundational (F)</span>
+                Cover introductory concepts and foundational skills for a related set of learning objectives.
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <span class="advanced-badge">Advanced (Adv)</span>
+                Cover advanced concepts and skills, often requiring application of foundational skills to problems.
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <span class="one-time-badge">One-Time Proficiency</span>
+                Counted as both Complete and Proficient after one success. May involve both foundational and advanced skills.
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <span class="group-badge">Group</span>
+                Several LTs throughout the semester will be assessed as group quizzes, where you will work with your peers.
+            </div>
+        </div>
+    </div>
+
+    <div class="process-timeline">
+        <div class="timeline-step">
+            <div class="step-number">1</div>
+            <div class="step-title">Success on one part</div>
+            <div class="step-description">(F or Adv)<br>Earns Complete</div>
+        </div>
+        <div class="timeline-step">
+            <div class="step-number">2</div>
+            <div class="step-title">Success in all parts</div>
+            <div class="step-description">(F and Adv)<br>Earns Proficient</div>
+        </div>
+        <div class="timeline-step">
+            <div class="step-number">3</div>
+            <div class="step-title">Grade Impact</div>
+            <div class="step-description">Number Complete and<br>Number Proficient both<br>count toward final grade</div>
+        </div>
+    </div>
+
+    <div class="lt-overview-card">
+        <h3>Achievement Levels</h3>
+        <p><span class="complete-badge">Complete</span> You earn this when you get a <strong>Success!</strong> on either the Foundational (F) or Advanced (Adv) quiz version. Once you earn a Success in an LT Quiz Version, you do not attempt that version again.</p>
+        <p><span class="proficient-badge">Proficient</span> You earn this when you get a <strong>Success!</strong> on both the Foundational (F) and Advanced (Adv) quiz versions for the same Learning Target.</p>
+
+        <div class="important-note" style="margin-top: 1rem;">
+            <strong>Important:</strong> You don't need to earn a success in the Foundational version before attempting the Advanced version. You can attempt them in any order.
+        </div>
+
+        <div class="important-note" style="margin-top: 1rem;">
+            <strong>Note:</strong> For One-Time Proficiency targets, one success counts as both Complete and Proficient.
+        </div>
+    </div>
+</section>
+
+<section id="quiz-sessions">
+    <h3>Learning Target Quiz Sessions</h3>
+
+    <p>Quiz sessions are held <strong>every Tuesday</strong> throughout the semester. You will typically take several short quizzes during a session, with each quiz focusing on a single Learning Target.</p>
+
+    <div class="important-note">
+        <strong>Important:</strong> Participation in the Learning Target Quiz Sessions each week is <strong>required</strong> and is <strong>essential</strong> to your success. Most learning targets will be available 4-5 times throughout the semester according to a schedule posted on Canvas.
+    </div>
+
+    <div class="lt-overview-card">
+        <h3>Retaking Learning Target Quizzes</h3>
+        <p>If a learning target quiz is marked <strong>Not Yet</strong>, you'll have another opportunity to earn a <strong>Success!</strong> on that target. Use the feedback provided on Gradescope to understand what material needs further review before re-attempting.</p>
+
+        <p style="margin-top: 1rem;"><strong>Important Requirement:</strong> We require you to attempt at least one of the newest LT quizzes that become available each week, even if you feel less than fully prepared. This helps maintain momentum and provides valuable practice.</p>
+
+        <p style="margin-top: 1rem;"><strong>For the foundational targets LT1F through LT9F:</strong> If you are not able to earn a success on these targets in the first two times they are available, we will require you to visit an LA or Instructor office hour for help reviewing important ideas so that you can be better prepared to succeed on the next attempt.</p>
+    </div>
+</section>
+
+<section>
+    <h3>Resources by Learning Target</h3>
+
+    <p>You'll find resources organized by learning target on Canvas where you can review video lectures, complete self-guided activities, complete online practice problems, and try sample quizzes for each LT quiz.</p>
+</section>
+
+<section id="faq">
+    <h3>Frequently Asked Questions</h3>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: How many times can I attempt each Learning Target?</div>
+        <div class="faq-answer">Most learning targets will be available 4-5 times throughout the semester according to a schedule that is posted on Canvas. You can attempt each LT Quiz version each time it's offered until you achieve Success. However, if you do not earn Success, don't wait to seek out help! Use each attempt and the feedback to improve your understanding.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: What happens if I miss a Tuesday quiz session?</div>
+        <div class="faq-answer">Missing quiz sessions will limit your opportunities to demonstrate proficiency on learning targets. While missing 1-2 sessions may not greatly impact your grade, regular attendance is essential. Missing more than 2-3 sessions will likely be detrimental to your grade. See the quiz make up policy under Course Policies.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: Do I need to get a "perfect score" on a Learning Target quiz to earn a Success?</div>
+        <div class="faq-answer">No! Earning a Success means you've demonstrated proficiency and understanding in the skills for that Learning Target. While it may feel like you need "100%", this is different from a traditional exam setting. Each Learning Target Quiz assesses a small, focused set of skills. You get feedback after each attempt to help you improve.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: Do I need to complete the Learning Targets in order?</div>
+        <div class="faq-answer">No, you don't need to earn Success on LT1F before attempting LT2F or LT3F and you do not need to earn a Success on LT1F before attempting LT1Adv. While some learning targets build on skills from earlier targets and the material is interconnected, you should continue attempting multiple learning target quizzes each week to keep pace with the course.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: Can I attempt the Advanced version before the Foundational version?</div>
+        <div class="faq-answer">Yes! You don't need to earn a success in the Foundational version before attempting the Advanced version. For each target, the Advanced (Adv) version becomes available 1-2 weeks after the Foundational (F) version is first available.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: Is "Not Yet" on a Learning Target Quiz the same as failing?</div>
+        <div class="faq-answer">"Not Yet" is intended to emphasize that you can revisit the skills and come back for another attempt. Your final grade depends on the number of Learning Targets you successfully complete and achieve proficiency in by the end of the semester.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: How do exams relate to Learning Target Quizzes?</div>
+        <div class="faq-answer">Exams provide additional opportunities to earn Complete or Proficient status on learning targets. Each exam includes a set of active learning targets, and you choose which targets to focus on during the exam.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: Will there be additional quiz opportunities outside of Tuesday sessions?</div>
+        <div class="faq-answer">Yes, beginning in Week 4, we'll offer proctored Quiz Hours for students who need to attempt more quizzes than can reasonably fit in a single Tuesday session. These are on Thursdays. The times and locations are posted on Canvas.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: What resources can I use during Learning Target Quizzes?</div>
+        <div class="faq-answer">The LT Quizzes are proctored quizzes taken with pencil and paper. Notes, calculators, phones, and electronic devices are not permitted during the quiz sessions. These are closed-book assessments designed to assess your understanding of the material.</div>
+    </div>
+</section>
+
+<div style="text-align: center; margin: 2rem 0;">
+    <a href="learning-targets-list.html" class="doc-link-button">
+        <span class="icon">📋</span>
+        View All Learning Targets with Descriptions
+    </a>
+</div>
+            </main>
+
+            <!-- Quick Links Sidebar will be inserted here by JavaScript -->
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 140B Spring 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <!-- External JavaScript for navigation -->
+    <script src="static/navigation.js"></script>
+
+    <!-- Initialize navigation with current page highlighted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('learning-targets.html');
+        });
+    </script>
+</body>
+</html>

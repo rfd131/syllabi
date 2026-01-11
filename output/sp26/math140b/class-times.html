@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 140B: Calculus with Applications to Biology - Spring 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 1.8rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+
+    /* Section Tables */
+    .section-table {
+        width: 100%;
+        background-color: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 1.5rem 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .section-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .section-table th {
+        background-color: var(--penn-state-navy);
+        color: var(--white);
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .section-table td {
+        padding: 0.875rem 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .section-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .section-table tr:hover {
+        background-color: var(--light-gray);
+    }
+
+    .section-number {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+    }
+
+    .instructor-link {
+        color: var(--penn-state-blue);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .instructor-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Time Groups */
+    .time-group {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .time-group-header {
+        font-size: 1.1rem;
+        color: var(--penn-state-navy);
+        font-weight: bold;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .time-badge {
+        background-color: var(--penn-state-blue);
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    .alert {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+    }
+
+    /* Thursday Quiz Hours */
+    .thursday-hours-box {
+        background-color: #F0F8FF;
+        border: 2px solid var(--penn-state-light-blue, #96BEE6);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .hours-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .hour-slot {
+        background-color: var(--white);
+        padding: 1rem;
+        border-radius: 4px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .hour-time {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .hour-location {
+        color: #333;
+    }
+
+    .hours-note {
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
+        padding: 0.75rem;
+        background-color: var(--warning-yellow);
+        border-radius: 4px;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .section-table {
+            overflow-x: auto;
+        }
+
+        .section-table table {
+            min-width: 500px;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 140B: Calculus with Applications to Biology - Spring 2026</h1>
+        <div class="subtitle">Class Times and Locations</div>
+    </header>
+
+    <!-- Top Navigation will be inserted here by JavaScript -->
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Sidebar Navigation will be inserted here by JavaScript -->
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<h2 id="mwf-classes">Monday, Wednesday, Friday Classes</h2>
+
+<p>Classes meet three times per week for 50-minute sessions. Classes include interactive lectures, group problem-solving, and collaborative activities.</p>
+
+<div class="time-group">
+    <div class="time-group-header">
+        <span>🌅 Morning Classes</span>
+        <span class="time-badge">9:05 - 4:25 PM</span>
+    </div>
+    <div class="section-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>Time</th>
+                    <th>Location</th>
+                    <th>Instructor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="section-number">Section 1</td>
+                    <td>9:05 - 9:55 AM</td>
+                    <td>108 Tyson</td>
+                    <td><a href="instructors.html#sam-fuller" class="instructor-link">Sam Fuller</a></td>
+                </tr>
+                <tr>
+                    <td class="section-number">Section 3</td>
+                    <td>3:35 - 4:25 PM</td>
+                    <td>203 Elec Eng West</td>
+                    <td><a href="instructors.html#sam-fuller" class="instructor-link">Sam Fuller</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="time-group">
+    <div class="time-group-header">
+        <span>🌞 Afternoon Classes</span>
+        <span class="time-badge">12:20 - 1:10 PM</span>
+    </div>
+    <div class="section-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>Time</th>
+                    <th>Location</th>
+                    <th>Instructor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="section-number">Section 2</td>
+                    <td>12:20 - 1:10 PM</td>
+                    <td>111 Tyson</td>
+                    <td><a href="instructors.html#russ-deforest" class="instructor-link">Russ deForest</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<h2 id="tuesday-recitations">Tuesday Recitations - Learning Target Quiz Sessions</h2>
+
+<div class="alert">
+    <strong>Important:</strong> Tuesday sessions are REQUIRED and are dedicated to Learning Target Quizzes. You must register for a specific Tuesday recitation section that may be held at a different time than your MWF class section.
+</div>
+
+<p>Each Tuesday session is a 1 hour assessment period where you will take Learning Target Quizzes. These are low-stakes assessments with multiple opportunities to demonstrate proficiency throughout the semester.</p>
+
+<div class="section-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Section</th>
+                <th>Time</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="section-number">Section 1R</td>
+                <td>9:15 - 10:15 AM</td>
+                <td>117 Henderson</td>
+            </tr>
+            <tr>
+                <td class="section-number">Section 2R</td>
+                <td>12:15 - 1:15 PM</td>
+                <td>201 Thomas</td>
+            </tr>
+            <tr>
+                <td class="section-number">Section 3R</td>
+                <td>3:15 - 4:15 PM</td>
+                <td>108 Henderson</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 id="thursday-quiz-hours">Thursday Quiz Hours</h2>
+
+<p>Thursday Quiz Hours are additional sessions available for Learning Targets that you have not yet been successful in during a Tuesday or midterm exam session. Learning Targets become available in quiz hours after they have been available at least twice in either a Tuesday session or on a Midterm Exam. LTs remain available during Thursday quiz hours for the rest of the semester according to a schedule.</p>
+
+<div class="thursday-hours-box">
+    <div class="hours-grid">
+        <div class="hour-slot">
+            <div class="hour-time">12:15 - 1:15 PM</div>
+            <div class="hour-location">22 BBH</div>
+        </div>
+        <div class="hour-slot">
+            <div class="hour-time">4:30 - 5:30 PM</div>
+            <div class="hour-location">22 Deike</div>
+        </div>
+        <div class="hour-slot">
+            <div class="hour-time">7:30 - 8:30 PM</div>
+            <div class="hour-location">110 Business</div>
+        </div>
+    </div>
+
+    <p class="hours-note"><strong>Note:</strong> It is not required that you attend Thursday Quiz Hours, but most students will use quiz hours at least a few times during the semester and you should plan space in your schedule.</p>
+
+    <p class="hours-note"><strong>Note:</strong> Sign up for Quiz Hours through the same quiz sign up form you use for Tuesday sessions.</p>
+</div>
+            </main>
+
+            <!-- Quick Links Sidebar will be inserted here by JavaScript -->
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 140B Spring 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <!-- External JavaScript for navigation -->
+    <script src="static/navigation.js"></script>
+
+    <!-- Initialize navigation with current page highlighted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('class-times.html');
+        });
+    </script>
+</body>
+</html>

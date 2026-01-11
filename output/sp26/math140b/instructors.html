@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 140B: Calculus with Applications to Biology - Spring 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    /* Instructor Cards */
+    .instructor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+
+    .instructor-card {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--penn-state-blue);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .instructor-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .instructor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 0.5rem;
+    }
+
+    .instructor-name {
+        font-size: 1.3rem;
+        color: var(--penn-state-navy);
+        font-weight: bold;
+    }
+
+    .instructor-title {
+        color: var(--penn-state-blue);
+        font-style: italic;
+        font-size: 1rem;
+    }
+
+    .instructor-pronouns {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+    }
+
+    .instructor-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--penn-state-navy);
+        min-width: 100px;
+        margin-right: 1rem;
+    }
+
+    .detail-content {
+        flex: 1;
+    }
+
+    .detail-content a {
+        color: var(--penn-state-blue);
+        text-decoration: none;
+    }
+
+    .detail-content a:hover {
+        text-decoration: underline;
+    }
+
+    .office-hours-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .office-hours-list li {
+        margin-bottom: 0.5rem;
+        padding-left: 1rem;
+        position: relative;
+    }
+
+    .office-hours-list li:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: var(--penn-state-blue);
+    }
+
+    .oh-type-badge {
+        font-size: 0.75rem;
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+        margin-left: 0.5rem;
+        font-weight: 500;
+    }
+
+    .oh-type-drop-in {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .oh-type-shared {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+
+    .oh-type-appointment {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .appointment-note {
+        font-style: italic;
+        color: #666;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* Sections Info */
+    .sections-taught {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #ddd;
+    }
+
+    .section-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .section-badge {
+        background-color: var(--penn-state-blue);
+        color: var(--white);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* Shared Office Hours Section */
+    .shared-hours-section {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .shared-hours-title {
+        color: var(--penn-state-navy);
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    .hours-iframe {
+        width: 100%;
+        height: 600px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .alert {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+
+    @media (max-width: 1024px) {
+        .instructor-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 140B: Calculus with Applications to Biology - Spring 2026</h1>
+        <div class="subtitle">Course Instructors</div>
+    </header>
+
+    <!-- Top Navigation will be inserted here by JavaScript -->
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Sidebar Navigation will be inserted here by JavaScript -->
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<h2>Course Instructors</h2>
+
+<div class="instructor-grid">
+    <div class="instructor-card" id="russ-deforest">
+        <div class="instructor-header">
+            <div class="instructor-name">Russ deForest</div>
+            <div class="instructor-title">Instructor, Course Coordinator</div>
+        </div>
+        <div class="instructor-pronouns">Pronouns: he/him</div>
+
+        <div class="sections-taught">
+            <div class="detail-label">Teaching Section:</div>
+            <div class="section-badges">
+                <span class="section-badge">Section 2 - MWF 12:20 - 1:10 PM, 111 Tyson</span>
+            </div>
+        </div>
+
+        <div class="instructor-details" style="margin-top: 1rem;">
+            <div class="detail-row">
+                <span class="detail-label">Email:</span>
+                <span class="detail-content"><a href="mailto:rfd131@psu.edu">rfd131@psu.edu</a></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Office:</span>
+                <span class="detail-content">005 McAllister</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Office Hours:</span>
+                <span class="detail-content">
+                    <ul class="office-hours-list">
+                        <li>
+                            Friday 2:30 - 3:20 PM, 005 McAllister                            <span class="oh-type-badge oh-type-shared">Shared</span>
+                        </li>
+                        <li>
+                            Wednesday 1:25 - 2:15  PM, 005 McAllister                            <span class="oh-type-badge oh-type-shared">Shared</span>
+                        </li>
+                    </ul>
+                    <div class="appointment-note">Other times by appointment; use the Course Hub App to schedule</div>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="instructor-card" id="sam-fuller">
+        <div class="instructor-header">
+            <div class="instructor-name">Sam Fuller</div>
+            <div class="instructor-title">Instructor</div>
+        </div>
+        <div class="instructor-pronouns">Pronouns: she/her</div>
+
+        <div class="sections-taught">
+            <div class="detail-label">Teaching Sections:</div>
+            <div class="section-badges">
+                <span class="section-badge">Section 1 - MWF 9:05 - 9:55 AM, 108 Tyson</span>
+                <span class="section-badge">Section 3 - MWF 3:35 - 4:25 PM, 203 Elec Eng West</span>
+            </div>
+        </div>
+
+        <div class="instructor-details" style="margin-top: 1rem;">
+            <div class="detail-row">
+                <span class="detail-label">Email:</span>
+                <span class="detail-content"><a href="mailto:saf5132@psu.edu">saf5132@psu.edu</a></span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Office:</span>
+                <span class="detail-content">104L McAllister (inside Suite 104)</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Office Hours:</span>
+                <span class="detail-content">
+                    <ul class="office-hours-list">
+                        <li>
+                            Monday 11:15 AM - 12:05 PM, 104L McAllister (inside Suite 104)                            <span class="oh-type-badge oh-type-shared">Shared</span>
+                        </li>
+                        <li>
+                            Tuesday 4:30 - 5:30 PM, 104L McAllister (inside Suite 104)                            <span class="oh-type-badge oh-type-shared">Shared</span>
+                        </li>
+                        <li>
+                            Wednesday 2:30 - 3:20 PM, 104L McAllister (inside Suite 104)                            <span class="oh-type-badge oh-type-shared">Shared</span>
+                        </li>
+                    </ul>
+                    <div class="appointment-note">Other times by appointment; use the Course Hub App to schedule</div>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert" style="margin-top: 2rem;">
+    <strong>Note:</strong> Common Office Hours are shared office hour times open to students from any MATH 140B section. Find a time that works with your schedule. You can meet with any MATH 140B instructor, regardless of who teaches your section.
+</div>
+
+<!-- Shared Office Hours Section -->
+            </main>
+
+            <!-- Quick Links Sidebar will be inserted here by JavaScript -->
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 140B Spring 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <!-- External JavaScript for navigation -->
+    <script src="static/navigation.js"></script>
+
+    <!-- Initialize navigation with current page highlighted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('instructors.html');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ course.code }}: {{ course.title }} - {{ course.term }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ base_path }}static/styles.css">
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>{{ course.code }}: {{ course.title }} - {{ course.term }}</h1>
+        <div class="subtitle">{% block subtitle %}{{ course.term }} Syllabus{% endblock %}</div>
+    </header>
+
+    <!-- Top Navigation will be inserted here by JavaScript -->
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Sidebar Navigation will be inserted here by JavaScript -->
+            <div id="sidebar-navigation"></div>
+
+            <main>
+                {% block content %}{% endblock %}
+            </main>
+
+            <!-- Quick Links Sidebar will be inserted here by JavaScript -->
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>{{ course.code }} {{ course.term }} | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <!-- External JavaScript for navigation -->
+    <script src="{{ base_path }}static/navigation.js"></script>
+
+    <!-- Initialize navigation with current page highlighted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('{{ current_page }}');
+        });
+    </script>
+</body>
+</html>

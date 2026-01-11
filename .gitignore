@@ -1,0 +1,37 @@
+# Environment and secrets
+.env
+*.json
+
+# Local configuration data (contains course-specific info)
+data/
+
+# Development notes
+myprompts.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+.venv/
+venv/
+ENV/
+.direnv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Claude Code local settings
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build output (commit this if deploying via GitHub Pages)
+# Uncomment to ignore: output/

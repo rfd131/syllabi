@@ -91,54 +91,7 @@
         margin-bottom: 0.5rem;
     }
 
-    /* Thursday Quiz Hours Box */
-    .thursday-hours-box {
-        background-color: #F0F8FF;
-        border: 2px solid var(--penn-state-light-blue);
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin: 1.5rem 0;
-    }
-
-    .thursday-hours-box h4 {
-        color: var(--penn-state-navy);
-        margin-top: 0;
-        margin-bottom: 1rem;
-    }
-
-    .hours-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin: 1rem 0;
-    }
-
-    .hour-slot {
-        background-color: var(--white);
-        padding: 1rem;
-        border-radius: 4px;
-        text-align: center;
-        border: 1px solid #ddd;
-    }
-
-    .hour-time {
-        font-weight: bold;
-        color: var(--penn-state-navy);
-        margin-bottom: 0.5rem;
-    }
-
-    .hour-location {
-        color: var(--text-gray);
-    }
-
-    .hours-note {
-        margin-top: 1.25rem;
-        margin-bottom: 0;
-        padding: 0.75rem;
-        background-color: var(--warning-yellow);
-        border-radius: 4px;
-        font-size: 0.9rem;
-    }
+    /* Thursday Quiz Hours CSS removed - moved to Class Times page */
 
     /* AI Policy Grid */
     .usage-grid {
@@ -356,25 +309,7 @@
         </div>
     </div>
 
-    {% if policies.thursday_quiz_hours %}
-    <div class="thursday-hours-box" id="Thursday-Sessions">
-        <h4>Thursday Quiz Hours</h4>
-        <p>These are additional sessions available for Learning targets that you have not yet been successful in during a Tuesday or midterm exam session. Learning targets become available in quiz hours after they have been available at least twice in either a Tuesday session or on a Midterm Exam. LTs remain available during Thursday quiz hours for the rest of the semester according to a schedule.</p>
-
-        <div class="hours-grid">
-            {% for slot in policies.thursday_quiz_hours %}
-            <div class="hour-slot">
-                <div class="hour-time">{{ slot.time }}</div>
-                <div class="hour-location">{{ slot.location }}</div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <p class="hours-note"><strong>Note:</strong> It is not required that you attend Thursday Quiz Hours, but most students will use quiz hours at least a few times during the semester and you should plan space in your schedule.</p>
-
-        <p class="hours-note"><strong>Note:</strong> Sign up for Quiz Hours through the same quiz sign up form you use for Tuesday sessions.</p>
-    </div>
-    {% endif %}
+    {# Thursday Quiz Hours moved to Class Times and Locations page #}
 </section>
 
 <section id="exams">

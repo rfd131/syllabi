@@ -66,32 +66,6 @@
         text-decoration: underline;
     }
 
-    /* Time Groups */
-    .time-group {
-        background-color: var(--light-gray);
-        border-radius: 8px;
-        padding: 1.5rem;
-        margin: 1.5rem 0;
-    }
-
-    .time-group-header {
-        font-size: 1.1rem;
-        color: var(--penn-state-navy);
-        font-weight: bold;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .time-badge {
-        background-color: var(--penn-state-blue);
-        color: var(--white);
-        padding: 0.25rem 0.75rem;
-        border-radius: 4px;
-        font-size: 0.9rem;
-    }
-
     .alert {
         background-color: var(--warning-yellow);
         border-left: 4px solid var(--warning-border);
@@ -173,101 +147,56 @@
 
 <p>Classes meet three times per week for 50-minute sessions. Classes include interactive lectures, group problem-solving, and collaborative activities.</p>
 
-<div class="time-group">
-    <div class="time-group-header">
-        <span>🌅 Morning Classes</span>
-        <span class="time-badge">8:00 - 4:25 PM</span>
-    </div>
-    <div class="section-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Section</th>
-                    <th>Time</th>
-                    <th>Location</th>
-                    <th>Instructor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="section-number">Section 1</td>
-                    <td>8:00 - 8:50 AM</td>
-                    <td>367 Willard</td>
-                    <td><a href="instructors.html#mike-steward" class="instructor-link">Michael Steward</a></td>
-                </tr>
-                <tr>
-                    <td class="section-number">Section 2</td>
-                    <td>9:05 - 9:55 AM</td>
-                    <td>317 Wagner</td>
-                    <td><a href="instructors.html#sam-vancini" class="instructor-link">Sam Vancini</a></td>
-                </tr>
-                <tr>
-                    <td class="section-number">Section 6</td>
-                    <td>3:35 - 4:25 PM</td>
-                    <td>121 Earth and Eng Sci</td>
-                    <td><a href="instructors.html#sam-vancini" class="instructor-link">Sam Vancini</a></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="time-group">
-    <div class="time-group-header">
-        <span>☀️ Late Morning Class</span>
-        <span class="time-badge">11:15 AM - 12:05 PM</span>
-    </div>
-    <div class="section-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Section</th>
-                    <th>Time</th>
-                    <th>Location</th>
-                    <th>Instructor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="section-number">Section 3</td>
-                    <td>11:15 AM - 12:05 PM</td>
-                    <td>106 Osmond</td>
-                    <td><a href="instructors.html#russ-deforest" class="instructor-link">Russ deForest</a></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="time-group">
-    <div class="time-group-header">
-        <span>🌞 Afternoon Classes</span>
-        <span class="time-badge">12:20 - 1:10 PM</span>
-    </div>
-    <div class="section-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Section</th>
-                    <th>Time</th>
-                    <th>Location</th>
-                    <th>Instructor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="section-number">Section 4</td>
-                    <td>12:20 - 1:10 PM</td>
-                    <td>013 Huck Life Sciences</td>
-                    <td><a href="instructors.html#sam-vancini" class="instructor-link">Sam Vancini</a></td>
-                </tr>
-                <tr>
-                    <td class="section-number">Section 5</td>
-                    <td>12:20 - 1:10 PM</td>
-                    <td>101 Osmond</td>
-                    <td><a href="instructors.html#mike-steward" class="instructor-link">Michael Steward</a></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+
+<div class="section-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Section</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Instructor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="section-number">Section 1</td>
+                <td>8:00 - 8:50 AM</td>
+                <td>367 Willard</td>
+                <td><a href="instructors.html#mike-steward" class="instructor-link">Michael Steward</a></td>
+            </tr>
+            <tr>
+                <td class="section-number">Section 2</td>
+                <td>9:05 - 9:55 AM</td>
+                <td>317 Wagner</td>
+                <td><a href="instructors.html#sam-vancini" class="instructor-link">Sam Vancini</a></td>
+            </tr>
+            <tr>
+                <td class="section-number">Section 3</td>
+                <td>11:15 AM - 12:05 PM</td>
+                <td>106 Osmond</td>
+                <td><a href="instructors.html#russ-deforest" class="instructor-link">Russ deForest</a></td>
+            </tr>
+            <tr>
+                <td class="section-number">Section 4</td>
+                <td>12:20 - 1:10 PM</td>
+                <td>013 Huck Life Sciences</td>
+                <td><a href="instructors.html#sam-vancini" class="instructor-link">Sam Vancini</a></td>
+            </tr>
+            <tr>
+                <td class="section-number">Section 5</td>
+                <td>12:20 - 1:10 PM</td>
+                <td>101 Osmond</td>
+                <td><a href="instructors.html#mike-steward" class="instructor-link">Michael Steward</a></td>
+            </tr>
+            <tr>
+                <td class="section-number">Section 6</td>
+                <td>3:35 - 4:25 PM</td>
+                <td>121 Earth and Eng Sci</td>
+                <td><a href="instructors.html#sam-vancini" class="instructor-link">Sam Vancini</a></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <h2 id="tuesday-recitations">Tuesday Recitations - Learning Target Quiz Sessions</h2>
@@ -309,7 +238,7 @@
 
 <h2 id="thursday-quiz-hours">Thursday Quiz Hours</h2>
 
-<p>Thursday Quiz Hours are additional sessions available for Learning Targets that you have not yet been successful in during a Tuesday or midterm exam session. Learning Targets become available in quiz hours after they have been available at least twice in either a Tuesday session or on a Midterm Exam. LTs remain available during Thursday quiz hours for the rest of the semester according to a schedule.</p>
+<p>Thursday Quiz Hours are additional sessions available for Learning Targets that you have not yet been successful in during a Tuesday or midterm exam session. <strong>Thursday Quiz Hours begin in Week 4.</strong> Learning Targets become available in quiz hours after they have been available at least twice in either a Tuesday session or on a Midterm Exam. LTs remain available during Thursday quiz hours for the rest of the semester according to a schedule.</p>
 
 <div class="thursday-hours-box">
     <div class="hours-grid">

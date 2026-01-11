@@ -87,13 +87,7 @@ const navigationData = {
                 { title: "Penn State Learning", href: "help.html#tutoring" }
             ]
         },
-        {
-            title: "Study Guides",
-            href: "study-guides.html",
-            dropdown: [
-                { title: "Sample Quizzes", href: "study-guides.html#sample-quizzes" }
-            ]
-        },
+        // Study Guides removed (now in Course Hub)
         {
             title: "Student Resources",
             href: "resources.html",
@@ -115,7 +109,7 @@ const navigationData = {
         { title: "How Your Grade is Determined", href: "grading.html" },
         { title: "Course Policies", href: "policies.html" },
         { title: "Getting Help", href: "help.html" },
-        { title: "Study Guides", href: "study-guides.html" },
+        // Study Guides removed
         { title: "Student Resources", href: "resources.html" }
     ],
     quickLinks: [
@@ -152,12 +146,8 @@ const navigationData = {
             icon: "👥",
             title: "LA Community Learning Sessions",
             href: "help.html#la-sessions"
-        },
-        {
-            icon: "📚",
-            title: "Study Guides",
-            href: "study-guides.html"
         }
+        // Study Guides removed
     ],
     importantDates: [
         // These will be replaced by the build process

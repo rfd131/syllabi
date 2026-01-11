@@ -126,7 +126,7 @@ class SheetsFetcher:
             "policies": self._fetch_policies(config_sheet_id),
             "grading": self._fetch_grading(config_sheet_id),
             "learning_targets": self._fetch_learning_targets(config_sheet_id),
-            "study_guides": self._fetch_study_guides(config_sheet_id),
+            # study_guides removed - now provided elsewhere
         }
 
         # Add office hours embed URL if available
@@ -663,23 +663,7 @@ class SheetsFetcher:
 
         return lt_config
 
-    def _fetch_study_guides(self, sheet_id: str) -> Dict[str, str]:
-        """Fetch study guide URLs from Course Info tab."""
-        study_guides = {
-            "sample_quizzes_url": "",
-        }
-
-        try:
-            records = self.get_all_records(sheet_id, "Course Info")
-            for record in records:
-                setting = record.get("Setting", "")
-                value = record.get("Value", "")
-                if "Sample Quizzes" in setting or "sample_quizzes" in setting.lower():
-                    study_guides["sample_quizzes_url"] = value
-        except Exception as e:
-            print(f"Warning: Could not fetch study guides: {e}")
-
-        return study_guides
+    # _fetch_study_guides removed - study guides now provided elsewhere
 
     def _get_office_hours_embed_url(self, sheet_id: str) -> str:
         """Get office hours embed URL from Course Info if available."""

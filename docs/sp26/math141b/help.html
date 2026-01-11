@@ -120,6 +120,66 @@
         border-radius: 4px;
         margin: 1rem 0;
     }
+
+    /* Office Hours Table */
+    .office-hours-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+    }
+
+    .office-hours-table th,
+    .office-hours-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-gray);
+    }
+
+    .office-hours-table th {
+        background-color: var(--penn-state-blue);
+        color: var(--white);
+    }
+
+    .office-hours-table tr:hover {
+        background-color: var(--light-gray);
+    }
+
+    /* Instructor Office Hours Cards */
+    .instructor-hours-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .instructor-hours-card {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        border-left: 4px solid var(--penn-state-blue);
+    }
+
+    .instructor-hours-card h4 {
+        color: var(--penn-state-navy);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .instructor-hours-card .instructor-title {
+        color: var(--text-gray);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .instructor-hours-card .hours-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .instructor-hours-card .hours-list li {
+        margin-bottom: 0.5rem;
+        padding-left: 0;
+    }
 </style>
 </head>
 <body>
@@ -139,7 +199,7 @@
             <main>
 <h2>Getting Help in MATH 141B</h2>
 
-<p>Success in MATH 141B comes from actively engaging with the material and seeking help when needed. We offer multiple resources to support your learning throughout the semester. Don't wait until you're struggling - use these resources early and often!</p>
+<p>Success in MATH 141B comes from actively engaging with the material and seeking help when needed. We offer multiple resources to support your learning throughout the semester. Don't wait to get help.</p>
 
 <div class="alert">
     <strong>Remember:</strong> For the first 9 foundational learning targets (LT1F-LT9F), if you don't earn a Success during the first two attempts, you'll need to visit an LA or instructor office hour before attempting again. This requirement helps ensure you get the support needed to succeed.
@@ -149,25 +209,81 @@
 <section class="help-section" id="instructor-office-hours">
     <h3>Instructor Office Hours</h3>
 
-    <p>Each instructor holds regular office hours where you can get one-on-one help with course material, review quiz feedback, or discuss any concerns about the course. No appointment is needed during scheduled hours.</p>
-
-    <div class="office-hours-card">
-        <h4>Individual Instructor Office Hours:</h4>
-        <p>Navigate to an individual instructor to find their office hour information:</p>
-        <ul>
-            <li><a href="instructors.html#russ-deforest"><strong>Russ deForest</strong></a> (Instructor, Course Coordinator, Section 3)</li>
-            <li><a href="instructors.html#sam-vancini"><strong>Sam Vancini</strong></a> (Instructor, Sections 2, 4, 6)</li>
-            <li><a href="instructors.html#mike-steward"><strong>Michael Steward</strong></a> (Instructor, Sections 1, 5)</li>
-        </ul>
-    </div>
+    <p>Office hours are a time for one-on-one help. You can review course material, get clarification about quiz feedback, or discuss concerns about the course. Office hours are "drop-in". No appointment is needed for scheduled office hours.</p>
 </section>
 
 <!-- Common Office Hours Section -->
 <section class="help-section" id="common-office-hours">
-    <h3>Common Instructor and LA Office Hours</h3>
+    <h3>Common Office Hours</h3>
 
-    <p>Common office hours are open to students from all sections, regardless of who teaches your section. This includes office hours held by Learning Assistants (LAs) and Teaching Assistants (TAs).</p>
+    <p>Common office hours are open to students from all sections, regardless of who teaches your section.</p>
 
+
+    <table class="office-hours-table">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Instructor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Friday</td>
+                <td>2:30 - 3:20 PM</td>
+                <td>005 McAllister</td>
+                <td>Russ deForest</td>
+            </tr>
+            <tr>
+                <td>Monday</td>
+                <td>2:15 - 3:15 PM</td>
+                <td>408 McAllister</td>
+                <td>Sam Vancini</td>
+            </tr>
+            <tr>
+                <td>Wednesday</td>
+                <td>1:15 - 2:15 PM</td>
+                <td>001 McAllister</td>
+                <td>Michael Steward</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- Individual Instructor Office Hours Section -->
+<section class="help-section">
+    <h3>All Instructor Office Hours</h3>
+
+    <div class="instructor-hours-grid">
+        <div class="instructor-hours-card">
+            <h4>Russ deForest</h4>
+            <div class="instructor-title">Instructor, Course Coordinator - Section 3</div>
+            <ul class="hours-list">
+                <li><strong>Friday:</strong> 2:30 - 3:20 PM<br>005 McAllister <em>(All sections)</em></li>
+                <li><strong>Wednesday:</strong> 1:25 - 2:15  PM<br>005 McAllister</li>
+            </ul>
+            <p style="margin-top: 0.75rem; font-size: 0.9rem;"><em>Additional appointments available by request.</em></p>
+        </div>
+        <div class="instructor-hours-card">
+            <h4>Sam Vancini</h4>
+            <div class="instructor-title">Instructor - Sections 2, 4, 6</div>
+            <ul class="hours-list">
+                <li><strong>Monday:</strong> 2:15 - 3:15 PM<br>408 McAllister <em>(All sections)</em></li>
+                <li><strong>Wednesday:</strong> 2:15 - 3:15 PM<br>408 McAllister</li>
+                <li><strong>Friday:</strong> 2:15 - 3:15 PM<br>408 McAllister</li>
+            </ul>
+            <p style="margin-top: 0.75rem; font-size: 0.9rem;"><em>Additional appointments available by request.</em></p>
+        </div>
+        <div class="instructor-hours-card">
+            <h4>Michael Steward</h4>
+            <div class="instructor-title">Instructor - Sections 1, 5</div>
+            <ul class="hours-list">
+                <li><strong>Wednesday:</strong> 1:15 - 2:15 PM<br>001 McAllister <em>(All sections)</em></li>
+            </ul>
+            <p style="margin-top: 0.75rem; font-size: 0.9rem;"><em>Additional appointments available by request.</em></p>
+        </div>
+    </div>
 </section>
 
 <!-- LA Community Learning Sessions Section -->
@@ -183,8 +299,9 @@
         <ul>
             <li>Work in small groups with guidance and support from Course LAs</li>
             <li>Practice and review concepts and skills from recent classes</li>
+            <li>Work on practice quizzes in preparation for upcoming quiz sessions</li>
             <li>Form peer study groups that extend beyond the classroom and LA Sessions</li>
-            <li>Earn 20 XP per week for attending!</li>
+            <li>Participation in LA Sessions earns 20 XP</li>
         </ul>
 
         <h4>Schedule:</h4>
@@ -192,7 +309,7 @@
         <p>Complete schedule and room locations will be posted on Canvas at the beginning of the semester.</p>
 
         <div class="alert" style="margin-top: 1rem;">
-            <strong>Earn XP:</strong> Attending LA Community Learning Sessions earns you 20 Experience Points per week, contributing to potential grade modifications!
+            <strong>Earn XP:</strong> Participation in LA Community Learning Sessions earns 20 Experience Points per week, contributing to potential grade modifications.
         </div>
     </div>
 </section>

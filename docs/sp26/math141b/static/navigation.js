@@ -80,8 +80,8 @@ const navigationData = {
             title: "Getting Help",
             href: "help.html",
             dropdown: [
-                { title: "Instructor Office Hours", href: "help.html#instructor-office-hours" },
                 { title: "Common Office Hours", href: "help.html#common-office-hours" },
+                { title: "Office Hours", href: "help.html#instructor-office-hours" },
                 { title: "LA Sessions", href: "help.html#la-sessions" },
                 { title: "Penn State Learning", href: "help.html#tutoring" }
             ]
@@ -149,17 +149,12 @@ const navigationData = {
         // Study Guides removed
     ],
     importantDates: [
-        "First Day of Classes: 01/12/2026",
-        "Regular Drop Ends: 01/17/2026",
-        "Midterm One: 02/10/2026",
-        "Spring Break Begins: 03/08/2026",
-        "Spring Break Ends: 03/14/2026",
-        "Make-up Quiz Session: 03/18/2026",
-        "Midterm Two: 03/24/2026",
-        "Late Drop Ends: 04/12/2026",
-        "Make-up Quiz Session: 04/22/2026",
-        "Last Day of Classes: 05/01/2026",
-        "Final Exam: TBD"
+        "Regular Drop Deadline: 01/17/2026",
+        "Midterm One: 2/10/2026",
+        "Midterm Two: 3/24/2026",
+        "Make-up Quiz Session: 3/18/2026",
+        "Make-up Quiz Session: 4/22/2026",
+        "Late Drop: 04/12/2026"
     ]
 };
 

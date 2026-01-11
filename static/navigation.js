@@ -80,8 +80,8 @@ const navigationData = {
             title: "Getting Help",
             href: "help.html",
             dropdown: [
-                { title: "Instructor Office Hours", href: "help.html#instructor-office-hours" },
                 { title: "Common Office Hours", href: "help.html#common-office-hours" },
+                { title: "Office Hours", href: "help.html#instructor-office-hours" },
                 { title: "LA Sessions", href: "help.html#la-sessions" },
                 { title: "Penn State Learning", href: "help.html#tutoring" }
             ]

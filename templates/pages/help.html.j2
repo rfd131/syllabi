@@ -170,9 +170,9 @@
     <strong>Remember:</strong> For the first 9 foundational learning targets (LT1F-LT9F), if you don't earn a Success during the first two attempts, you'll need to visit an instructor office hour before attempting again. This requirement helps ensure you get the support needed to succeed.
 </div>
 
-<!-- Instructor Office Hours Section -->
+<!-- Office Hours Section -->
 <section class="help-section" id="instructor-office-hours">
-    <h3>Instructor Office Hours</h3>
+    <h3>Office Hours</h3>
 
     <p>Office hours are a time for one-on-one help. You can review course material, get clarification about quiz feedback, or discuss concerns about the course. Office hours are "drop-in". No appointment is needed for scheduled office hours.</p>
 </section>
@@ -185,10 +185,11 @@
 
     {# Collect all shared office hours from all instructors #}
     {% set shared_hours = [] %}
+    {% set day_order = {'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6, 'Sunday': 7} %}
     {% for instructor in instructors %}
         {% for oh in instructor.office_hours %}
             {% if oh.type == "Shared" %}
-                {% set _ = shared_hours.append({'day': oh.day, 'time': oh.time, 'location': oh.location, 'instructor': instructor.name}) %}
+                {% set _ = shared_hours.append({'day': oh.day, 'time': oh.time, 'location': oh.location, 'instructor': instructor.name, 'day_num': day_order.get(oh.day, 8)}) %}
             {% endif %}
         {% endfor %}
     {% endfor %}
@@ -204,7 +205,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for oh in shared_hours %}
+            {% for oh in shared_hours|sort(attribute='day_num') %}
             <tr>
                 <td>{{ oh.day }}</td>
                 <td>{{ oh.time }}</td>

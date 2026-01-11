@@ -83,7 +83,6 @@ const navigationData = {
                 { title: "Instructor Office Hours", href: "help.html#instructor-office-hours" },
                 { title: "Common Office Hours", href: "help.html#common-office-hours" },
                 { title: "LA Sessions", href: "help.html#la-sessions" },
-                { title: "Guided Study Groups", href: "help.html#gsg" },
                 { title: "Penn State Learning", href: "help.html#tutoring" }
             ]
         },

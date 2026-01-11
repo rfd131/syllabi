@@ -185,6 +185,52 @@
     ]
   },
   "important_dates": {
+    "all": [
+      {
+        "event": "First Day of Classes",
+        "date": "01/12/2026"
+      },
+      {
+        "event": "Regular Drop Ends",
+        "date": "01/17/2026"
+      },
+      {
+        "event": "Midterm One",
+        "date": "02/10/2026"
+      },
+      {
+        "event": "Spring Break Begins",
+        "date": "03/08/2026"
+      },
+      {
+        "event": "Spring Break Ends",
+        "date": "03/14/2026"
+      },
+      {
+        "event": "Make-up Quiz Session",
+        "date": "03/18/2026"
+      },
+      {
+        "event": "Midterm Two",
+        "date": "03/24/2026"
+      },
+      {
+        "event": "Late Drop Ends",
+        "date": "04/12/2026"
+      },
+      {
+        "event": "Make-up Quiz Session",
+        "date": "04/22/2026"
+      },
+      {
+        "event": "Last Day of Classes",
+        "date": "05/01/2026"
+      },
+      {
+        "event": "Final Exam",
+        "date": "TBD"
+      }
+    ],
     "regular_drop": "01/17/2026",
     "late_drop": "04/12/2026",
     "finals_week": ""
@@ -741,9 +787,6 @@
         ]
       }
     ]
-  },
-  "study_guides": {
-    "sample_quizzes_url": ""
   },
   "office_hours_embed_url": ""
 }

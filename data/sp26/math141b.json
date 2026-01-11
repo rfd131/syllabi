@@ -110,9 +110,21 @@
       "office_hours": [
         {
           "day": "Wednesday",
-          "time": "1:15 - 2:15 PM",
+          "time": "1:25 - 2:15 PM",
           "location": "001 McAllister",
           "type": "Shared"
+        },
+        {
+          "day": "Monday",
+          "time": "1:25 - 2:15 PM",
+          "location": "001 McAllister",
+          "type": "Drop-in"
+        },
+        {
+          "day": "Wednesday",
+          "time": "2:30 - 3:20 PM",
+          "location": "001 McAllister",
+          "type": "Drop-in"
         }
       ]
     }
@@ -249,6 +261,52 @@
     ]
   },
   "important_dates": {
+    "all": [
+      {
+        "event": "First Day of Classes",
+        "date": "01/12/2026"
+      },
+      {
+        "event": "Regular Drop Ends",
+        "date": "01/17/2026"
+      },
+      {
+        "event": "Midterm One",
+        "date": "02/10/2026"
+      },
+      {
+        "event": "Spring Break Begins",
+        "date": "03/08/2026"
+      },
+      {
+        "event": "Spring Break Ends",
+        "date": "03/14/2026"
+      },
+      {
+        "event": "Make-up Quiz Session",
+        "date": "03/18/2026"
+      },
+      {
+        "event": "Midterm Two",
+        "date": "03/24/2026"
+      },
+      {
+        "event": "Late Drop Ends",
+        "date": "04/12/2026"
+      },
+      {
+        "event": "Make-up Quiz Session",
+        "date": "04/22/2026"
+      },
+      {
+        "event": "Last Day of Classes",
+        "date": "05/01/2026"
+      },
+      {
+        "event": "Final Exam",
+        "date": "TBD"
+      }
+    ],
     "regular_drop": "01/17/2026",
     "late_drop": "04/12/2026",
     "finals_week": ""
@@ -373,7 +431,7 @@
       {
         "id": "LT1",
         "type": "Two-Part",
-        "title": "Integration Review",
+        "title": "Review topics from Calculus I",
         "description": "Demonstrate proficiency in computing definite integrals using antiderivatives, signed area, and properties of the definite integral.",
         "f_description": "Demonstrate proficiency in computing definite integrals using antiderivatives, signed area, and properties of the definite integral.",
         "adv_description": "Demonstrate proficiency in conceptual understanding of the definite integral and its applications.",
@@ -809,9 +867,6 @@
         ]
       }
     ]
-  },
-  "study_guides": {
-    "sample_quizzes_url": ""
   },
   "office_hours_embed_url": ""
 }

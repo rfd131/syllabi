@@ -450,11 +450,25 @@ class SheetsFetcher:
             print(f"Warning: Could not fetch exams: {e}")
             return result
 
-    def _fetch_important_dates(self, sheet_id: str) -> Dict[str, str]:
+    def _fetch_important_dates(self, sheet_id: str) -> Dict[str, Any]:
         """Fetch key dates for navigation sidebar."""
         try:
             records = self.get_all_records(sheet_id, "Important Dates")
+
+            # Build list of all dates for display
+            all_dates = []
+            for record in records:
+                event = record.get("Event", "").strip()
+                date_str = record.get("Date", "").strip()
+                if event and date_str:
+                    all_dates.append({
+                        "event": event,
+                        "date": date_str
+                    })
+
+            # Also extract specific named dates for template use
             dates = {
+                "all": all_dates,
                 "regular_drop": "",
                 "late_drop": "",
                 "finals_week": "",
@@ -474,7 +488,7 @@ class SheetsFetcher:
             return dates
         except Exception as e:
             print(f"Warning: Could not fetch important dates: {e}")
-            return {"regular_drop": "TBD", "late_drop": "TBD", "finals_week": "TBD"}
+            return {"all": [], "regular_drop": "TBD", "late_drop": "TBD", "finals_week": "TBD"}
 
     def _fetch_policies(self, sheet_id: str) -> Dict[str, Any]:
         """Fetch policy information."""

@@ -139,7 +139,7 @@ const navigationData = {
         {
             icon: "🕐",
             title: "Common Office Hours",
-            href: "instructors.html#office-hours"
+            href: "help.html#common-office-hours"
         },
         {
             icon: "👥",

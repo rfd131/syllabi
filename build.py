@@ -205,17 +205,24 @@ def copy_static_files(output_path: Path, config: dict):
         important_dates = config.get("important_dates", {})
         exams = config.get("exams", {})
 
+        # Use all dates from Important Dates tab if available
         dates_list = []
-        if important_dates.get("regular_drop"):
-            dates_list.append(f"Regular Drop Deadline: {important_dates['regular_drop']}")
-        if exams.get("midterm1", {}).get("display"):
-            dates_list.append(f"Midterm One: {exams['midterm1']['display']}")
-        if exams.get("midterm2", {}).get("display"):
-            dates_list.append(f"Midterm Two: {exams['midterm2']['display']}")
-        if important_dates.get("late_drop"):
-            dates_list.append(f"Late Drop: {important_dates['late_drop']}")
-        if important_dates.get("finals_week"):
-            dates_list.append(f"Finals Week: {important_dates['finals_week']}")
+        all_dates = important_dates.get("all", [])
+        if all_dates:
+            for date_item in all_dates:
+                dates_list.append(f"{date_item['event']}: {date_item['date']}")
+        else:
+            # Fallback to building list from specific fields
+            if important_dates.get("regular_drop"):
+                dates_list.append(f"Regular Drop Deadline: {important_dates['regular_drop']}")
+            if exams.get("midterm1", {}).get("display"):
+                dates_list.append(f"Midterm One: {exams['midterm1']['display']}")
+            if exams.get("midterm2", {}).get("display"):
+                dates_list.append(f"Midterm Two: {exams['midterm2']['display']}")
+            if important_dates.get("late_drop"):
+                dates_list.append(f"Late Drop: {important_dates['late_drop']}")
+            if important_dates.get("finals_week"):
+                dates_list.append(f"Finals Week: {important_dates['finals_week']}")
 
         # Replace importantDates array in navigation.js
         if dates_list:

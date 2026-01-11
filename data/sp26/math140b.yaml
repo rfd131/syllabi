@@ -1,0 +1,236 @@
+# Math 140B Spring 2026 Configuration
+# This file can be replaced with data from Google Sheets in the future
+_config_source: "local"  # Will become "google_sheets" later
+
+course:
+  code: "MATH 140B"
+  title: "Calculus with Applications to Biology"
+  term: "Spring 2026"
+  includes_math197: true
+  course_hub_url: "https://example.com/course-hub/math140b"  # TODO: Update with real URL
+
+# Instructor information for instructors.html and help.html
+instructors:
+  - id: "russ-deforest"
+    name: "Russ deForest"
+    title: "Course Coordinator"
+    pronouns: "he/him"
+    email: "rfd131@psu.edu"
+    office: "McAllister 123"
+    sections: ["4"]
+    office_hours:
+      - "Monday 10:00 AM - 11:00 AM"
+      - "Wednesday 2:00 PM - 3:00 PM"
+      - "By appointment"
+
+  - id: "instructor-2"
+    name: "TBD Instructor"
+    title: "Instructor"
+    email: "tbd@psu.edu"
+    office: "TBD"
+    sections: ["1", "2"]
+    office_hours:
+      - "TBD"
+
+# Shared office hours embed URL (Google Sheets publish URL)
+office_hours_embed_url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSq2debJEzDtfhBesTfX9Uf5VCL97-3EDPANE1HMO5DJZP75mgsu1xjE5Uhvd8_sCYTYHchE0eQDQen/pubhtml?gid=256070434&single=true&widget=true&headers=false"
+
+# MWF section groups for class-times.html
+mwf_sections:
+  - name: "Morning Classes"
+    icon: "🌅"
+    time_range: "8:00 AM - 11:00 AM"
+    sections:
+      - number: "1"
+        time: "8:00 AM - 8:50 AM"
+        location: "Willard 101"
+        instructor: "TBD"
+        instructor_id: "instructor-2"
+      - number: "2"
+        time: "9:05 AM - 9:55 AM"
+        location: "Willard 101"
+        instructor: "TBD"
+        instructor_id: "instructor-2"
+      - number: "4"
+        time: "10:10 AM - 11:00 AM"
+        location: "Thomas 100"
+        instructor: "Russ deForest"
+        instructor_id: "russ-deforest"
+
+  - name: "Afternoon Classes"
+    icon: "🌞"
+    time_range: "12:00 PM - 4:00 PM"
+    sections:
+      - number: "5"
+        time: "12:20 PM - 1:10 PM"
+        location: "Willard 101"
+        instructor: "TBD"
+        instructor_id: "instructor-2"
+
+# Tuesday recitation sections
+tuesday_sections:
+  - number: "101"
+    time: "8:00 AM - 8:50 AM"
+    location: "Osmond 119"
+  - number: "102"
+    time: "9:05 AM - 9:55 AM"
+    location: "Osmond 119"
+  - number: "103"
+    time: "10:10 AM - 11:00 AM"
+    location: "Osmond 119"
+  - number: "104"
+    time: "11:15 AM - 12:05 PM"
+    location: "Osmond 119"
+
+# Exam information
+exams:
+  midterms:
+    - name: "Midterm One"
+      date: "Tuesday, February 17, 2026"
+      time: "6:15 - 7:30 PM"
+      makeup_date: "Thursday, February 19, 2026"
+      makeup_time: "75-minute exam scheduled to begin between 3:00 PM and 7:15 PM"
+    - name: "Midterm Two"
+      date: "Tuesday, March 31, 2026"
+      time: "6:15 - 7:30 PM"
+      makeup_date: "Thursday, April 2, 2026"
+      makeup_time: "75-minute exam scheduled to begin between 3:00 PM and 7:15 PM"
+
+  final:
+    date: "To be announced (Check the Penn State Final Exam Schedule)"
+
+  # Display dates for navigation.js
+  midterm1:
+    display: "Tuesday, February 17"
+  midterm2:
+    display: "Tuesday, March 31"
+
+# Important dates for navigation sidebar
+important_dates:
+  regular_drop: "January 23"
+  late_drop: "April 10"
+  finals_week: "May 4-8"
+
+# Policy information
+policies:
+  makeup_quiz_sessions:
+    - name: "Mid-Semester Make-up (Week 9)"
+      date: "Week 9, Wednesday, March 4"
+    - name: "Late-Semester Make-up (Week 13)"
+      date: "Week 13, Wednesday, April 8"
+
+  thursday_quiz_hours:
+    - time: "12:15 - 1:15 PM"
+      location: "10 Sparks"
+    - time: "1:30 - 2:30 PM"
+      location: "262 Willard"
+    - time: "4:30 - 5:30 PM"
+      location: "117 Henderson"
+    - time: "7:30 - 8:30 PM"
+      location: "358 Willard"
+
+# Grading configuration
+grading:
+  thresholds:
+    A:
+      complete: 25
+      proficient: 21
+    A-:
+      complete: 23
+      proficient: 19
+    B+:
+      complete: 22
+      proficient: 17
+    B:
+      complete: 21
+      proficient: 15
+    B-:
+      complete: 20
+      proficient: 13
+    C+:
+      complete: 19
+      proficient: 11
+    C:
+      complete: 18
+      proficient: 9
+    D:
+      complete: 14
+      proficient: null
+
+  # Math 197 thresholds (only for math140b)
+  math197_thresholds:
+    A:
+      complete: 14
+      proficient: 12
+    A-:
+      complete: 14
+      proficient: 11
+    B+:
+      complete: 13
+      proficient: 10
+    B:
+      complete: 12
+      proficient: 10
+    B-:
+      complete: 12
+      proficient: 9
+    C+:
+      complete: 11
+      proficient: 8
+    C:
+      complete: 10
+      proficient: 8
+    D:
+      complete: 8
+      proficient: null
+
+  xp:
+    total_available: 870
+    modifications:
+      - threshold: 0
+        mods: 0
+        label: "Less than 250 XP"
+      - threshold: 250
+        mods: 1
+        label: "250-499 XP"
+      - threshold: 500
+        mods: 2
+        label: "500-749 XP"
+      - threshold: 750
+        mods: 3
+        label: "750 or more XP"
+
+    activities:
+      - name: "LA Community Learning Sessions"
+        value: "20 XP per week"
+        details: "Attend and participate in weekly LA sessions"
+      - name: "Online Homework"
+        value: "10 XP per assignment"
+        details: "Due weekly on Mondays. Score at least 80% for full XP."
+      - name: "Pre-Lecture Assignments (PLAs)"
+        value: "5 XP per PLA"
+        details: "Complete before each MWF class. Score at least 80% for full XP."
+      - name: "Target Practice"
+        value: "10 XP"
+        details: "Available for each Learning Target. Percentage of available points."
+      - name: "Weekly Surveys"
+        value: "2 XP"
+        details: "Brief weekly reflection survey and quiz sign up"
+
+# Learning target configuration
+learning_targets:
+  total: 25
+  detailed_list_url: "https://docs.google.com/document/d/1xH-NffeL-NXhjz-lYjF5E8q2tQYvWcCNPKukSQMfelY/edit?usp=sharing"
+  essential:
+    - 1
+    - 2
+    - 3
+    - 9
+    - 11
+    - 12
+    - 13
+    - 14
+
+# Study guide resources
+study_guides:
+  sample_quizzes_url: "https://drive.google.com/drive/folders/1nGPpPxN42Rw3GTNx5Xtm1qRwq_cGDR-G?usp=sharing"

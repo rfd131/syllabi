@@ -33,20 +33,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install gspread google-auth python-dotenv
 
-      - name: Create service account file
+      - name: Build site from cached JSON
         run: |
-          echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}' > /tmp/service_account.json
-
-      - name: Build site from Google Sheets
-        env:
-          GOOGLE_SERVICE_ACCOUNT_FILE: /tmp/service_account.json
-          MATH140B_COURSE_CONFIG_ID: ${{ secrets.MATH140B_COURSE_CONFIG_ID }}
-          MATH141B_COURSE_CONFIG_ID: ${{ secrets.MATH141B_COURSE_CONFIG_ID }}
-          SEMESTER_NAME: "Spring 2026"
-        run: |
-          python build.py --from-sheets
+          python build.py --from-cache
 
       - name: Create root index.html
         run: |

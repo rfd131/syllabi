@@ -1,9 +1,11 @@
 # Environment and secrets
 .env
-*.json
 
-# Local configuration data (contains course-specific info)
-data/
+# Service account credentials (keep out of repo)
+**/service_account*.json
+
+# Cache data is committed (course config JSON files)
+# data/
 
 # Development notes
 myprompts.md

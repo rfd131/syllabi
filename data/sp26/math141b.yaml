@@ -1,0 +1,170 @@
+# Math 141B Spring 2026 Configuration
+# This file can be replaced with data from Google Sheets in the future
+_config_source: "local"  # Will become "google_sheets" later
+
+course:
+  code: "MATH 141B"
+  title: "Calculus with Applications to Biology II"
+  term: "Spring 2026"
+  includes_math197: false  # Math 197 only applies to 140B
+  course_hub_url: "https://example.com/course-hub/math141b"  # TODO: Update with real URL
+
+# Instructor information for instructors.html and help.html
+instructors:
+  - id: "instructor-1"
+    name: "TBD Instructor"
+    title: "Instructor"
+    email: "tbd@psu.edu"
+    office: "McAllister TBD"
+    sections: ["1", "2"]
+    office_hours:
+      - "TBD"
+
+# Shared office hours embed URL (Google Sheets publish URL)
+office_hours_embed_url: ""  # TODO: Add when available
+
+# MWF section groups for class-times.html
+mwf_sections:
+  - name: "Morning Classes"
+    icon: "🌅"
+    time_range: "9:00 AM - 12:00 PM"
+    sections:
+      - number: "1"
+        time: "9:05 AM - 9:55 AM"
+        location: "TBD"
+        instructor: "TBD"
+        instructor_id: "instructor-1"
+      - number: "2"
+        time: "10:10 AM - 11:00 AM"
+        location: "TBD"
+        instructor: "TBD"
+        instructor_id: "instructor-1"
+
+# Tuesday recitation sections
+tuesday_sections:
+  - number: "101"
+    time: "9:05 AM - 9:55 AM"
+    location: "TBD"
+  - number: "102"
+    time: "10:10 AM - 11:00 AM"
+    location: "TBD"
+
+# Exam information
+exams:
+  midterms:
+    - name: "Midterm One"
+      date: "TBD"
+      time: "6:15 - 7:30 PM"
+      makeup_date: "TBD"
+      makeup_time: "75-minute exam scheduled to begin between 3:00 PM and 7:15 PM"
+    - name: "Midterm Two"
+      date: "TBD"
+      time: "6:15 - 7:30 PM"
+      makeup_date: "TBD"
+      makeup_time: "75-minute exam scheduled to begin between 3:00 PM and 7:15 PM"
+
+  final:
+    date: "To be announced (Check the Penn State Final Exam Schedule)"
+
+  # Display dates for navigation.js
+  midterm1:
+    display: "TBD"
+  midterm2:
+    display: "TBD"
+
+# Important dates for navigation sidebar
+important_dates:
+  regular_drop: "January 23"
+  late_drop: "April 10"
+  finals_week: "May 4-8"
+
+# Policy information
+policies:
+  makeup_quiz_sessions:
+    - name: "Mid-Semester Make-up"
+      date: "TBD"
+    - name: "Late-Semester Make-up"
+      date: "TBD"
+
+  thursday_quiz_hours:
+    - time: "TBD"
+      location: "TBD"
+
+# Grading configuration (no Math 197 for 141B)
+grading:
+  thresholds:
+    A:
+      complete: 25
+      proficient: 21
+    A-:
+      complete: 23
+      proficient: 19
+    B+:
+      complete: 22
+      proficient: 17
+    B:
+      complete: 21
+      proficient: 15
+    B-:
+      complete: 20
+      proficient: 13
+    C+:
+      complete: 19
+      proficient: 11
+    C:
+      complete: 18
+      proficient: 9
+    D:
+      complete: 14
+      proficient: null
+
+  xp:
+    total_available: 870
+    modifications:
+      - threshold: 0
+        mods: 0
+        label: "Less than 250 XP"
+      - threshold: 250
+        mods: 1
+        label: "250-499 XP"
+      - threshold: 500
+        mods: 2
+        label: "500-749 XP"
+      - threshold: 750
+        mods: 3
+        label: "750 or more XP"
+
+    activities:
+      - name: "LA Community Learning Sessions"
+        value: "20 XP per week"
+        details: "Attend and participate in weekly LA sessions"
+      - name: "Online Homework"
+        value: "10 XP per assignment"
+        details: "Due weekly on Mondays. Score at least 80% for full XP."
+      - name: "Pre-Lecture Assignments (PLAs)"
+        value: "5 XP per PLA"
+        details: "Complete before each MWF class. Score at least 80% for full XP."
+      - name: "Target Practice"
+        value: "10 XP"
+        details: "Available for each Learning Target. Percentage of available points."
+      - name: "Weekly Surveys"
+        value: "2 XP"
+        details: "Brief weekly reflection survey and quiz sign up"
+
+# Learning target configuration
+learning_targets:
+  total: 25
+  detailed_list_url: "https://docs.google.com/document/d/PLACEHOLDER"  # TODO: Update with real URL
+  essential:
+    - 1
+    - 2
+    - 3
+    - 9
+    - 11
+    - 12
+    - 13
+    - 14
+
+# Study guide resources
+study_guides:
+  sample_quizzes_url: "https://drive.google.com/drive/folders/PLACEHOLDER"  # TODO: Update with real URL

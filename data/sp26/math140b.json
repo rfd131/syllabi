@@ -1,0 +1,749 @@
+{
+  "course": {
+    "code": "MATH 140B",
+    "title": "Calculus with Applications to Biology",
+    "term": "Spring 2026",
+    "includes_math197": false,
+    "course_hub_url": "",
+    "prerequisites": []
+  },
+  "instructors": [
+    {
+      "id": "russ-deforest",
+      "name": "Russ deForest",
+      "title": "Instructor, Course Coordinator",
+      "email": "rfd131@psu.edu",
+      "office": "005 McAllister",
+      "pronouns": "he/him",
+      "sections": [
+        {
+          "number": "2",
+          "days": "MWF",
+          "time": "12:20 - 1:10 PM",
+          "location": "111 Tyson"
+        }
+      ],
+      "office_hours": [
+        {
+          "day": "Friday",
+          "time": "2:30 - 3:20 PM",
+          "location": "005 McAllister",
+          "type": "Shared"
+        },
+        {
+          "day": "Wednesday",
+          "time": "1:25 - 2:15  PM",
+          "location": "005 McAllister",
+          "type": "Shared"
+        }
+      ]
+    },
+    {
+      "id": "sam-fuller",
+      "name": "Sam Fuller",
+      "title": "Instructor",
+      "email": "saf5132@psu.edu",
+      "office": "104L McAllister (inside Suite 104)",
+      "pronouns": "she/her",
+      "sections": [
+        {
+          "number": "1",
+          "days": "MWF",
+          "time": "9:05 - 9:55 AM",
+          "location": "108 Tyson"
+        },
+        {
+          "number": "3",
+          "days": "MWF",
+          "time": "3:35 - 4:25 PM",
+          "location": "203 Elec Eng West"
+        }
+      ],
+      "office_hours": [
+        {
+          "day": "Monday",
+          "time": "11:15 AM - 12:05 PM",
+          "location": "104L McAllister (inside Suite 104)",
+          "type": "Shared"
+        },
+        {
+          "day": "Tuesday",
+          "time": "4:30 - 5:30 PM",
+          "location": "104L McAllister (inside Suite 104)",
+          "type": "Shared"
+        },
+        {
+          "day": "Wednesday",
+          "time": "2:30 - 3:20 PM",
+          "location": "104L McAllister (inside Suite 104)",
+          "type": "Shared"
+        }
+      ]
+    }
+  ],
+  "mwf_sections": [
+    {
+      "name": "Morning Classes",
+      "icon": "\ud83c\udf05",
+      "time_range": "9:05 - 4:25 PM",
+      "sections": [
+        {
+          "number": "1",
+          "time": "9:05 - 9:55 AM",
+          "location": "108 Tyson",
+          "instructor": "Sam Fuller",
+          "instructor_id": "sam-fuller"
+        },
+        {
+          "number": "3",
+          "time": "3:35 - 4:25 PM",
+          "location": "203 Elec Eng West",
+          "instructor": "Sam Fuller",
+          "instructor_id": "sam-fuller"
+        }
+      ]
+    },
+    {
+      "name": "Afternoon Classes",
+      "icon": "\ud83c\udf1e",
+      "time_range": "12:20 - 1:10 PM",
+      "sections": [
+        {
+          "number": "2",
+          "time": "12:20 - 1:10 PM",
+          "location": "111 Tyson",
+          "instructor": "Russ deForest",
+          "instructor_id": "russ-deforest"
+        }
+      ]
+    }
+  ],
+  "tuesday_sections": [
+    {
+      "identifier": "1R",
+      "time": "9:15 - 10:15 AM",
+      "location": "117 Henderson"
+    },
+    {
+      "identifier": "2R",
+      "time": "12:15 - 1:15 PM",
+      "location": "201 Thomas"
+    },
+    {
+      "identifier": "3R",
+      "time": "3:15 - 4:15 PM",
+      "location": "108 Henderson"
+    }
+  ],
+  "exams": {
+    "midterms": [
+      {
+        "name": "Midterm One",
+        "date": "2/10/2026",
+        "time": "6:15 - 7:30 PM",
+        "location": "TBD",
+        "makeup_date": "2/12/2026",
+        "makeup_time": "4:30 - 8:30 PM",
+        "makeup_location": "121 Sparks"
+      },
+      {
+        "name": "Midterm Two",
+        "date": "3/24/2026",
+        "time": "6:15 - 7:30 PM",
+        "location": "TBD",
+        "makeup_date": "3/26/2026",
+        "makeup_time": "4:30 - 8:30 PM",
+        "makeup_location": "121 Sparks"
+      }
+    ],
+    "final": {
+      "date": "TBD",
+      "time": "TBD",
+      "location": "TBD"
+    },
+    "midterm1": {
+      "display": "2/10/2026"
+    },
+    "midterm2": {
+      "display": "3/24/2026"
+    },
+    "makeup_quiz_sessions": [
+      {
+        "name": "Make-up Quiz Session 1",
+        "date": "3/18/2026",
+        "time": "4:30 - 8:30 PM",
+        "location": "101 Chambers",
+        "notes": ""
+      },
+      {
+        "name": "Make-up Quiz Session 2",
+        "date": "4/22/2026",
+        "time": "4:30 - 8:30 PM",
+        "location": "100 Huck Life Sciences",
+        "notes": ""
+      }
+    ]
+  },
+  "important_dates": {
+    "regular_drop": "01/17/2026",
+    "late_drop": "04/12/2026",
+    "finals_week": ""
+  },
+  "policies": {
+    "thursday_quiz_hours": [
+      {
+        "time": "12:15 - 1:15 PM",
+        "location": "22 BBH"
+      },
+      {
+        "time": "4:30 - 5:30 PM",
+        "location": "22 Deike"
+      },
+      {
+        "time": "7:30 - 8:30 PM",
+        "location": "110 Business"
+      }
+    ]
+  },
+  "grading": {
+    "thresholds": {
+      "A": {
+        "complete": 25,
+        "proficient": 21
+      },
+      "A-": {
+        "complete": 23,
+        "proficient": 19
+      },
+      "B+": {
+        "complete": 22,
+        "proficient": 17
+      },
+      "B": {
+        "complete": 21,
+        "proficient": 15
+      },
+      "B-": {
+        "complete": 20,
+        "proficient": 13
+      },
+      "C+": {
+        "complete": 19,
+        "proficient": 11
+      },
+      "C": {
+        "complete": 18,
+        "proficient": 9
+      },
+      "D": {
+        "complete": 14,
+        "proficient": null
+      },
+      "F": {
+        "complete": null,
+        "proficient": null
+      }
+    },
+    "math197_thresholds": {},
+    "xp": {
+      "modifications": [
+        {
+          "threshold": 0,
+          "mods": 0,
+          "label": "Less than 250 XP",
+          "max_mods": 3
+        },
+        {
+          "threshold": 250,
+          "mods": 1,
+          "label": "250-499 XP",
+          "max_mods": 3
+        },
+        {
+          "threshold": 500,
+          "mods": 2,
+          "label": "500-749 XP",
+          "max_mods": 3
+        },
+        {
+          "threshold": 750,
+          "mods": 3,
+          "label": "More than 800 XP",
+          "max_mods": 3
+        }
+      ],
+      "activities": [
+        {
+          "name": "LA Community Learning Sessions",
+          "value": "20 XP per week",
+          "details": "Attend and participate in weekly LA sessions"
+        },
+        {
+          "name": "Pre-lecture Assignments (PLAs)",
+          "value": "5 XP per PLA",
+          "details": "Complete before each MWF class. Score at least 80% for full XP."
+        },
+        {
+          "name": "Online Homework",
+          "value": "10 XP per assignment",
+          "details": "Due weekly on Mondays. XP score based on percentage of available points."
+        },
+        {
+          "name": "Target Practice",
+          "value": "10 XP",
+          "details": "Available for each Learning Target. XP score based on percentage of available points."
+        },
+        {
+          "name": "Quiz sign-ups and surveys",
+          "value": "2 XP",
+          "details": "Brief reflection survey and quiz sign up."
+        }
+      ]
+    }
+  },
+  "learning_targets": {
+    "total": 25,
+    "detailed_list_url": "",
+    "essential": [],
+    "targets": [
+      {
+        "id": "LT1",
+        "type": "Two-Part",
+        "title": "Algebra Skills",
+        "description": "Solving linear and quadratic equations. Adding, subtracting, and simplifying rational expressions. Using the distributive law. Simplifying using laws of exponents. Solving polynomial inequalities.",
+        "f_description": "Demonstrate proficiency in essential algebra skills including solving equations, factoring, and simplifying algebraic expressions.",
+        "adv_description": "Demonstrate proficiency in using rules of exponents. Demonstrate proficiency in solving inequalities.",
+        "f_objectives": [
+          "Simplify expressions using distributive property and order of operations",
+          "Add, subtract, and simplify rational expressions",
+          "Solve linear equations",
+          "Solve quadratic equations by factoring"
+        ],
+        "adv_objectives": [
+          "Simplify rational expressions using exponent rules",
+          "Solve quadratic and polynomial inequalities",
+          "Express inequality solutions using number lines, interval notation, and set builder notation"
+        ]
+      },
+      {
+        "id": "LT2",
+        "type": "Two-Part",
+        "title": "Functions",
+        "description": "Evaluating a function from a graph. Identifying functions from tabular and graphical data. Intepreting a statement of a function value in an application.",
+        "f_description": "Demonstrate proficiency in using and understanding functions with emphasis on relationships given graphically.",
+        "adv_description": "Demonstrate proficiency in using and understanding functions with emphasis on relationships given algebraically.",
+        "f_objectives": [
+          "Identify variables and parameters in models",
+          "Describe function behavior from graphs",
+          "Use function notation for verbal descriptions",
+          "Evaluate functions graphically",
+          "Use graphs to solve equations and inequalities",
+          "Sketch graphical models from verbal descriptions",
+          "Identify relationships expressed as functions"
+        ],
+        "adv_objectives": [
+          "Identify variables and parameters in formula-based models",
+          "Evaluate functions at numerical and algebraic inputs",
+          "Evaluate piecewise-defined functions",
+          "Understand function notation and units",
+          "Find natural domain from formulas",
+          "Evaluate and create composite functions"
+        ]
+      },
+      {
+        "id": "LT3",
+        "type": "Two-Part",
+        "title": "Linear Functions",
+        "description": "Using the point-slope form. Computing a slope from tabular and graphical data. Using algebra to convert between point-slope and slope-intercept forms.",
+        "f_description": "Create linear functions from given data and demonstrate proficiency in translating between different forms of a linear equation.",
+        "adv_description": "Build a linear model from a verbal description and reason about proportional change in an application.",
+        "f_objectives": [
+          "Compute slope from linear data",
+          "Find line equations from table or graph data",
+          "Identify linear vs. non-linear relationships",
+          "Translate between point-slope and point-intercept forms"
+        ],
+        "adv_objectives": [
+          "Identify slope in verbal descriptions of proportional change",
+          "Build linear models from verbal descriptions",
+          "Determine slope units in applications",
+          "Reason about proportional change using slope"
+        ]
+      },
+      {
+        "id": "LT4",
+        "type": "Two-Part",
+        "title": "Discrete Dynamical Systems",
+        "description": "Computing terms of a sequence from a formula given as a function of the index. Understanding sequence index notation. Creating terms of a sequence from an updating rule and initial state for a discrete dynamical system. Creating an updating rule from a verbal description.",
+        "f_description": "Demonstrate an understanding of sequences and the terminology of discrete time models.",
+        "adv_description": "Modeling with Discrete Time Dynamical Systems.",
+        "f_objectives": [
+          "Identify sequence terms using index notation",
+          "Compute sequence terms from index functions",
+          "Express patterns using sequence notation",
+          "Understand discrete time dynamical systems terminology",
+          "Use updating functions and initial states",
+          "Understand connections between function composition and repeated application"
+        ],
+        "adv_objectives": [
+          "Create updating functions from verbal descriptions",
+          "Find equilibrium solutions",
+          "Reason about equilibrium behavior",
+          "Verify closed-form and equilibrium solutions"
+        ]
+      },
+      {
+        "id": "LT5",
+        "type": "Two-Part",
+        "title": "Exponentials and Logarithms",
+        "description": "Compute logarithms and use log rules to combine or expand log expressions. Use the natural log to solve exponential equations.",
+        "f_description": "Create discrete time models of exponential decay.",
+        "adv_description": "Modeling with Discrete Time Dynamical Systems.",
+        "f_objectives": [
+          "Recognize discrete exponential growth and decay models",
+          "Build updating rules from verbal descriptions",
+          "Create closed-form solutions from updating rules",
+          "Transform discrete to continuous exponential models"
+        ],
+        "adv_objectives": [
+          "Evaluate logarithmic expressions",
+          "Apply logarithm rules to expand or combine expressions",
+          "Use logarithms to solve exponential equations",
+          "Reason about exponential growth and decay"
+        ]
+      },
+      {
+        "id": "LT6",
+        "type": "Two-Part",
+        "title": "Trigonometry and Periodic Functions",
+        "description": "Use the Pythagorean Theorem to find an unknown side of a right triangle. Use right triangle trigonometry to compute trigonometric functions for a given angle based on triangle side length. Recognize coordiates of a point on the unit circle based on sine and cosine values of an angle in standard position. Use a reference angle in the first quadrant to compute sine and cosine values of an angle in another quadrant of the unit circle.",
+        "f_description": "Demonstrate proficiency in evaluating and understanding trigonometric ratios using right triangles and the unit circle.",
+        "adv_description": "Demonstrate proficiency in building and interpreting sine and cosine models of periodic behavior.",
+        "f_objectives": [
+          "Use Pythagorean Theorem for right triangles",
+          "Compute sine, cosine, and tangent for right triangles",
+          "Identify coordinates on the unit circle with sine and cosine",
+          "Use reference angles to find trigonometric values",
+          "Recognize angles corresponding to unit circle positions"
+        ],
+        "adv_objectives": [
+          "Construct sine/cosine models by identifying amplitude, vertical shift, and period",
+          "Determine period, minimum, and maximum values",
+          "Interpret periodic parameters in applied contexts with units"
+        ]
+      },
+      {
+        "id": "LT7",
+        "type": "Two-Part",
+        "title": "Log Transformations",
+        "description": "Recognize an exponential model displayed on a log-linear scale.Convert between exponential functions and their corresponding linear forms using logs and exponentiation.",
+        "f_description": "Demonstrate proficiency in identifying exponential and power functions using log transformations and interpreting their linearized forms.",
+        "adv_description": "Demonstrate proficiency in constructing exponential and power functions from linearized graphs using log transformations.",
+        "f_objectives": [
+          "Identify exponential and power relationships from log-linear and log-log axes",
+          "Apply logarithmic transformation to express exponential functions as linear",
+          "Apply logarithmic transformation to express power functions as linear"
+        ],
+        "adv_objectives": [
+          "Construct exponential functions from linear log-linear plots",
+          "Construct power functions from linear log-log plots",
+          "Use exponentiation to express functions from linearized forms"
+        ]
+      },
+      {
+        "id": "LT8",
+        "type": "Two-Part",
+        "title": "Limits",
+        "description": "Create an updating rule for an exponential model from a verbal description. Create a closed form solution for an exponential model from an updating rule. Create a closed form solution for a variable with different time units than the given time. ",
+        "f_description": "Demonstrate proficiency in evaluating graphical limits and reasoning about end behavior of functions.",
+        "adv_description": "Demonstrate proficiency in reasoning about continuity and evaluating limits using proper notation and algebraic techniques.",
+        "f_objectives": [
+          "Estimate one-sided and two-sided limits from graphs",
+          "Use limits at infinity for rational function end behavior",
+          "Analyze composite function behavior with exponential components",
+          "Analyze long-term behavior of exponential functions"
+        ],
+        "adv_objectives": [
+          "Determine parameter values ensuring continuity",
+          "Use correct limit notation",
+          "Identify and evaluate indeterminate forms",
+          "Identify vertical asymptotes or holes",
+          "Recognize and apply L'Hopital's Rule"
+        ]
+      },
+      {
+        "id": "LT9",
+        "type": "Two-Part",
+        "title": "Rates of Change",
+        "description": "Use the definition of continuity at a point. Evaluate limits using a function given as a graph. Reason about end behavior of composite functions involving exponential growth and decay.",
+        "f_description": "Demonstrate proficiency in computing and interpreting average and instantaneous rates of change from graphical and tabular data.",
+        "adv_description": "Demonstrate proficiency in interpreting instantaneous rate of change as a limit and estimating it using average rates of change.",
+        "f_objectives": [
+          "Compute average rate of change from tables",
+          "Estimate average rate of change from graphs",
+          "Identify average rate of change as secant line slope",
+          "Identify instantaneous rate of change as tangent line slope",
+          "Compute instantaneous rate of change from graphs"
+        ],
+        "adv_objectives": [
+          "Interpret instantaneous rate of change as limiting average rates",
+          "Approximate instantaneous rates using average rates",
+          "Use instantaneous rates to approximate nearby function values"
+        ]
+      },
+      {
+        "id": "LT10",
+        "type": "One-Time",
+        "title": "Limit Definiton of the Derivative",
+        "description": "Use the limit defintion of the derivative to compute a derivative. ",
+        "f_description": "Demonstrate proficiency in using and interpreting the limit definition of the derivative.",
+        "f_objectives": [
+          "State the limit definition of the derivative",
+          "Use limit definition to compute derivatives of quadratic functions",
+          "Compare derivative results with basic rules",
+          "Interpret derivatives as limits of secant line slopes"
+        ]
+      },
+      {
+        "id": "LT11",
+        "type": "One-Time",
+        "title": "Basic Derivative Rules",
+        "description": "Use basic derivative rules to compute derivatives.",
+        "f_description": "Demonstrate proficiency in computing derivatives using basic rules, including examples involving parameters.",
+        "f_objectives": [
+          "Apply power rule including fractional and negative exponents",
+          "Apply power rule to parameterized functions",
+          "Use exponential rule for exponential differentiation",
+          "Apply derivative rules for sine and cosine",
+          "Differentiate natural logarithm functions"
+        ]
+      },
+      {
+        "id": "LT12",
+        "type": "Two-Part",
+        "title": "Graphical Differentiation",
+        "description": "Sketch the graph of a derivative based on the graph of a given function.",
+        "f_description": "Demonstrate proficiency in interpreting derivative information from the graph of a function.",
+        "adv_description": "Demonstrate proficiency in sketching the graph of the derivative from the graph of a function.",
+        "f_objectives": [
+          "Match function graphs to derivative graphs",
+          "Identify points where derivative equals zero",
+          "Indicate derivative signs at given points",
+          "Estimate derivative values"
+        ],
+        "adv_objectives": [
+          "Sketch derivative graphs from function graphs"
+        ]
+      },
+      {
+        "id": "LT13",
+        "type": "Two-Part",
+        "title": "The Chain Rule",
+        "description": "Use the chain rule to compute the derivative of a composite function given as a formula. Use the chain rule to compute the derivative of a composite function given graphically or as a table.",
+        "f_description": "Demonstrate proficiency in applying the chain rule to compute derivatives of composite functions in different representations.",
+        "adv_description": "Demonstrate proficiency in interpreting and applying the chain rule using Leibniz notation in applications.",
+        "f_objectives": [
+          "Apply chain rule to formulas",
+          "Compute composite function derivatives from tabular data",
+          "Apply chain rule to graphical functions"
+        ],
+        "adv_objectives": [
+          "Use Leibniz notation for derivative representation and computation",
+          "Apply units correctly in chain rule applications",
+          "Interpret chain rule results in context"
+        ]
+      },
+      {
+        "id": "LT14",
+        "type": "One-Time",
+        "title": "The Product and Quotient Rules",
+        "description": "Use the product and quotient rules to compute derivatives.",
+        "f_description": "Demonstrate proficiency in applying the product and quotient rules to compute derivatives of functions.",
+        "f_objectives": [
+          "Apply product rule to products",
+          "Apply quotient rule to quotients",
+          "Apply rules to graphical and tabular functions",
+          "Apply rules to parameterized functions",
+          "Compute derivatives at specific points from verbal descriptions"
+        ]
+      },
+      {
+        "id": "LT15",
+        "type": "Two-Part",
+        "title": "Linear Approximation",
+        "description": "",
+        "f_description": "Demonstrate proficiency in creating and using linear approximations.",
+        "adv_description": "Demonstrate proficiency in creating and using linear approximations for functions defined as solutions to differential equations.",
+        "f_objectives": [
+          "Construct linear approximations from function and derivative data",
+          "Create linear approximations using derivative rules",
+          "Use approximations to estimate nearby function values"
+        ],
+        "adv_objectives": [
+          "Compute linear approximations for differential equation solutions",
+          "Use approximations for estimation",
+          "Understand linear approximation for numerical differential equation solutions"
+        ]
+      },
+      {
+        "id": "LT16",
+        "type": "Two-Part",
+        "title": "Implicit Differentiation and Related Rates",
+        "description": "",
+        "f_description": "Demonstrate proficiency in using implicit differentiation and applying implicit differentiation.",
+        "adv_description": "TBD",
+        "f_objectives": [
+          "Use implicit differentiation for instantaneous rate of change expressions",
+          "Evaluate rates of change at specific points",
+          "Determine points where slope is undefined",
+          "Create relationships between rates",
+          "Reason about related rates in applications"
+        ]
+      },
+      {
+        "id": "LT17",
+        "type": "Two-Part",
+        "title": "Applications of the Derivative",
+        "description": "",
+        "f_description": "Use the first and second derivatives to find intervals of monotonicity and concavity. Identify critical points, local extrema, and inflection points.",
+        "adv_description": "Demonstrate proficiency in computing and using the second derivative to determine concavity and identify inflection points.",
+        "f_objectives": [
+          "Sketch graphs using first and second derivative signs",
+          "Determine critical points",
+          "Apply first derivative test for local extrema",
+          "Identify derivative signs from graphs"
+        ],
+        "adv_objectives": [
+          "Compute second derivatives of polynomials",
+          "Determine concavity intervals from second derivatives",
+          "Identify inflection point locations",
+          "Use second derivative test for extrema locations"
+        ]
+      },
+      {
+        "id": "LT18",
+        "type": "Two-Part",
+        "title": "Antiderivative Rules",
+        "description": "",
+        "f_description": "Demonstrate proficiency in computing antiderivatives using basic rules.",
+        "f_objectives": [
+          "Compute general antiderivatives using power rule",
+          "Use exponential antiderivative rule",
+          "Apply sine and cosine antiderivative rules",
+          "Find antiderivative of reciprocal function",
+          "Solve initial value problems"
+        ]
+      },
+      {
+        "id": "LT19",
+        "type": "Two-Part",
+        "title": "Riemann Sums and Accumulated Change",
+        "description": "",
+        "f_description": "Demonstrate proficiency in using summation notation and in using Riemann sums to estimate definite integrals.",
+        "adv_description": "Demonstrate an understanding of the connection between signed area and accumulated change in an application.",
+        "f_objectives": [
+          "Write finite series terms from summation notation",
+          "Express Riemann sums using summation notation",
+          "Use Riemann sums for integral estimation",
+          "Describe improvement methods for estimates",
+          "Write integrals as Riemann sum limits",
+          "Understand definite integral limit notation"
+        ],
+        "adv_objectives": [
+          "Compute net change from rate of change graphs",
+          "Determine area and accumulated change units",
+          "Locate local extrema from rate graphs",
+          "Estimate function values from rate graphs and initial values"
+        ]
+      },
+      {
+        "id": "LT20",
+        "type": "Two-Part",
+        "title": "The Definite Integral",
+        "description": "",
+        "f_description": "Demonstrate proficiency in computing definite integrals using antiderivatives, signed area, and properties of the definite integral.",
+        "adv_description": "Demonstrate proficiency in conceptual understanding of the definite integral.",
+        "f_objectives": [
+          "Use Evaluation Theorem for integral computation",
+          "Use integral properties for linear combinations",
+          "Compute integrals using signed area"
+        ],
+        "adv_objectives": [
+          "Distinguish definite integrals as numbers vs. indefinite as families",
+          "Describe antiderivative use in Evaluation Theorem",
+          "Construct definite integrals from verbal descriptions",
+          "Determine integral units in applications",
+          "Compute integrals using signed area and formulas",
+          "Understand integral properties over intervals"
+        ]
+      },
+      {
+        "id": "LT21",
+        "type": "One-Time",
+        "title": "The Fundamental Theorem of Calculus",
+        "description": "",
+        "f_description": "Use the Fundamental Theorem of Calculus and demonstrate an understanding of a definite integral as net change.",
+        "f_objectives": [
+          "Use Fundamental Theorem to compute rates of change",
+          "Create and interpret net change integral representations",
+          "Estimate function values from rate graphs"
+        ]
+      },
+      {
+        "id": "LT22",
+        "type": "One-Time",
+        "title": "Integration by Substitution",
+        "description": "",
+        "f_description": "Demonstrate proficiency in performing integration by substitution.",
+        "f_objectives": [
+          "Understand substitution-chain rule relationship",
+          "Use substitution for indefinite integrals",
+          "Make variable changes in definite integrals",
+          "Compute definite integrals via substitution"
+        ]
+      },
+      {
+        "id": "LT23",
+        "type": "One-Time",
+        "title": "Differentiation and Integration Review",
+        "description": "",
+        "f_description": "Review derivative and antiderivative rules.",
+        "f_objectives": [
+          "Compute derivatives using basic rules",
+          "Combine product rule and chain rule",
+          "Compute indefinite integrals using basic rules"
+        ]
+      },
+      {
+        "id": "LT24",
+        "type": "One-Time",
+        "title": "Local and Global Extrema",
+        "description": "",
+        "f_description": "Demonstrate proficiency in identifying local and global extrema.",
+        "f_objectives": [
+          "Use first or second derivative tests for local extrema",
+          "Combine Fundamental Theorem with derivative tests",
+          "Apply closed-interval method for global extrema"
+        ]
+      },
+      {
+        "id": "LT25",
+        "type": "Group",
+        "title": "Optimization",
+        "description": "",
+        "f_description": "Demonstrate proficiency in problem solving skills related to optimization.",
+        "notes": "This target involves collaborative learning during Week 15, combining classroom guidance with group-based problem-solving assessment.",
+        "f_objectives": [
+          "Create objective functions from verbal descriptions",
+          "Identify objective functions and constraints",
+          "Use constraints to develop single-variable functions",
+          "Find and interpret global maxima"
+        ]
+      }
+    ]
+  },
+  "study_guides": {
+    "sample_quizzes_url": ""
+  },
+  "office_hours_embed_url": ""
+}

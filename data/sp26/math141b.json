@@ -1,0 +1,817 @@
+{
+  "course": {
+    "code": "MATH 141B",
+    "title": "Calculus with Applications to Biology II",
+    "term": "Spring 2026",
+    "includes_math197": false,
+    "course_hub_url": "",
+    "prerequisites": []
+  },
+  "instructors": [
+    {
+      "id": "russ-deforest",
+      "name": "Russ deForest",
+      "title": "Instructor, Course Coordinator",
+      "email": "rfd131@psu.edu",
+      "office": "005 McAllister",
+      "pronouns": "he/him",
+      "sections": [
+        {
+          "number": "3",
+          "days": "MWF",
+          "time": "11:15 AM - 12:05 PM",
+          "location": "106 Osmond"
+        }
+      ],
+      "office_hours": [
+        {
+          "day": "Friday",
+          "time": "2:30 - 3:20 PM",
+          "location": "005 McAllister",
+          "type": "Shared"
+        },
+        {
+          "day": "Wednesday",
+          "time": "1:25 - 2:15  PM",
+          "location": "005 McAllister",
+          "type": "Drop-in"
+        }
+      ]
+    },
+    {
+      "id": "sam-vancini",
+      "name": "Sam Vancini",
+      "title": "Instructor",
+      "email": "sjv5520@psu.edu",
+      "office": "402 McAllister",
+      "pronouns": "he/him",
+      "sections": [
+        {
+          "number": "2",
+          "days": "MWF",
+          "time": "9:05 - 9:55 AM",
+          "location": "317 Wagner"
+        },
+        {
+          "number": "4",
+          "days": "MWF",
+          "time": "12:20 - 1:10 PM",
+          "location": "013 Huck Life Sciences"
+        },
+        {
+          "number": "6",
+          "days": "MWF",
+          "time": "3:35 - 4:25 PM",
+          "location": "121 Earth and Eng Sci"
+        }
+      ],
+      "office_hours": [
+        {
+          "day": "Monday",
+          "time": "2:15 - 3:15 PM",
+          "location": "408 McAllister",
+          "type": "Shared"
+        },
+        {
+          "day": "Wednesday",
+          "time": "2:15 - 3:15 PM",
+          "location": "408 McAllister",
+          "type": "Drop-in"
+        },
+        {
+          "day": "Friday",
+          "time": "2:15 - 3:15 PM",
+          "location": "408 McAllister",
+          "type": "Drop-in"
+        }
+      ]
+    },
+    {
+      "id": "mike-steward",
+      "name": "Michael Steward",
+      "title": "Instructor",
+      "email": "mcs5905@psu.edu",
+      "office": "001 McAllister",
+      "pronouns": "he/him",
+      "sections": [
+        {
+          "number": "1",
+          "days": "MWF",
+          "time": "8:00 - 8:50 AM",
+          "location": "367 Willard"
+        },
+        {
+          "number": "5",
+          "days": "MWF",
+          "time": "12:20 - 1:10 PM",
+          "location": "101 Osmond"
+        }
+      ],
+      "office_hours": [
+        {
+          "day": "Wednesday",
+          "time": "1:15 - 2:15 PM",
+          "location": "001 McAllister",
+          "type": "Shared"
+        }
+      ]
+    }
+  ],
+  "mwf_sections": [
+    {
+      "name": "Morning Classes",
+      "icon": "\ud83c\udf05",
+      "time_range": "8:00 - 4:25 PM",
+      "sections": [
+        {
+          "number": "1",
+          "time": "8:00 - 8:50 AM",
+          "location": "367 Willard",
+          "instructor": "Michael Steward",
+          "instructor_id": "mike-steward"
+        },
+        {
+          "number": "2",
+          "time": "9:05 - 9:55 AM",
+          "location": "317 Wagner",
+          "instructor": "Sam Vancini",
+          "instructor_id": "sam-vancini"
+        },
+        {
+          "number": "6",
+          "time": "3:35 - 4:25 PM",
+          "location": "121 Earth and Eng Sci",
+          "instructor": "Sam Vancini",
+          "instructor_id": "sam-vancini"
+        }
+      ]
+    },
+    {
+      "name": "Late Morning Class",
+      "icon": "\u2600\ufe0f",
+      "time_range": "11:15 AM - 12:05 PM",
+      "sections": [
+        {
+          "number": "3",
+          "time": "11:15 AM - 12:05 PM",
+          "location": "106 Osmond",
+          "instructor": "Russ deForest",
+          "instructor_id": "russ-deforest"
+        }
+      ]
+    },
+    {
+      "name": "Afternoon Classes",
+      "icon": "\ud83c\udf1e",
+      "time_range": "12:20 - 1:10 PM",
+      "sections": [
+        {
+          "number": "4",
+          "time": "12:20 - 1:10 PM",
+          "location": "013 Huck Life Sciences",
+          "instructor": "Sam Vancini",
+          "instructor_id": "sam-vancini"
+        },
+        {
+          "number": "5",
+          "time": "12:20 - 1:10 PM",
+          "location": "101 Osmond",
+          "instructor": "Michael Steward",
+          "instructor_id": "mike-steward"
+        }
+      ]
+    }
+  ],
+  "tuesday_sections": [
+    {
+      "identifier": "7R",
+      "time": "9:15 - 10:15 AM",
+      "location": "104 Keller"
+    },
+    {
+      "identifier": "8R",
+      "time": "12:15 - 1:15 PM",
+      "location": "001 Chem and Biomed Eng"
+    },
+    {
+      "identifier": "9R",
+      "time": "3:15 - 4:15 PM",
+      "location": "010 Sparks"
+    }
+  ],
+  "exams": {
+    "midterms": [
+      {
+        "name": "Midterm One",
+        "date": "2/10/2026",
+        "time": "6:15 - 7:30 PM",
+        "location": "TBD",
+        "makeup_date": "2/12/2026",
+        "makeup_time": "4:30 - 8:30 PM",
+        "makeup_location": "121 Sparks"
+      },
+      {
+        "name": "Midterm Two",
+        "date": "3/24/2026",
+        "time": "6:15 - 7:30 PM",
+        "location": "TBD",
+        "makeup_date": "3/26/2026",
+        "makeup_time": "4:30 - 8:30 PM",
+        "makeup_location": "121 Sparks"
+      }
+    ],
+    "final": {
+      "date": "TBD",
+      "time": "TBD",
+      "location": "TBD"
+    },
+    "midterm1": {
+      "display": "2/10/2026"
+    },
+    "midterm2": {
+      "display": "3/24/2026"
+    },
+    "makeup_quiz_sessions": [
+      {
+        "name": "Make-up Quiz Session 1",
+        "date": "3/18/2026",
+        "time": "4:30 - 8:30 PM",
+        "location": "101 Chambers",
+        "notes": ""
+      },
+      {
+        "name": "Make-up Quiz Session 2",
+        "date": "4/22/2026",
+        "time": "4:30 - 8:30 PM",
+        "location": "100 Huck Life Sciences",
+        "notes": ""
+      }
+    ]
+  },
+  "important_dates": {
+    "regular_drop": "01/17/2026",
+    "late_drop": "04/12/2026",
+    "finals_week": ""
+  },
+  "policies": {
+    "thursday_quiz_hours": [
+      {
+        "time": "12:15 - 1:15 PM",
+        "location": "22 BBH"
+      },
+      {
+        "time": "4:30 - 5:30 PM",
+        "location": "22 Deike"
+      },
+      {
+        "time": "7:30 - 8:30 PM",
+        "location": "110 Business"
+      }
+    ]
+  },
+  "grading": {
+    "thresholds": {
+      "A": {
+        "complete": 25,
+        "proficient": 21
+      },
+      "A-": {
+        "complete": 23,
+        "proficient": 19
+      },
+      "B+": {
+        "complete": 22,
+        "proficient": 17
+      },
+      "B": {
+        "complete": 21,
+        "proficient": 15
+      },
+      "B-": {
+        "complete": 20,
+        "proficient": 13
+      },
+      "C+": {
+        "complete": 19,
+        "proficient": 11
+      },
+      "C": {
+        "complete": 18,
+        "proficient": 9
+      },
+      "D": {
+        "complete": 14,
+        "proficient": null
+      },
+      "F": {
+        "complete": null,
+        "proficient": null
+      }
+    },
+    "math197_thresholds": {},
+    "xp": {
+      "modifications": [
+        {
+          "threshold": 0,
+          "mods": 0,
+          "label": "Less than 250 XP",
+          "max_mods": 3
+        },
+        {
+          "threshold": 250,
+          "mods": 1,
+          "label": "250-499 XP",
+          "max_mods": 3
+        },
+        {
+          "threshold": 500,
+          "mods": 2,
+          "label": "500-749 XP",
+          "max_mods": 3
+        },
+        {
+          "threshold": 750,
+          "mods": 3,
+          "label": "More than 800 XP",
+          "max_mods": 3
+        }
+      ],
+      "activities": [
+        {
+          "name": "LA Community Learning Sessions",
+          "value": "20 XP per week",
+          "details": "Attend and participate in weekly LA sessions"
+        },
+        {
+          "name": "Pre-lecture Assignments (PLAs)",
+          "value": "5 XP per PLA",
+          "details": "Complete before each MWF class. Score at least 80% for full XP."
+        },
+        {
+          "name": "Online Homework",
+          "value": "10 XP per assignment",
+          "details": "Due weekly on Mondays. XP score based on percentage of available points."
+        },
+        {
+          "name": "Target Practice",
+          "value": "10 XP",
+          "details": "Available for each Learning Target. XP score based on percentage of available points."
+        },
+        {
+          "name": "Quiz sign-ups and surveys",
+          "value": "2 XP",
+          "details": "Brief reflection survey and quiz sign up."
+        }
+      ]
+    }
+  },
+  "learning_targets": {
+    "total": 25,
+    "detailed_list_url": "",
+    "essential": [],
+    "targets": [
+      {
+        "id": "LT1",
+        "type": "Two-Part",
+        "title": "Integration Review",
+        "description": "Demonstrate proficiency in computing definite integrals using antiderivatives, signed area, and properties of the definite integral.",
+        "f_description": "Demonstrate proficiency in computing definite integrals using antiderivatives, signed area, and properties of the definite integral.",
+        "adv_description": "Demonstrate proficiency in conceptual understanding of the definite integral and its applications.",
+        "f_objectives": [
+          "Use Evaluation Theorem for integral computation",
+          "Apply antiderivative rules correctly",
+          "Compute integrals using signed area",
+          "Interpret net change in applications"
+        ],
+        "adv_objectives": [
+          "Distinguish definite integrals as numbers vs. indefinite as families",
+          "Determine integral units in applications",
+          "Construct definite integrals from verbal descriptions",
+          "Understand integral properties over intervals"
+        ]
+      },
+      {
+        "id": "LT2",
+        "type": "Two-Part",
+        "title": "Integration by Substitution",
+        "description": "Demonstrate proficiency in performing integration by substitution.",
+        "f_description": "Demonstrate proficiency in performing integration by substitution.",
+        "adv_description": "Apply substitution method to definite integrals with proper change of variables.",
+        "f_objectives": [
+          "Understand substitution-chain rule relationship",
+          "Use substitution for indefinite integrals",
+          "Identify appropriate substitutions"
+        ],
+        "adv_objectives": [
+          "Make variable changes in definite integrals",
+          "Compute definite integrals via substitution",
+          "Combine substitution with other techniques"
+        ]
+      },
+      {
+        "id": "LT3",
+        "type": "Two-Part",
+        "title": "Integration by Parts",
+        "description": "Use the integration by parts method to compute indefinite integrals.",
+        "f_description": "Use the integration by parts method to compute indefinite integrals.",
+        "adv_description": "Use integration by parts to compute definite integrals and combine with other methods.",
+        "f_objectives": [
+          "Apply integration by parts formula",
+          "Choose appropriate u and dv",
+          "Recognize when integration by parts is appropriate"
+        ],
+        "adv_objectives": [
+          "Compute definite integrals using integration by parts",
+          "Apply tabular method for repeated integration by parts",
+          "Combine integration by parts with other techniques"
+        ]
+      },
+      {
+        "id": "LT4",
+        "type": "Two-Part",
+        "title": "Integration by Partial Fractions",
+        "description": "Perform partial fraction decomposition for rational functions.",
+        "f_description": "Perform partial fraction decomposition for rational functions.",
+        "adv_description": "Compute integrals using partial fraction decomposition.",
+        "f_objectives": [
+          "Decompose rational functions into partial fractions",
+          "Handle distinct linear factors",
+          "Handle repeated linear factors"
+        ],
+        "adv_objectives": [
+          "Integrate rational functions using partial fractions",
+          "Recognize when partial fractions is appropriate",
+          "Combine with other integration techniques"
+        ]
+      },
+      {
+        "id": "LT5",
+        "type": "One-Time",
+        "title": "Integration Techniques",
+        "description": "Demonstrate proficiency in identifying and applying appropriate integration techniques from LT1-LT4.",
+        "f_description": "Demonstrate proficiency in identifying and applying appropriate integration techniques from LT1-LT4.",
+        "f_objectives": [
+          "Identify which integration technique to apply",
+          "Select between substitution, parts, and partial fractions",
+          "Combine multiple techniques as needed",
+          "Verify integration results by differentiation"
+        ]
+      },
+      {
+        "id": "LT6",
+        "type": "Two-Part",
+        "title": "Modeling with Differential Equations",
+        "description": "Create differential equation models from verbal descriptions.",
+        "f_description": "Create differential equation models from verbal descriptions.",
+        "adv_description": "Verify solutions to differential equations.",
+        "f_objectives": [
+          "Create differential equation models from verbal descriptions",
+          "Determine the order of a differential equation",
+          "Distinguish autonomous from non-autonomous equations"
+        ],
+        "adv_objectives": [
+          "Verify solutions for first-order differential equations",
+          "Verify solutions for second-order differential equations",
+          "Determine particular solutions from initial conditions"
+        ]
+      },
+      {
+        "id": "LT7",
+        "type": "Two-Part",
+        "title": "Separation of Variables",
+        "description": "Demonstrate proficiency in identifying separable first-order differential equations.",
+        "f_description": "Demonstrate proficiency in identifying separable first-order differential equations.",
+        "adv_description": "Solve separable differential equations and find particular solutions.",
+        "f_objectives": [
+          "Identify separable vs. non-separable equations",
+          "Separate variables algebraically",
+          "Find general solutions in implicit form"
+        ],
+        "adv_objectives": [
+          "Find explicit solutions when possible",
+          "Apply logarithm and exponentiation fluently",
+          "Find particular solutions from initial conditions"
+        ]
+      },
+      {
+        "id": "LT8",
+        "type": "Two-Part",
+        "title": "The Integrating Factor Method",
+        "description": "Demonstrate understanding of the integrating factor method.",
+        "f_description": "Demonstrate understanding of the integrating factor method.",
+        "adv_description": "Apply the integrating factor method to solve differential equations.",
+        "f_objectives": [
+          "Identify first-order linear differential equations",
+          "Convert to standard form",
+          "Compute the integrating factor"
+        ],
+        "adv_objectives": [
+          "Understand connection to product rule derivative",
+          "Find general solutions using integrating factors",
+          "Find particular solutions from initial conditions"
+        ]
+      },
+      {
+        "id": "LT9",
+        "type": "One-Time",
+        "title": "Linear Models in Biology",
+        "description": "Construct differential equation models, find solutions, and interpret results in biological contexts.",
+        "f_description": "Construct differential equation models, find solutions, and interpret results in biological contexts.",
+        "notes": "Synthesis target combining modeling and solution techniques.",
+        "f_objectives": [
+          "Construct differential equation models from biological scenarios",
+          "Select appropriate solution technique",
+          "Find general and particular solutions",
+          "Interpret solutions in biological context"
+        ]
+      },
+      {
+        "id": "LT10",
+        "type": "Two-Part",
+        "title": "Slope Fields",
+        "description": "Demonstrate proficiency in constructing slope fields for first-order differential equations.",
+        "f_description": "Demonstrate proficiency in constructing slope fields for first-order differential equations.",
+        "adv_description": "Interpret slope fields and sketch solution curves.",
+        "f_objectives": [
+          "Sketch slope fields for differential equations",
+          "Compute slopes at given points",
+          "Identify nullclines"
+        ],
+        "adv_objectives": [
+          "Sketch solution curves on slope fields",
+          "Recognize equilibrium solutions from slope fields",
+          "Analyze long-term behavior from slope fields"
+        ]
+      },
+      {
+        "id": "LT11",
+        "type": "Two-Part",
+        "title": "Phase Lines and Equilibrium Solutions",
+        "description": "Demonstrate proficiency in constructing phase lines and identifying equilibrium solutions.",
+        "f_description": "Demonstrate proficiency in constructing phase lines and identifying equilibrium solutions.",
+        "adv_description": "Analyze equilibrium solutions and long-run behavior.",
+        "f_objectives": [
+          "Construct phase lines for autonomous equations",
+          "Determine equilibrium solutions",
+          "Identify stable, unstable, and semi-stable equilibria"
+        ],
+        "adv_objectives": [
+          "Classify stability of equilibrium solutions",
+          "Verify equilibrium solutions algebraically",
+          "Interpret equilibrium solutions in biological contexts",
+          "Reason about long-run behavior across initial conditions"
+        ]
+      },
+      {
+        "id": "LT12",
+        "type": "Group",
+        "title": "Bifurcation Diagrams",
+        "description": "Demonstrate understanding of bifurcation diagrams and parameter effects on differential equation behavior.",
+        "f_description": "Demonstrate understanding of bifurcation diagrams and parameter effects on differential equation behavior.",
+        "notes": "Group assessment combining graphical analysis with parameter interpretation.",
+        "f_objectives": [
+          "Sketch bifurcation diagrams",
+          "Identify bifurcation values",
+          "Describe qualitative behavior changes at bifurcations",
+          "Analyze parameter effects on long-run behavior",
+          "Understand tipping points and hysteresis"
+        ]
+      },
+      {
+        "id": "LT13",
+        "type": "One-Time",
+        "title": "Integration Computation and Applications",
+        "description": "Demonstrate proficiency in identifying and applying appropriate integration techniques in applied contexts.",
+        "f_description": "Demonstrate proficiency in identifying and applying appropriate integration techniques in applied contexts.",
+        "f_objectives": [
+          "Select appropriate integration technique for a given problem",
+          "Combine multiple integration techniques",
+          "Apply integration to solve application problems",
+          "Interpret integral results in context"
+        ]
+      },
+      {
+        "id": "LT14",
+        "type": "Two-Part",
+        "title": "Vector Operations",
+        "description": "Demonstrate proficiency in fundamental vector operations.",
+        "f_description": "Demonstrate proficiency in fundamental vector operations.",
+        "adv_description": "Apply vector operations in geometric and applied contexts.",
+        "f_objectives": [
+          "Compute linear combinations of vectors",
+          "Calculate vector magnitudes",
+          "Express vectors using standard basis vectors"
+        ],
+        "adv_objectives": [
+          "Compute dot products",
+          "Interpret vectors geometrically",
+          "Plot vectors in the plane",
+          "Apply scalar multiplication"
+        ]
+      },
+      {
+        "id": "LT15",
+        "type": "Two-Part",
+        "title": "Linear Transformations",
+        "description": "Demonstrate proficiency working with linear transformations.",
+        "f_description": "Demonstrate proficiency working with linear transformations.",
+        "adv_description": "Construct matrix representations of linear transformations.",
+        "f_objectives": [
+          "Verify linearity properties of transformations",
+          "Apply linear transformations via basis vectors",
+          "Identify domain and codomain dimensions"
+        ],
+        "adv_objectives": [
+          "Construct transformation matrices from descriptions",
+          "Apply matrices to transform vectors",
+          "Compose linear transformations using matrix multiplication"
+        ]
+      },
+      {
+        "id": "LT16",
+        "type": "One-Time",
+        "title": "Matrix Operations",
+        "description": "Demonstrate proficiency in basic matrix operations.",
+        "f_description": "Demonstrate proficiency in basic matrix operations.",
+        "adv_description": "Apply advanced matrix operations.",
+        "f_objectives": [
+          "Perform matrix addition and subtraction",
+          "Apply scalar multiplication",
+          "Compute matrix-vector products"
+        ],
+        "adv_objectives": [
+          "Compute matrix products",
+          "Calculate matrix powers",
+          "Apply distributive laws",
+          "Recognize identity matrices"
+        ]
+      },
+      {
+        "id": "LT17",
+        "type": "Two-Part",
+        "title": "Discrete Dynamical Systems",
+        "description": "Create linear multivariable discrete time models from verbal descriptions.",
+        "f_description": "Create linear multivariable discrete time models from verbal descriptions.",
+        "adv_description": "Analyze and interpret discrete dynamical systems.",
+        "f_objectives": [
+          "Create multivariable discrete time models",
+          "Compute state vectors iteratively",
+          "Plot sequences from discrete models"
+        ],
+        "adv_objectives": [
+          "Interpret matrix coefficients in context",
+          "Describe long-term behavior of discrete systems",
+          "Connect to eigenvalue analysis"
+        ]
+      },
+      {
+        "id": "LT18",
+        "type": "Two-Part",
+        "title": "The Inverse Matrix",
+        "description": "Demonstrate understanding of inverse matrices.",
+        "f_description": "Demonstrate understanding of inverse matrices.",
+        "adv_description": "Apply inverse matrices in modeling contexts.",
+        "f_objectives": [
+          "Verify if a matrix is invertible",
+          "Compute inverses of 2x2 matrices",
+          "Apply inverse matrices to solve systems"
+        ],
+        "adv_objectives": [
+          "Use inverse matrices in applications",
+          "Understand relationship between inverse and determinant",
+          "Apply inverse to matrix equations"
+        ]
+      },
+      {
+        "id": "LT19",
+        "type": "Two-Part",
+        "title": "Gaussian Elimination",
+        "description": "Represent systems using matrices and use row operations.",
+        "f_description": "Represent systems using matrices and use row operations.",
+        "adv_description": "Solve systems using Gaussian elimination.",
+        "f_objectives": [
+          "Express systems as augmented matrices",
+          "Identify row echelon form",
+          "Apply elementary row operations"
+        ],
+        "adv_objectives": [
+          "Determine system consistency",
+          "Apply back substitution",
+          "Represent solution spaces",
+          "Handle systems with free variables"
+        ]
+      },
+      {
+        "id": "LT20",
+        "type": "Two-Part",
+        "title": "Eigenvalues and Eigenvectors",
+        "description": "Compute eigenvalues and eigenvectors.",
+        "f_description": "Compute eigenvalues and eigenvectors.",
+        "adv_description": "Apply eigenvalue analysis and understand geometric meaning.",
+        "f_objectives": [
+          "Verify eigenvector-eigenvalue pairs",
+          "Compute eigenvectors for given eigenvalues",
+          "Find characteristic polynomials"
+        ],
+        "adv_objectives": [
+          "Calculate determinants via cofactor expansion",
+          "Explain geometric meaning of eigenvectors",
+          "Recognize complex eigenvalues"
+        ]
+      },
+      {
+        "id": "LT21",
+        "type": "One-Time",
+        "title": "Solving Discrete Time Matrix Models",
+        "description": "Find closed form solutions of iterated matrix models.",
+        "f_description": "Find closed form solutions of iterated matrix models.",
+        "adv_description": "Analyze long-term behavior of discrete matrix models.",
+        "f_objectives": [
+          "Determine eigenvalues and eigenvectors of transition matrices",
+          "Write general closed form solutions",
+          "Decompose initial states into eigenvector components"
+        ],
+        "adv_objectives": [
+          "Determine stable distributions",
+          "Interpret stable distributions in context",
+          "Analyze convergence to equilibrium"
+        ]
+      },
+      {
+        "id": "LT22",
+        "type": "One-Time",
+        "title": "Markov Models",
+        "description": "Create Markov models from verbal descriptions.",
+        "f_description": "Create Markov models from verbal descriptions.",
+        "adv_description": "Analyze long-term behavior of Markov models.",
+        "f_objectives": [
+          "Create transition diagrams",
+          "Recognize stochastic matrices",
+          "Identify regular stochastic matrices"
+        ],
+        "adv_objectives": [
+          "Use dominant eigenvalue for long-run analysis",
+          "Interpret stable distributions",
+          "Analyze absorbing Markov models"
+        ]
+      },
+      {
+        "id": "LT23",
+        "type": "One-Time",
+        "title": "Interpreting Discrete Time Matrix Models",
+        "description": "Use data from iterated matrix models to analyze behavior.",
+        "f_description": "Use data from iterated matrix models to analyze behavior.",
+        "adv_description": "Analyze parameter effects on model behavior.",
+        "f_objectives": [
+          "Apply dominant eigenvalue to determine long-run behavior",
+          "Interpret growth/decay rates",
+          "Understand role of complex eigenvalues in oscillations"
+        ],
+        "adv_objectives": [
+          "Determine effects of varying parameter entries",
+          "Connect eigenvalue changes to behavioral changes",
+          "Interpret model sensitivity"
+        ]
+      },
+      {
+        "id": "LT24",
+        "type": "One-Time",
+        "title": "Linear Systems of Differential Equations",
+        "description": "Express systems in matrix-vector form and find solutions.",
+        "f_description": "Express systems in matrix-vector form and find solutions.",
+        "adv_description": "Analyze behavior of linear systems.",
+        "f_objectives": [
+          "Express systems in matrix-vector form",
+          "Verify vector-valued function solutions",
+          "Apply eigenvalue/eigenvector method"
+        ],
+        "adv_objectives": [
+          "Write general solutions as linear combinations",
+          "Reason about long-run behavior",
+          "Classify equilibrium points"
+        ]
+      },
+      {
+        "id": "LT25",
+        "type": "Group",
+        "title": "Nonlinear Systems of Differential Equations",
+        "description": "Demonstrate understanding of phase-plane method for analyzing nonlinear systems.",
+        "f_description": "Demonstrate understanding of phase-plane method for analyzing nonlinear systems.",
+        "notes": "Group assessment during Week 15 combining graphical and analytical methods.",
+        "f_objectives": [
+          "Understand phase plane meaning",
+          "Interpret trajectories",
+          "Sketch nullclines",
+          "Recognize equilibrium points",
+          "Identify time derivative signs",
+          "Construct phase portraits",
+          "Analyze long-term behavior"
+        ]
+      }
+    ]
+  },
+  "study_guides": {
+    "sample_quizzes_url": ""
+  },
+  "office_hours_embed_url": ""
+}

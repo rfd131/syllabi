@@ -2,14 +2,16 @@
 """
 Build script for course syllabi.
 
-Reads course configuration from YAML files or Google Sheets and generates
-static HTML pages using Jinja2 templates.
+Reads course configuration from YAML files, Google Sheets, or cached JSON
+and generates static HTML pages using Jinja2 templates.
 
 Usage:
     python build.py                    # Build all courses from YAML
     python build.py sp26/math140b      # Build specific course
     python build.py --clean            # Clean output directory first
     python build.py --from-sheets      # Fetch config from Google Sheets
+    python build.py --from-sheets --save-cache  # Fetch and save to JSON cache
+    python build.py --from-cache       # Build from cached JSON (no API calls)
 
 Environment variables (for --from-sheets):
     GOOGLE_SERVICE_ACCOUNT_FILE - Path to service account JSON
@@ -19,6 +21,7 @@ Environment variables (for --from-sheets):
 """
 
 import argparse
+import json
 import os
 import re
 import shutil
@@ -72,6 +75,56 @@ def load_config_from_sheets(course: str) -> dict:
         )
 
     return fetch_config_from_sheets(course, sheet_id)
+
+
+def save_config_to_cache(term: str, course: str, config: dict):
+    """Save configuration to JSON cache file.
+
+    Args:
+        term: Term directory name (e.g., "sp26")
+        course: Course name (e.g., "math140b")
+        config: Configuration dictionary to cache
+    """
+    cache_dir = DATA_DIR / term
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = cache_dir / f"{course}.json"
+
+    with open(cache_file, "w") as f:
+        json.dump(config, f, indent=2)
+    print(f"  Cached: {cache_file.relative_to(PROJECT_ROOT)}")
+
+
+def load_config_from_cache(term: str, course: str) -> dict:
+    """Load configuration from JSON cache file.
+
+    Args:
+        term: Term directory name (e.g., "sp26")
+        course: Course name (e.g., "math140b")
+
+    Returns:
+        Configuration dictionary from cache
+    """
+    cache_file = DATA_DIR / term / f"{course}.json"
+    if not cache_file.exists():
+        raise FileNotFoundError(f"Cache file not found: {cache_file}")
+
+    with open(cache_file, "r") as f:
+        return json.load(f)
+
+
+def get_cached_courses() -> list[tuple[str, str]]:
+    """Find all courses with cached JSON files.
+
+    Returns list of (term, course) tuples.
+    """
+    courses = []
+    if not DATA_DIR.exists():
+        return courses
+    for term_dir in DATA_DIR.iterdir():
+        if term_dir.is_dir() and not term_dir.name.startswith("."):
+            for cache_file in term_dir.glob("*.json"):
+                courses.append((term_dir.name, cache_file.stem))
+    return sorted(courses)
 
 
 def get_sheets_courses() -> list[tuple[str, str]]:
@@ -175,18 +228,29 @@ def copy_static_files(output_path: Path, config: dict):
         nav_js_path.write_text(nav_js)
 
 
-def build_course(env: Environment, term: str, course: str, from_sheets: bool = False):
+def build_course(env: Environment, term: str, course: str, from_sheets: bool = False,
+                  from_cache: bool = False, save_cache: bool = False):
     """Build all pages for a single course.
 
     Args:
         env: Jinja2 environment
         term: Term directory name (e.g., "sp26")
         course: Course name (e.g., "math140b")
-        from_sheets: If True, fetch config from Google Sheets instead of YAML
+        from_sheets: If True, fetch config from Google Sheets
+        from_cache: If True, load config from JSON cache
+        save_cache: If True, save fetched config to JSON cache
     """
-    if from_sheets:
+    if from_cache:
+        try:
+            config = load_config_from_cache(term, course)
+        except Exception as e:
+            print(f"Error loading config from cache: {e}")
+            return False
+    elif from_sheets:
         try:
             config = load_config_from_sheets(course)
+            if save_cache:
+                save_config_to_cache(term, course, config)
         except Exception as e:
             print(f"Error loading config from sheets: {e}")
             return False
@@ -262,12 +326,27 @@ def main():
         action="store_true",
         help="Fetch configuration from Google Sheets instead of local YAML files",
     )
+    parser.add_argument(
+        "--from-cache",
+        action="store_true",
+        help="Build from cached JSON files (no API calls)",
+    )
+    parser.add_argument(
+        "--save-cache",
+        action="store_true",
+        help="Save fetched config to JSON cache (use with --from-sheets)",
+    )
     args = parser.parse_args()
 
     from_sheets = getattr(args, "from_sheets", False)
+    from_cache = getattr(args, "from_cache", False)
+    save_cache = getattr(args, "save_cache", False)
 
     if args.list:
-        if from_sheets:
+        if from_cache:
+            courses = get_cached_courses()
+            print("Courses with cached JSON files:")
+        elif from_sheets:
             courses = get_sheets_courses()
             print("Courses configured via environment variables:")
         else:
@@ -282,6 +361,14 @@ def main():
 
     env = setup_jinja_env()
 
+    # Determine source description
+    if from_cache:
+        source = "cached JSON"
+    elif from_sheets:
+        source = "Google Sheets"
+    else:
+        source = "YAML"
+
     if args.course:
         # Build specific course
         parts = args.course.split("/")
@@ -289,12 +376,18 @@ def main():
             print("Error: Course must be in format 'term/course' (e.g., sp26/math140b)")
             return
         term, course = parts
-        source = "Google Sheets" if from_sheets else "YAML"
         print(f"Building {term}/{course} from {source}...")
-        build_course(env, term, course, from_sheets=from_sheets)
+        build_course(env, term, course, from_sheets=from_sheets,
+                     from_cache=from_cache, save_cache=save_cache)
     else:
         # Build all courses
-        if from_sheets:
+        if from_cache:
+            courses = get_cached_courses()
+            if not courses:
+                print("No cached JSON files found in data directory.")
+                print("Run with --from-sheets --save-cache first to create cache.")
+                return
+        elif from_sheets:
             courses = get_sheets_courses()
             if not courses:
                 print("No courses configured via environment variables.")
@@ -306,11 +399,11 @@ def main():
                 print("No courses found in data directory.")
                 return
 
-        source = "Google Sheets" if from_sheets else "YAML"
         print(f"Building {len(courses)} course(s) from {source}...")
         for term, course in courses:
             print(f"\nBuilding {term}/{course}...")
-            build_course(env, term, course, from_sheets=from_sheets)
+            build_course(env, term, course, from_sheets=from_sheets,
+                         from_cache=from_cache, save_cache=save_cache)
 
     print("\nBuild complete!")
 

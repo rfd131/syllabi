@@ -33,5 +33,5 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Build output (commit this if deploying via GitHub Pages)
-# Uncomment to ignore: output/
+# Build output (commit for GitHub Pages deployment)
+# Uncomment to ignore: docs/

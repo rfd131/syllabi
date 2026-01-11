@@ -39,7 +39,7 @@ except ImportError:
 PROJECT_ROOT = Path(__file__).parent
 TEMPLATES_DIR = PROJECT_ROOT / "templates"
 DATA_DIR = PROJECT_ROOT / "data"
-OUTPUT_DIR = PROJECT_ROOT / "output"
+OUTPUT_DIR = PROJECT_ROOT / "docs"
 STATIC_DIR = PROJECT_ROOT / "static"
 
 

@@ -12,6 +12,7 @@ Usage:
     python build.py --from-sheets      # Fetch config from Google Sheets
     python build.py --from-sheets --save-cache  # Fetch and save to JSON cache
     python build.py --from-cache       # Build from cached JSON (no API calls)
+    python build.py --pdf              # Also generate PDF versions of pages
 
 Environment variables (for --from-sheets):
     GOOGLE_SERVICE_ACCOUNT_FILE - Path to service account JSON
@@ -233,7 +234,8 @@ def copy_static_files(output_path: Path, config: dict):
 
 
 def build_course(env: Environment, term: str, course: str, from_sheets: bool = False,
-                  from_cache: bool = False, save_cache: bool = False):
+                  from_cache: bool = False, save_cache: bool = False,
+                  generate_pdf: bool = False):
     """Build all pages for a single course.
 
     Args:
@@ -243,6 +245,7 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
         from_sheets: If True, fetch config from Google Sheets
         from_cache: If True, load config from JSON cache
         save_cache: If True, save fetched config to JSON cache
+        generate_pdf: If True, also generate PDF versions of pages
     """
     if from_cache:
         try:
@@ -279,6 +282,24 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
         print(f"Warning: No pages directory found at {pages_dir}")
         return True
 
+    # Define page order for combined PDF (logical syllabus sequence)
+    page_order = [
+        "index",
+        "instructors",
+        "class-times",
+        "materials",
+        "grading",
+        "learning-targets",
+        "learning-targets-list",
+        "quiz-session-summary",
+        "policies",
+        "resources",
+        "help",
+    ]
+
+    # Collect rendered pages for PDF generation
+    pdf_documents = []
+
     for template_file in pages_dir.glob("*.html.j2"):
         page_name = template_file.stem.replace(".html", "")
         output_file = output_path / f"{page_name}.html"
@@ -297,6 +318,39 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
 
         output_file.write_text(html)
         print(f"  Built: {output_file.relative_to(PROJECT_ROOT)}")
+
+        # Collect for combined PDF
+        if generate_pdf:
+            pdf_documents.append((page_name, html))
+
+    # Generate combined PDF if requested
+    if generate_pdf and pdf_documents:
+        from weasyprint import HTML, Document
+
+        # Sort pages according to defined order
+        def page_sort_key(item):
+            page_name = item[0]
+            try:
+                return page_order.index(page_name)
+            except ValueError:
+                return len(page_order)  # Unknown pages go at the end
+
+        pdf_documents.sort(key=page_sort_key)
+
+        # Render each page and collect all pages
+        all_pages = []
+        for page_name, html in pdf_documents:
+            doc = HTML(string=html, base_url=str(output_path)).render()
+            all_pages.extend(doc.pages)
+
+        # Combine into single PDF
+        if all_pages:
+            pdf_file = output_path / "syllabus.pdf"
+            # Create a document from the first page's document and replace pages
+            combined_doc = HTML(string=pdf_documents[0][1], base_url=str(output_path)).render()
+            combined_doc.pages[:] = all_pages
+            combined_doc.write_pdf(pdf_file)
+            print(f"  Built: {pdf_file.relative_to(PROJECT_ROOT)} ({len(all_pages)} pages)")
 
     return True
 
@@ -340,11 +394,17 @@ def main():
         action="store_true",
         help="Save fetched config to JSON cache (use with --from-sheets)",
     )
+    parser.add_argument(
+        "--pdf",
+        action="store_true",
+        help="Also generate PDF versions of each page",
+    )
     args = parser.parse_args()
 
     from_sheets = getattr(args, "from_sheets", False)
     from_cache = getattr(args, "from_cache", False)
     save_cache = getattr(args, "save_cache", False)
+    generate_pdf = getattr(args, "pdf", False)
 
     if args.list:
         if from_cache:
@@ -382,7 +442,8 @@ def main():
         term, course = parts
         print(f"Building {term}/{course} from {source}...")
         build_course(env, term, course, from_sheets=from_sheets,
-                     from_cache=from_cache, save_cache=save_cache)
+                     from_cache=from_cache, save_cache=save_cache,
+                     generate_pdf=generate_pdf)
     else:
         # Build all courses
         if from_cache:
@@ -407,7 +468,8 @@ def main():
         for term, course in courses:
             print(f"\nBuilding {term}/{course}...")
             build_course(env, term, course, from_sheets=from_sheets,
-                         from_cache=from_cache, save_cache=save_cache)
+                         from_cache=from_cache, save_cache=save_cache,
+                         generate_pdf=generate_pdf)
 
     print("\nBuild complete!")
 

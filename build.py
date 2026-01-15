@@ -325,7 +325,115 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
 
     # Generate combined PDF if requested
     if generate_pdf and pdf_documents:
-        from weasyprint import HTML, Document
+        from weasyprint import HTML, CSS
+
+        # Compact PDF styles - smaller fonts, tighter spacing
+        pdf_css = CSS(string="""
+            @page {
+                size: letter;
+                margin: 0.4in 0.5in;
+            }
+            body {
+                font-size: 8pt;
+                line-height: 1.15;
+            }
+            header {
+                padding: 0.3rem 0;
+                margin-bottom: 0.3rem;
+                background: none !important;
+                border-bottom: 1px solid #001E44;
+            }
+            header h1 {
+                font-size: 12pt;
+                color: #001E44;
+            }
+            header h1 a {
+                color: #001E44;
+            }
+            header .subtitle {
+                font-size: 9pt;
+                margin-top: 0.1rem;
+            }
+            h2 {
+                font-size: 10pt;
+                margin: 0.4rem 0 0.2rem 0;
+                page-break-after: avoid;
+            }
+            h3 {
+                font-size: 9pt;
+                margin: 0.3rem 0 0.15rem 0;
+                page-break-after: avoid;
+            }
+            p {
+                margin-bottom: 0.15rem;
+            }
+            li {
+                margin-bottom: 0.05rem;
+            }
+            ul, ol {
+                margin-left: 0.8rem;
+                margin-bottom: 0.2rem;
+            }
+            .container {
+                display: block;
+                padding: 0;
+            }
+            main {
+                padding: 0;
+            }
+            #sidebar-navigation,
+            #quick-links-sidebar,
+            .sidebar-navigation,
+            .quick-links,
+            nav {
+                display: none !important;
+            }
+            .page-wrapper {
+                min-height: auto;
+            }
+            footer {
+                display: none;
+            }
+            .data-table {
+                margin: 0.2rem 0;
+            }
+            .data-table th,
+            .data-table td {
+                padding: 0.15rem 0.3rem;
+                font-size: 7pt;
+            }
+            .alert, .info-box {
+                padding: 0.3rem;
+                margin: 0.2rem 0;
+                font-size: 8pt;
+            }
+            /* Compact learning targets list - headers only */
+            .lt-accordion {
+                margin-bottom: 0.15rem;
+                box-shadow: none;
+                border: none;
+                border-bottom: 1px solid #eee;
+            }
+            .lt-accordion-header {
+                padding: 0.2rem 0.3rem;
+                border-left-width: 2px;
+            }
+            .lt-id {
+                font-size: 8pt;
+                min-width: 35px;
+            }
+            .lt-title {
+                font-size: 8pt;
+            }
+            .type-badge {
+                font-size: 6pt;
+                padding: 0.05rem 0.2rem;
+            }
+            .expand-icon,
+            .lt-accordion-content {
+                display: none !important;
+            }
+        """)
 
         # Sort pages according to defined order
         def page_sort_key(item):
@@ -337,17 +445,24 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
 
         pdf_documents.sort(key=page_sort_key)
 
+        # Use public GitHub Pages URL for links in PDF
+        public_base_url = f"https://rfd131.github.io/syllabi/{term}/{course}/"
+
         # Render each page and collect all pages
         all_pages = []
-        for page_name, html in pdf_documents:
-            doc = HTML(string=html, base_url=str(output_path)).render()
+        for i, (page_name, html) in enumerate(pdf_documents):
+            # Remove header/footer from all pages except the first (index)
+            if i > 0:
+                html = re.sub(r'<header>.*?</header>', '', html, flags=re.DOTALL)
+                html = re.sub(r'<footer>.*?</footer>', '', html, flags=re.DOTALL)
+            doc = HTML(string=html, base_url=public_base_url).render(stylesheets=[pdf_css])
             all_pages.extend(doc.pages)
 
         # Combine into single PDF
         if all_pages:
             pdf_file = output_path / "syllabus.pdf"
             # Create a document from the first page's document and replace pages
-            combined_doc = HTML(string=pdf_documents[0][1], base_url=str(output_path)).render()
+            combined_doc = HTML(string=pdf_documents[0][1], base_url=public_base_url).render(stylesheets=[pdf_css])
             combined_doc.pages[:] = all_pages
             combined_doc.write_pdf(pdf_file)
             print(f"  Built: {pdf_file.relative_to(PROJECT_ROOT)} ({len(all_pages)} pages)")

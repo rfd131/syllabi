@@ -223,15 +223,17 @@
             }
         }
 
-        // Handle auth button click - go to Apps Script which handles auth flow
-        // Apps Script will show appropriate page based on auth status
+        // Handle auth button click - use Google AddSession to allow account selection
+        // then redirect to CourseHub
         document.getElementById('authButton').addEventListener('click', function() {
-            window.location.href = CONFIG.SCRIPT_URL;
+            var addSessionUrl = 'https://accounts.google.com/AddSession?continue=' + encodeURIComponent(CONFIG.COURSEHUB_URL);
+            window.location.href = addSessionUrl;
         });
 
         // Handle switch account button click - same flow
         document.getElementById('switchButton').addEventListener('click', function() {
-            window.location.href = CONFIG.SCRIPT_URL;
+            var addSessionUrl = 'https://accounts.google.com/AddSession?continue=' + encodeURIComponent(CONFIG.COURSEHUB_URL);
+            window.location.href = addSessionUrl;
         });
 
         // Handle timeout - if JSONP doesn't respond, show instructions

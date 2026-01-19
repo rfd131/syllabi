@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biocalculus Course Hub - Login</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        h1 {
+            color: #333;
+            margin: 0 0 10px 0;
+            font-size: 1.8em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .status-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .status-loading {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+        }
+        .status-success {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+        }
+        .status-error {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .email {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            font-family: monospace;
+            color: #2e7d32;
+            margin: 10px 0;
+        }
+        .email-error {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+            color: #c62828;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .hidden { display: none; }
+        .instructions {
+            text-align: left;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .instructions h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
+            color: #555;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        a { color: #667eea; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">B</div>
+        <h1>Biocalculus Course Hub</h1>
+        <p class="subtitle">Math 140B / Math 141B / Math 198</p>
+
+        <!-- Loading State -->
+        <div id="loading" class="status-box status-loading">
+            <div class="spinner"></div>
+            <p>Checking authentication...</p>
+        </div>
+
+        <!-- Authenticated - Redirecting -->
+        <div id="authenticated" class="status-box status-success hidden">
+            <p>Welcome! Signed in as:</p>
+            <div id="userEmail" class="email"></div>
+            <p>Redirecting to Course Hub...</p>
+        </div>
+
+        <!-- Not Authenticated -->
+        <div id="notAuthenticated" class="hidden">
+            <div class="status-box status-error">
+                <p>You need to sign in with your Penn State Google account to access Course Hub.</p>
+            </div>
+            <button id="authButton" class="btn">Sign in with Penn State Account</button>
+            <div class="instructions">
+                <h3>Instructions:</h3>
+                <ol>
+                    <li>Click the button above</li>
+                    <li>Sign in with your Penn State email (<strong>xyz123@psu.edu</strong>)</li>
+                    <li>You'll be redirected to Course Hub automatically</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Wrong Domain -->
+        <div id="wrongDomain" class="hidden">
+            <div class="status-box status-error">
+                <p>You are signed in as:</p>
+                <div id="wrongEmail" class="email email-error"></div>
+                <p>This application requires a <strong>@psu.edu</strong> account.</p>
+            </div>
+            <button id="switchButton" class="btn">Switch to Penn State Account</button>
+            <div class="instructions">
+                <h3>To fix this:</h3>
+                <ol>
+                    <li>Open an <strong>Incognito/Private window</strong></li>
+                    <li>Go to this page again</li>
+                    <li>Sign in with your Penn State email (<strong>xyz123@psu.edu</strong>)</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyQ0CrfnyPbcYwVqa3V4WM0aHrHZuZW0wY3IDvpL8G1erH9OTibzhqnPnzwPdNMirZRlQ/exec',
+            COURSEHUB_URL: 'https://coursehub-test-6413757358.us-east4.run.app'
+        };
+
+        // JSONP callback function
+        function authCallback(result) {
+            console.log('Auth result:', result);
+
+            document.getElementById('loading').classList.add('hidden');
+
+            if (result.status === 'authenticated') {
+                // Show success and redirect
+                document.getElementById('authenticated').classList.remove('hidden');
+                document.getElementById('userEmail').textContent = result.email;
+
+                // Redirect to CourseHub
+                setTimeout(function() {
+                    window.location.href = CONFIG.COURSEHUB_URL;
+                }, 1000);
+            }
+            else if (result.status === 'wrong_domain') {
+                // Show wrong domain message
+                document.getElementById('wrongDomain').classList.remove('hidden');
+                document.getElementById('wrongEmail').textContent = result.email;
+            }
+            else {
+                // Not authenticated
+                document.getElementById('notAuthenticated').classList.remove('hidden');
+            }
+        }
+
+        // Handle auth button click
+        document.getElementById('authButton').addEventListener('click', function() {
+            var currentUrl = window.location.href;
+            var authUrl = CONFIG.SCRIPT_URL + '?auth=true&redirect=' + encodeURIComponent(currentUrl);
+            window.location.href = authUrl;
+        });
+
+        // Handle switch account button click
+        document.getElementById('switchButton').addEventListener('click', function() {
+            var currentUrl = window.location.href;
+            var authUrl = CONFIG.SCRIPT_URL + '?auth=true&redirect=' + encodeURIComponent(currentUrl);
+            window.location.href = authUrl;
+        });
+
+        // Handle timeout - if JSONP doesn't respond
+        setTimeout(function() {
+            if (!document.getElementById('loading').classList.contains('hidden')) {
+                // Still loading after 5 seconds - assume not authenticated
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('notAuthenticated').classList.remove('hidden');
+            }
+        }, 5000);
+    </script>
+
+    <!-- JSONP call to check authentication -->
+    <script src="https://script.google.com/macros/s/AKfycbyQ0CrfnyPbcYwVqa3V4WM0aHrHZuZW0wY3IDvpL8G1erH9OTibzhqnPnzwPdNMirZRlQ/exec?jsonpCallback=authCallback"></script>
+</body>
+</html>

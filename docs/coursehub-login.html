@@ -215,14 +215,16 @@
                 document.getElementById('wrongEmail').textContent = result.email;
             }
             else {
-                // Not authenticated - redirect to CourseHub (IAP handles sign-in)
-                window.location.href = CONFIG.COURSEHUB_URL;
+                // Not authenticated (or wrong domain that we can't detect)
+                // Show instructions page - user needs to sign in with PSU account
+                document.getElementById('notAuthenticated').classList.remove('hidden');
             }
         }
 
-        // Handle auth button click - go directly to CourseHub (IAP handles sign-in)
+        // Handle auth button click - use Google Account Chooser to ensure correct account
         document.getElementById('authButton').addEventListener('click', function() {
-            window.location.href = CONFIG.COURSEHUB_URL;
+            var accountChooserUrl = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(CONFIG.COURSEHUB_URL);
+            window.location.href = accountChooserUrl;
         });
 
         // Handle switch account button click - use Google Account Chooser
@@ -232,14 +234,14 @@
             window.location.href = accountChooserUrl;
         });
 
-        // Handle timeout - if JSONP doesn't respond, redirect to CourseHub
-        // IAP will handle authentication there
+        // Handle timeout - if JSONP doesn't respond, show instructions
         setTimeout(function() {
             if (!document.getElementById('loading').classList.contains('hidden')) {
-                // Still loading after 3 seconds - redirect to CourseHub
-                window.location.href = CONFIG.COURSEHUB_URL;
+                // Still loading after 5 seconds - show instructions page
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('notAuthenticated').classList.remove('hidden');
             }
-        }, 3000);
+        }, 5000);
     </script>
 
     <!-- JSONP call to check authentication -->

@@ -223,15 +223,16 @@
             }
         }
 
-        // Handle auth button click - go to CourseHub (IAP handles sign-in)
+        // Handle auth button click - clear IAP cookie to force account selection
         document.getElementById('authButton').addEventListener('click', function() {
-            window.location.href = CONFIG.COURSEHUB_URL;
+            // IAP's clear_login_cookie endpoint clears current session and forces re-auth
+            // This should show Google's account picker
+            window.location.href = CONFIG.COURSEHUB_URL + '/_gcp_iap/clear_login_cookie';
         });
 
-        // Handle switch account button click - go to CourseHub
-        // User should follow incognito instructions first if signed in with wrong account
+        // Handle switch account button click - same as above
         document.getElementById('switchButton').addEventListener('click', function() {
-            window.location.href = CONFIG.COURSEHUB_URL;
+            window.location.href = CONFIG.COURSEHUB_URL + '/_gcp_iap/clear_login_cookie';
         });
 
         // Handle timeout - if JSONP doesn't respond, show instructions

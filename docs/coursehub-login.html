@@ -215,33 +215,31 @@
                 document.getElementById('wrongEmail').textContent = result.email;
             }
             else {
-                // Not authenticated
-                document.getElementById('notAuthenticated').classList.remove('hidden');
+                // Not authenticated - redirect to CourseHub (IAP handles sign-in)
+                window.location.href = CONFIG.COURSEHUB_URL;
             }
         }
 
-        // Handle auth button click
+        // Handle auth button click - go directly to CourseHub (IAP handles sign-in)
         document.getElementById('authButton').addEventListener('click', function() {
-            var currentUrl = window.location.href;
-            var authUrl = CONFIG.SCRIPT_URL + '?auth=true&redirect=' + encodeURIComponent(currentUrl);
-            window.location.href = authUrl;
+            window.location.href = CONFIG.COURSEHUB_URL;
         });
 
-        // Handle switch account button click
+        // Handle switch account button click - open in incognito instructions
         document.getElementById('switchButton').addEventListener('click', function() {
-            var currentUrl = window.location.href;
-            var authUrl = CONFIG.SCRIPT_URL + '?auth=true&redirect=' + encodeURIComponent(currentUrl);
-            window.location.href = authUrl;
+            // Can't programmatically switch accounts, so just go to CourseHub
+            // User will need to use incognito or sign out of other account first
+            window.location.href = CONFIG.COURSEHUB_URL;
         });
 
-        // Handle timeout - if JSONP doesn't respond
+        // Handle timeout - if JSONP doesn't respond, redirect to CourseHub
+        // IAP will handle authentication there
         setTimeout(function() {
             if (!document.getElementById('loading').classList.contains('hidden')) {
-                // Still loading after 5 seconds - assume not authenticated
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('notAuthenticated').classList.remove('hidden');
+                // Still loading after 3 seconds - redirect to CourseHub
+                window.location.href = CONFIG.COURSEHUB_URL;
             }
-        }, 5000);
+        }, 3000);
     </script>
 
     <!-- JSONP call to check authentication -->

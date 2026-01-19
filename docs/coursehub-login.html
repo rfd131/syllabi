@@ -191,7 +191,7 @@
     <script>
         // Configuration
         const CONFIG = {
-            SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyQ0CrfnyPbcYwVqa3V4WM0aHrHZuZW0wY3IDvpL8G1erH9OTibzhqnPnzwPdNMirZRlQ/exec',
+            SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyWrOU9iTewWw9GcJYbGCUEt00R0SlUJuxbuKl1Nu83e3VGfbSZO1A5_AoIPTVUOfc9PA/exec',
             COURSEHUB_URL: 'https://coursehub-test-6413757358.us-east4.run.app'
         };
 
@@ -223,18 +223,15 @@
             }
         }
 
-        // Handle auth button click - use Account Chooser with Apps Script as intermediate
-        // Apps Script URL is a Google service, so Account Chooser accepts it
-        // After selecting account, Apps Script validates domain and redirects to CourseHub
+        // Handle auth button click - go to Apps Script which handles auth flow
+        // Apps Script will show appropriate page based on auth status
         document.getElementById('authButton').addEventListener('click', function() {
-            var accountChooserUrl = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(CONFIG.SCRIPT_URL);
-            window.location.href = accountChooserUrl;
+            window.location.href = CONFIG.SCRIPT_URL;
         });
 
         // Handle switch account button click - same flow
         document.getElementById('switchButton').addEventListener('click', function() {
-            var accountChooserUrl = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(CONFIG.SCRIPT_URL);
-            window.location.href = accountChooserUrl;
+            window.location.href = CONFIG.SCRIPT_URL;
         });
 
         // Handle timeout - if JSONP doesn't respond, show instructions
@@ -248,6 +245,6 @@
     </script>
 
     <!-- JSONP call to check authentication -->
-    <script src="https://script.google.com/macros/s/AKfycbyQ0CrfnyPbcYwVqa3V4WM0aHrHZuZW0wY3IDvpL8G1erH9OTibzhqnPnzwPdNMirZRlQ/exec?jsonpCallback=authCallback"></script>
+    <script src="https://script.google.com/macros/s/AKfycbyWrOU9iTewWw9GcJYbGCUEt00R0SlUJuxbuKl1Nu83e3VGfbSZO1A5_AoIPTVUOfc9PA/exec?jsonpCallback=authCallback"></script>
 </body>
 </html>

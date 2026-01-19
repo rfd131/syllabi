@@ -225,11 +225,11 @@
             window.location.href = CONFIG.COURSEHUB_URL;
         });
 
-        // Handle switch account button click - open in incognito instructions
+        // Handle switch account button click - use Google Account Chooser
         document.getElementById('switchButton').addEventListener('click', function() {
-            // Can't programmatically switch accounts, so just go to CourseHub
-            // User will need to use incognito or sign out of other account first
-            window.location.href = CONFIG.COURSEHUB_URL;
+            // Google Account Chooser lets user pick/add PSU account before going to CourseHub
+            var accountChooserUrl = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(CONFIG.COURSEHUB_URL);
+            window.location.href = accountChooserUrl;
         });
 
         // Handle timeout - if JSONP doesn't respond, redirect to CourseHub

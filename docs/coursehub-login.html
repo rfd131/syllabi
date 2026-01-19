@@ -223,16 +223,18 @@
             }
         }
 
-        // Handle auth button click - clear IAP cookie to force account selection
+        // Handle auth button click - use Account Chooser with Apps Script as intermediate
+        // Apps Script URL is a Google service, so Account Chooser accepts it
+        // After selecting account, Apps Script validates domain and redirects to CourseHub
         document.getElementById('authButton').addEventListener('click', function() {
-            // IAP's clear_login_cookie endpoint clears current session and forces re-auth
-            // This should show Google's account picker
-            window.location.href = CONFIG.COURSEHUB_URL + '/_gcp_iap/clear_login_cookie';
+            var accountChooserUrl = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(CONFIG.SCRIPT_URL);
+            window.location.href = accountChooserUrl;
         });
 
-        // Handle switch account button click - same as above
+        // Handle switch account button click - same flow
         document.getElementById('switchButton').addEventListener('click', function() {
-            window.location.href = CONFIG.COURSEHUB_URL + '/_gcp_iap/clear_login_cookie';
+            var accountChooserUrl = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(CONFIG.SCRIPT_URL);
+            window.location.href = accountChooserUrl;
         });
 
         // Handle timeout - if JSONP doesn't respond, show instructions

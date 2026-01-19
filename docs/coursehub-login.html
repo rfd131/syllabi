@@ -221,17 +221,15 @@
             }
         }
 
-        // Handle auth button click - use Google Account Chooser to ensure correct account
+        // Handle auth button click - go to CourseHub (IAP handles sign-in)
         document.getElementById('authButton').addEventListener('click', function() {
-            var accountChooserUrl = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(CONFIG.COURSEHUB_URL);
-            window.location.href = accountChooserUrl;
+            window.location.href = CONFIG.COURSEHUB_URL;
         });
 
-        // Handle switch account button click - use Google Account Chooser
+        // Handle switch account button click - go to CourseHub
+        // User should follow incognito instructions first if signed in with wrong account
         document.getElementById('switchButton').addEventListener('click', function() {
-            // Google Account Chooser lets user pick/add PSU account before going to CourseHub
-            var accountChooserUrl = 'https://accounts.google.com/AccountChooser?continue=' + encodeURIComponent(CONFIG.COURSEHUB_URL);
-            window.location.href = accountChooserUrl;
+            window.location.href = CONFIG.COURSEHUB_URL;
         });
 
         // Handle timeout - if JSONP doesn't respond, show instructions

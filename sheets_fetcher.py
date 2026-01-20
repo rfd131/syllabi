@@ -126,6 +126,7 @@ class SheetsFetcher:
             "policies": self._fetch_policies(config_sheet_id),
             "grading": self._fetch_grading(config_sheet_id),
             "learning_targets": self._fetch_learning_targets(config_sheet_id),
+            "quiz_schedule": self._fetch_quiz_schedule(config_sheet_id),
             # study_guides removed - now provided elsewhere
         }
 
@@ -678,6 +679,97 @@ class SheetsFetcher:
         return lt_config
 
     # _fetch_study_guides removed - study guides now provided elsewhere
+
+    def _fetch_quiz_schedule(self, sheet_id: str) -> List[Dict[str, Any]]:
+        """Fetch quiz schedule from Quiz Schedule tab.
+
+        Returns a list of schedule rows grouped by week, matching the format
+        used by CourseHub's quiz schedule display.
+        """
+        schedule = []
+
+        try:
+            records = self.get_all_records(sheet_id, "Quiz Schedule")
+
+            # Group records by week
+            weeks_data = {}
+            for record in records:
+                week_num = record.get("Week", "")
+                if not week_num:
+                    continue
+
+                try:
+                    week_num = int(week_num)
+                except ValueError:
+                    continue
+
+                if week_num not in weeks_data:
+                    weeks_data[week_num] = {
+                        "week": week_num,
+                        "tuesday_date": "",
+                        "tuesday_lts": [],
+                        "tuesday_new_lts": [],
+                        "tuesday_notes": "",
+                        "thursday_date": "",
+                        "thursday_lts": [],
+                        "thursday_new_lts": [],
+                        "thursday_notes": "",
+                        "exam_sessions": [],
+                    }
+
+                week_entry = weeks_data[week_num]
+                session = record.get("Session", "").strip().lower()
+                date_str = record.get("Date", "")
+
+                # Parse learning targets (comma or space separated)
+                lts_str = record.get("Learning Targets", "") or record.get("LTs", "")
+                if lts_str:
+                    lts = [lt.strip() for lt in lts_str.replace(",", " ").split() if lt.strip()]
+                else:
+                    lts = []
+
+                # Parse new learning targets
+                new_lts_str = record.get("New LTs", "") or record.get("New", "")
+                if new_lts_str:
+                    new_lts = [lt.strip() for lt in new_lts_str.replace(",", " ").split() if lt.strip()]
+                else:
+                    new_lts = []
+
+                notes = record.get("Notes", "")
+
+                # Check for exam types
+                exam_type = record.get("Exam Type", "") or record.get("Exam", "")
+
+                if "tuesday" in session:
+                    week_entry["tuesday_date"] = date_str
+                    week_entry["tuesday_lts"] = lts
+                    week_entry["tuesday_new_lts"] = new_lts
+                    week_entry["tuesday_notes"] = notes
+                elif "thursday" in session:
+                    week_entry["thursday_date"] = date_str
+                    week_entry["thursday_lts"] = lts
+                    week_entry["thursday_new_lts"] = new_lts
+                    week_entry["thursday_notes"] = notes
+
+                # Handle exam sessions
+                if exam_type:
+                    exam_entry = {
+                        "date": date_str,
+                        "exam_type": exam_type.lower(),
+                        "learning_targets": lts,
+                        "notes": notes,
+                    }
+                    # Avoid duplicates
+                    if exam_entry not in week_entry["exam_sessions"]:
+                        week_entry["exam_sessions"].append(exam_entry)
+
+            # Sort by week number and return as list
+            schedule = [weeks_data[w] for w in sorted(weeks_data.keys())]
+
+        except Exception as e:
+            print(f"Warning: Could not fetch quiz schedule: {e}")
+
+        return schedule
 
     def _get_office_hours_embed_url(self, sheet_id: str) -> str:
         """Get office hours embed URL from Course Info if available."""

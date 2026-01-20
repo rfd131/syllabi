@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 141B: Calculus with Applications to Biology II - Spring 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 1.8rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+
+    .schedule-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .schedule-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    /* Schedule Legend */
+    .schedule-legend {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        padding: 1rem;
+        background-color: var(--light-gray);
+        border-radius: 8px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+    }
+
+    /* Schedule Table */
+    .schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .schedule-table th {
+        background: var(--penn-state-navy);
+        color: white;
+        font-weight: 600;
+    }
+
+    .schedule-table tr:hover {
+        background: #f8f9fa;
+    }
+
+    .schedule-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .week-number {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        white-space: nowrap;
+    }
+
+    /* Learning Target Badges */
+    .lt-list {
+        font-size: 0.9em;
+        line-height: 1.6;
+    }
+
+    .lt-new {
+        background: #cce5ff;
+        color: #004085;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-right: 4px;
+        font-size: 0.85em;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+
+    .lt-regular {
+        margin-right: 4px;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+
+    /* Exam Badges */
+    .exam-badge {
+        background: #ffc107;
+        color: #856404;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+
+    .midterm-badge {
+        background: #dc3545;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+    }
+
+    .makeup-badge {
+        background: #6c757d;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+    }
+
+    .final-badge {
+        background: #28a745;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+    }
+
+    /* Exam Session Box */
+    .exam-session {
+        margin-top: 8px;
+        padding: 8px;
+        background: rgba(255, 243, 205, 0.5);
+        border-radius: 4px;
+        border-left: 3px solid #ffc107;
+    }
+
+    .exam-session.midterm {
+        background: rgba(220, 53, 69, 0.1);
+        border-left-color: #dc3545;
+    }
+
+    .exam-session.final {
+        background: rgba(40, 167, 69, 0.1);
+        border-left-color: #28a745;
+    }
+
+    .exam-session.makeup {
+        background: rgba(108, 117, 125, 0.1);
+        border-left-color: #6c757d;
+    }
+
+    .notes-text {
+        font-size: 0.85em;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .date-label {
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .empty-cell {
+        color: #6c757d;
+    }
+
+    /* Alert box for schedule notes */
+    .schedule-note {
+        background-color: #e8f4fd;
+        border-left: 4px solid var(--penn-state-blue);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .schedule-table {
+            font-size: 0.85em;
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .lt-list {
+            font-size: 0.8em;
+        }
+
+        .schedule-legend {
+            gap: 1rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 141B: Calculus with Applications to Biology II - Spring 2026</h1>
+        <div class="subtitle">Quiz Schedule</div>
+    </header>
+
+    <!-- Top Navigation will be inserted here by JavaScript -->
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <!-- Sidebar Navigation will be inserted here by JavaScript -->
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<div class="schedule-header">
+    <h2>Quiz Schedule</h2>
+    <p>Spring 2026 - Learning Target availability by week</p>
+</div>
+
+<div class="schedule-note">
+    <strong>How to Read This Schedule:</strong> This schedule shows which Learning Targets are available each week during Tuesday quiz sessions and Thursday quiz hours. Learning Targets highlighted in <span class="lt-new">blue</span> are new that week.
+</div>
+
+<div class="schedule-legend">
+    <div class="legend-item">
+        <span class="lt-new">LT</span>
+        <span>New this week</span>
+    </div>
+    <div class="legend-item">
+        <span class="midterm-badge">MIDTERM</span>
+        <span>Midterm Exam</span>
+    </div>
+    <div class="legend-item">
+        <span class="final-badge">FINAL</span>
+        <span>Final Exam</span>
+    </div>
+    <div class="legend-item">
+        <span class="makeup-badge">MAKE-UP</span>
+        <span>Make-up Session</span>
+    </div>
+</div>
+
+<table class="schedule-table">
+    <thead>
+        <tr>
+            <th>Week</th>
+            <th>Tuesday</th>
+            <th>Thursday</th>
+            <th>Exams</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="week-number">Week 2</td>
+            <td>
+                <div class="date-label">1/20/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <div class="notes-text">LT1F is a Group Quiz during the Week 2 Session</div>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 3</td>
+            <td>
+                <div class="date-label">1/27/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1F</span>
+                            <span class="lt-regular">LT1Adv</span>
+                            <span class="lt-regular">LT2F</span>
+                            <span class="lt-regular">LT3F</span>
+                            <span class="lt-regular">LT4F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 4</td>
+            <td>
+                <div class="date-label">02/03/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT3F</span>
+                            <span class="lt-regular">LT4</span>
+                            <span class="lt-regular">LT5F</span>
+                            <span class="lt-regular">LT6F</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">02/05/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1Adv</span>
+                            <span class="lt-regular">LT2F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <div class="notes-text">First Thursday Session</div>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 5</td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 6</td>
+            <td>
+                <div class="date-label">02/17/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT3Adv</span>
+                            <span class="lt-regular">LT4Adv</span>
+                            <span class="lt-regular">LT5Adv</span>
+                            <span class="lt-regular">LT6Adv</span>
+                            <span class="lt-regular">LT7F</span>
+                            <span class="lt-regular">LT7Adv</span>
+                            <span class="lt-regular">LT8F</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">02/19/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1Adv</span>
+                            <span class="lt-regular">LT2Adv</span>
+                            <span class="lt-regular">LT3F</span>
+                            <span class="lt-regular">LT4F</span>
+                            <span class="lt-regular">LT5F</span>
+                            <span class="lt-regular">LT6F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 7</td>
+            <td>
+                <div class="date-label">02/24/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1F</span>
+                            <span class="lt-regular">LT7Adv</span>
+                            <span class="lt-regular">LT8F</span>
+                            <span class="lt-regular">LT9F</span>
+                            <span class="lt-regular">LT10</span>
+                            <span class="lt-regular">LT11</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">02/26/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT2F</span>
+                            <span class="lt-regular">LT3F</span>
+                            <span class="lt-regular">LT5F</span>
+                            <span class="lt-regular">LT5Adv</span>
+                            <span class="lt-regular">LT6F</span>
+                            <span class="lt-regular">LT6Adv</span>
+                            <span class="lt-regular">LT7F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 8</td>
+            <td>
+                <div class="date-label">03/03/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT9F</span>
+                            <span class="lt-regular">LT10</span>
+                            <span class="lt-regular">LT11</span>
+                            <span class="lt-regular">LT12F</span>
+                            <span class="lt-regular">LT13F</span>
+                            <span class="lt-regular">LT14</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">03/05/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1Adv</span>
+                            <span class="lt-regular">LT3Adv</span>
+                            <span class="lt-regular">LT4Adv</span>
+                            <span class="lt-regular">LT5Adv</span>
+                            <span class="lt-regular">LT6Adv</span>
+                            <span class="lt-regular">LT7F</span>
+                            <span class="lt-regular">LT7Adv</span>
+                            <span class="lt-regular">LT8F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 9</td>
+            <td>
+                <div class="date-label">03/17/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT9Adv</span>
+                            <span class="lt-regular">LT12F</span>
+                            <span class="lt-regular">LT13F</span>
+                            <span class="lt-regular">LT14</span>
+                            <span class="lt-regular">LT15F</span>
+                            <span class="lt-regular">LT16F</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">03/19/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1F</span>
+                            <span class="lt-regular">LT2F</span>
+                            <span class="lt-regular">LT4F</span>
+                            <span class="lt-regular">LT5F</span>
+                            <span class="lt-regular">LT6F</span>
+                            <span class="lt-regular">LT9F</span>
+                            <span class="lt-regular">LT2Adv</span>
+                            <span class="lt-regular">LT3Adv</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 10</td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 11</td>
+            <td>
+                <div class="date-label">03/31/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT8Adv</span>
+                            <span class="lt-regular">LT13Adv</span>
+                            <span class="lt-regular">LT15Adv</span>
+                            <span class="lt-regular">LT16Adv</span>
+                            <span class="lt-regular">LT17F</span>
+                            <span class="lt-regular">LT17Adv</span>
+                            <span class="lt-regular">LT18</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">04/02/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT4F</span>
+                            <span class="lt-regular">LT5Adv</span>
+                            <span class="lt-regular">LT6Adv</span>
+                            <span class="lt-regular">LT7F</span>
+                            <span class="lt-regular">LT9F</span>
+                            <span class="lt-regular">LT9Adv</span>
+                            <span class="lt-regular">LT12F</span>
+                            <span class="lt-regular">LT12Adv</span>
+                            <span class="lt-regular">LT14</span>
+                            <span class="lt-regular">LT15F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 12</td>
+            <td>
+                <div class="date-label">04/07/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1Adv</span>
+                            <span class="lt-regular">LT6F</span>
+                            <span class="lt-regular">LT8F</span>
+                            <span class="lt-regular">LT8Adv</span>
+                            <span class="lt-regular">LT13F</span>
+                            <span class="lt-regular">LT14</span>
+                            <span class="lt-regular">LT17Adv</span>
+                            <span class="lt-regular">LT18</span>
+                            <span class="lt-regular">LT19F</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">04/09/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1F</span>
+                            <span class="lt-regular">LT2Adv</span>
+                            <span class="lt-regular">LT4Adv</span>
+                            <span class="lt-regular">LT12Adv</span>
+                            <span class="lt-regular">LT13Adv</span>
+                            <span class="lt-regular">LT15F</span>
+                            <span class="lt-regular">LT16F</span>
+                            <span class="lt-regular">LT16Adv</span>
+                            <span class="lt-regular">LT17F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 13</td>
+            <td>
+                <div class="date-label">04/14/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT3F</span>
+                            <span class="lt-regular">LT9F</span>
+                            <span class="lt-regular">LT11</span>
+                            <span class="lt-regular">LT16F</span>
+                            <span class="lt-regular">LT17Adv</span>
+                            <span class="lt-regular">LT19F</span>
+                            <span class="lt-regular">LT19Adv</span>
+                            <span class="lt-regular">LT20F</span>
+                            <span class="lt-regular">LT21</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">04/16/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1Adv</span>
+                            <span class="lt-regular">LT2F</span>
+                            <span class="lt-regular">LT3Adv</span>
+                            <span class="lt-regular">LT4F</span>
+                            <span class="lt-regular">LT5Adv</span>
+                            <span class="lt-regular">LT9Adv</span>
+                            <span class="lt-regular">LT16Adv</span>
+                            <span class="lt-regular">LT17F</span>
+                            <span class="lt-regular">LT18</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 14</td>
+            <td>
+                <div class="date-label">04/21/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT12F</span>
+                            <span class="lt-regular">LT12Adv</span>
+                            <span class="lt-regular">LT13F</span>
+                            <span class="lt-regular">LT17F</span>
+                            <span class="lt-regular">LT19Adv</span>
+                            <span class="lt-regular">LT20Adv</span>
+                            <span class="lt-regular">LT21</span>
+                            <span class="lt-regular">LT22</span>
+                            <span class="lt-regular">LT23</span>
+                            <span class="lt-regular">LT24</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">04/23/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT2Adv</span>
+                            <span class="lt-regular">LT4Adv</span>
+                            <span class="lt-regular">LT6F</span>
+                            <span class="lt-regular">LT7Adv</span>
+                            <span class="lt-regular">LT8F</span>
+                            <span class="lt-regular">LT8Adv</span>
+                            <span class="lt-regular">LT15Adv</span>
+                            <span class="lt-regular">LT17Adv</span>
+                            <span class="lt-regular">LT18</span>
+                            <span class="lt-regular">LT19F</span>
+                            <span class="lt-regular">LT20F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 15</td>
+            <td>
+                <div class="date-label">04/28/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT1F</span>
+                            <span class="lt-regular">LT10</span>
+                            <span class="lt-regular">LT11</span>
+                            <span class="lt-regular">LT13Adv</span>
+                            <span class="lt-regular">LT14</span>
+                            <span class="lt-regular">LT15F</span>
+                            <span class="lt-regular">LT20Adv</span>
+                            <span class="lt-regular">LT21</span>
+                            <span class="lt-regular">LT22</span>
+                            <span class="lt-regular">LT23</span>
+                            <span class="lt-regular">LT24</span>
+                </div>
+            </td>
+            <td>
+                <div class="date-label">04/30/2026</div>
+                <div class="lt-list">
+                            <span class="lt-regular">LT3Adv</span>
+                            <span class="lt-regular">LT5F</span>
+                            <span class="lt-regular">LT6Adv</span>
+                            <span class="lt-regular">LT7F</span>
+                            <span class="lt-regular">LT8Adv</span>
+                            <span class="lt-regular">LT9Adv</span>
+                            <span class="lt-regular">LT17F</span>
+                            <span class="lt-regular">LT17Adv</span>
+                            <span class="lt-regular">LT19F</span>
+                            <span class="lt-regular">LT19Adv</span>
+                            <span class="lt-regular">LT20F</span>
+                </div>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="week-number">Week 16</td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+            <td>
+                <span class="empty-cell">-</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div class="schedule-note" style="margin-top: 2rem;">
+    <strong>Related Pages:</strong>
+    <ul>
+        <li><a href="class-times.html#tuesday-recitations">Tuesday Recitation Times and Locations</a></li>
+        <li><a href="class-times.html#thursday-quiz-hours">Thursday Quiz Hour Times and Locations</a></li>
+        <li><a href="policies.html#quiz-exam-policies">Quiz Session Policies</a></li>
+        <li><a href="learning-targets-list.html">Complete Learning Targets List</a></li>
+    </ul>
+</div>
+            </main>
+
+            <!-- Quick Links Sidebar will be inserted here by JavaScript -->
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 141B Spring 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <!-- External JavaScript for navigation -->
+    <script src="static/navigation.js"></script>
+
+    <!-- Initialize navigation with current page highlighted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('quiz-schedule.html');
+        });
+    </script>
+</body>
+</html>

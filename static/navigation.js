@@ -128,7 +128,11 @@ const navigationData = {
             title: "All Learning Targets",
             href: "learning-targets-list.html"
         },
-        // LT Quiz Schedule removed (now in Course Hub)
+        {
+            icon: "📅",
+            title: "Quiz Schedule",
+            href: "quiz-schedule.html"
+        },
         // Progress Report removed (now in Course Hub)
         // Sign Up For Weekly Quizzes removed (now in Course Hub)
         {

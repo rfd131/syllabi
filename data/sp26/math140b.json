@@ -56,7 +56,7 @@
           "number": "3",
           "days": "MWF",
           "time": "3:35 - 4:25 PM",
-          "location": "203 Elec Eng West"
+          "location": "109 Boucke"
         }
       ],
       "office_hours": [
@@ -97,7 +97,7 @@
         {
           "number": "3",
           "time": "3:35 - 4:25 PM",
-          "location": "203 Elec Eng West",
+          "location": "109 Boucke",
           "instructor": "Sam Fuller",
           "instructor_id": "sam-fuller"
         }
@@ -132,7 +132,7 @@
     {
       "identifier": "3R",
       "time": "3:15 - 4:15 PM",
-      "location": "108 Henderson"
+      "location": "112 Chambers"
     }
   ],
   "exams": {
@@ -364,11 +364,6 @@
           "Add, subtract, and simplify rational expressions",
           "Solve linear equations",
           "Solve quadratic equations by factoring"
-        ],
-        "adv_objectives": [
-          "Simplify rational expressions using exponent rules",
-          "Solve quadratic and polynomial inequalities",
-          "Express inequality solutions using number lines, interval notation, and set builder notation"
         ]
       },
       {
@@ -788,5 +783,375 @@
       }
     ]
   },
+  "quiz_schedule": [
+    {
+      "week": 2,
+      "tuesday_date": "1/20/2026",
+      "tuesday_lts": [
+        "LT1F",
+        "LT1Adv",
+        "LT3F"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "",
+      "thursday_lts": [],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 3,
+      "tuesday_date": "1/27/2026",
+      "tuesday_lts": [
+        "LT1F",
+        "LT1Adv",
+        "LT2F",
+        "LT3F",
+        "LT4F"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "",
+      "thursday_lts": [],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 4,
+      "tuesday_date": "02/03/2026",
+      "tuesday_lts": [
+        "LT1Adv",
+        "LT2Adv",
+        "LT4F",
+        "LT5F",
+        "LT6F"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "02/05/2026",
+      "thursday_lts": [
+        "LT1F",
+        "LT2F",
+        "LT3F"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "First Thursday Session",
+      "exam_sessions": []
+    },
+    {
+      "week": 5,
+      "tuesday_date": "",
+      "tuesday_lts": [],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "",
+      "thursday_lts": [],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 6,
+      "tuesday_date": "02/17/2026",
+      "tuesday_lts": [
+        "LT3Adv",
+        "LT4Adv",
+        "LT5Adv",
+        "LT6Adv",
+        "LT7F",
+        "LT7Adv",
+        "LT8F"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "02/19/2026",
+      "thursday_lts": [
+        "LT1Adv",
+        "LT2Adv",
+        "LT3F",
+        "LT4F",
+        "LT5F",
+        "LT6F"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 7,
+      "tuesday_date": "02/24/2026",
+      "tuesday_lts": [
+        "LT1F",
+        "LT7Adv",
+        "LT8F",
+        "LT9F",
+        "LT10",
+        "LT11"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "02/26/2026",
+      "thursday_lts": [
+        "LT2F",
+        "LT3F",
+        "LT5F",
+        "LT5Adv",
+        "LT6F",
+        "LT6Adv",
+        "LT7F"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 8,
+      "tuesday_date": "03/03/2026",
+      "tuesday_lts": [
+        "LT9F",
+        "LT10",
+        "LT11",
+        "LT12F",
+        "LT13F",
+        "LT14"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "03/05/2026",
+      "thursday_lts": [
+        "LT1Adv",
+        "LT3Adv",
+        "LT4Adv",
+        "LT5Adv",
+        "LT6Adv",
+        "LT7F",
+        "LT7Adv",
+        "LT8F"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 9,
+      "tuesday_date": "03/17/2026",
+      "tuesday_lts": [
+        "LT9Adv",
+        "LT12F",
+        "LT13F",
+        "LT14",
+        "LT15F",
+        "LT16F"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "03/19/2026",
+      "thursday_lts": [
+        "LT1F",
+        "LT2F",
+        "LT4F",
+        "LT5F",
+        "LT6F",
+        "LT9F",
+        "LT2Adv",
+        "LT3Adv"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 10,
+      "tuesday_date": "",
+      "tuesday_lts": [],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "",
+      "thursday_lts": [],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 11,
+      "tuesday_date": "03/31/2026",
+      "tuesday_lts": [
+        "LT8Adv",
+        "LT13Adv",
+        "LT15Adv",
+        "LT16Adv",
+        "LT17F",
+        "LT17Adv",
+        "LT18"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "04/02/2026",
+      "thursday_lts": [
+        "LT4F",
+        "LT5Adv",
+        "LT6Adv",
+        "LT7F",
+        "LT9F",
+        "LT9Adv",
+        "LT12F",
+        "LT12Adv",
+        "LT14",
+        "LT15F"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 12,
+      "tuesday_date": "04/07/2026",
+      "tuesday_lts": [
+        "LT1Adv",
+        "LT6F",
+        "LT8F",
+        "LT8Adv",
+        "LT13F",
+        "LT14",
+        "LT17Adv",
+        "LT18",
+        "LT19F"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "04/09/2026",
+      "thursday_lts": [
+        "LT1F",
+        "LT2Adv",
+        "LT4Adv",
+        "LT12Adv",
+        "LT13Adv",
+        "LT15F",
+        "LT16F",
+        "LT16Adv",
+        "LT17F"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 13,
+      "tuesday_date": "04/14/2026",
+      "tuesday_lts": [
+        "LT3F",
+        "LT9F",
+        "LT11",
+        "LT16F",
+        "LT17Adv",
+        "LT19F",
+        "LT19Adv",
+        "LT20F",
+        "LT21"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "04/16/2026",
+      "thursday_lts": [
+        "LT1Adv",
+        "LT2F",
+        "LT3Adv",
+        "LT4F",
+        "LT5Adv",
+        "LT9Adv",
+        "LT16Adv",
+        "LT17F",
+        "LT18"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 14,
+      "tuesday_date": "04/21/2026",
+      "tuesday_lts": [
+        "LT12F",
+        "LT12Adv",
+        "LT13F",
+        "LT17F",
+        "LT19Adv",
+        "LT20Adv",
+        "LT21",
+        "LT22",
+        "LT23",
+        "LT24"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "04/23/2026",
+      "thursday_lts": [
+        "LT2Adv",
+        "LT4Adv",
+        "LT6F",
+        "LT7Adv",
+        "LT8F",
+        "LT8Adv",
+        "LT15Adv",
+        "LT17Adv",
+        "LT18",
+        "LT19F",
+        "LT20F"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 15,
+      "tuesday_date": "04/28/2026",
+      "tuesday_lts": [
+        "LT1F",
+        "LT10",
+        "LT11",
+        "LT13Adv",
+        "LT14",
+        "LT15F",
+        "LT20Adv",
+        "LT21",
+        "LT22",
+        "LT23",
+        "LT24"
+      ],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "04/30/2026",
+      "thursday_lts": [
+        "LT3Adv",
+        "LT5F",
+        "LT6Adv",
+        "LT7F",
+        "LT8Adv",
+        "LT9Adv",
+        "LT17F",
+        "LT17Adv",
+        "LT19F",
+        "LT19Adv",
+        "LT20F"
+      ],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    },
+    {
+      "week": 16,
+      "tuesday_date": "",
+      "tuesday_lts": [],
+      "tuesday_new_lts": [],
+      "tuesday_notes": "",
+      "thursday_date": "",
+      "thursday_lts": [],
+      "thursday_new_lts": [],
+      "thursday_notes": "",
+      "exam_sessions": []
+    }
+  ],
   "office_hours_embed_url": ""
 }

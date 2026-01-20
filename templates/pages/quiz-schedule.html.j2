@@ -1,0 +1,360 @@
+{% extends "base.html.j2" %}
+
+{% block subtitle %}Quiz Schedule{% endblock %}
+
+{% block extra_styles %}
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 1.8rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+
+    .schedule-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .schedule-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    /* Schedule Legend */
+    .schedule-legend {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        padding: 1rem;
+        background-color: var(--light-gray);
+        border-radius: 8px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+    }
+
+    /* Schedule Table */
+    .schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .schedule-table th {
+        background: var(--penn-state-navy);
+        color: white;
+        font-weight: 600;
+    }
+
+    .schedule-table tr:hover {
+        background: #f8f9fa;
+    }
+
+    .schedule-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .week-number {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        white-space: nowrap;
+    }
+
+    /* Learning Target Badges */
+    .lt-list {
+        font-size: 0.9em;
+        line-height: 1.6;
+    }
+
+    .lt-new {
+        background: #cce5ff;
+        color: #004085;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-right: 4px;
+        font-size: 0.85em;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+
+    .lt-regular {
+        margin-right: 4px;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+
+    /* Exam Badges */
+    .exam-badge {
+        background: #ffc107;
+        color: #856404;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+
+    .midterm-badge {
+        background: #dc3545;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+    }
+
+    .makeup-badge {
+        background: #6c757d;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+    }
+
+    .final-badge {
+        background: #28a745;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85em;
+        display: inline-block;
+    }
+
+    /* Exam Session Box */
+    .exam-session {
+        margin-top: 8px;
+        padding: 8px;
+        background: rgba(255, 243, 205, 0.5);
+        border-radius: 4px;
+        border-left: 3px solid #ffc107;
+    }
+
+    .exam-session.midterm {
+        background: rgba(220, 53, 69, 0.1);
+        border-left-color: #dc3545;
+    }
+
+    .exam-session.final {
+        background: rgba(40, 167, 69, 0.1);
+        border-left-color: #28a745;
+    }
+
+    .exam-session.makeup {
+        background: rgba(108, 117, 125, 0.1);
+        border-left-color: #6c757d;
+    }
+
+    .notes-text {
+        font-size: 0.85em;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .date-label {
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .empty-cell {
+        color: #6c757d;
+    }
+
+    /* Alert box for schedule notes */
+    .schedule-note {
+        background-color: #e8f4fd;
+        border-left: 4px solid var(--penn-state-blue);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .schedule-table {
+            font-size: 0.85em;
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .lt-list {
+            font-size: 0.8em;
+        }
+
+        .schedule-legend {
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="schedule-header">
+    <h2>Quiz Schedule</h2>
+    <p>{{ course.term }} - Learning Target availability by week</p>
+</div>
+
+{% if quiz_schedule %}
+<div class="schedule-note">
+    <strong>How to Read This Schedule:</strong> This schedule shows which Learning Targets are available each week during Tuesday quiz sessions and Thursday quiz hours. Learning Targets highlighted in <span class="lt-new">blue</span> are new that week.
+</div>
+
+<div class="schedule-legend">
+    <div class="legend-item">
+        <span class="lt-new">LT</span>
+        <span>New this week</span>
+    </div>
+    <div class="legend-item">
+        <span class="midterm-badge">MIDTERM</span>
+        <span>Midterm Exam</span>
+    </div>
+    <div class="legend-item">
+        <span class="final-badge">FINAL</span>
+        <span>Final Exam</span>
+    </div>
+    <div class="legend-item">
+        <span class="makeup-badge">MAKE-UP</span>
+        <span>Make-up Session</span>
+    </div>
+</div>
+
+<table class="schedule-table">
+    <thead>
+        <tr>
+            <th>Week</th>
+            <th>Tuesday</th>
+            <th>Thursday</th>
+            <th>Exams</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for week in quiz_schedule %}
+        <tr>
+            <td class="week-number">Week {{ week.week }}</td>
+            <td>
+                {% if week.tuesday_date %}
+                <div class="date-label">{{ week.tuesday_date }}</div>
+                <div class="lt-list">
+                    {% for lt in week.tuesday_lts %}
+                        {% if lt in week.tuesday_new_lts %}
+                            <span class="lt-new">{{ lt }}</span>
+                        {% else %}
+                            <span class="lt-regular">{{ lt }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% else %}
+                <span class="empty-cell">-</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if week.thursday_date %}
+                <div class="date-label">{{ week.thursday_date }}</div>
+                <div class="lt-list">
+                    {% for lt in week.thursday_lts %}
+                        {% if lt in week.thursday_new_lts %}
+                            <span class="lt-new">{{ lt }}</span>
+                        {% else %}
+                            <span class="lt-regular">{{ lt }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% else %}
+                <span class="empty-cell">-</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if week.exam_sessions %}
+                    {% for exam in week.exam_sessions %}
+                    <div class="exam-session {% if 'midterm' in exam.exam_type %}midterm{% elif 'final' in exam.exam_type %}final{% elif 'makeup' in exam.exam_type %}makeup{% endif %}">
+                        <div>
+                            {{ exam.date }}
+                            {% if 'midterm' in exam.exam_type %}
+                            <span class="midterm-badge">MIDTERM</span>
+                            {% elif 'makeup' in exam.exam_type %}
+                            <span class="makeup-badge">MAKE-UP</span>
+                            {% elif 'final' in exam.exam_type %}
+                            <span class="final-badge">FINAL</span>
+                            {% else %}
+                            <span class="exam-badge">EXAM</span>
+                            {% endif %}
+                        </div>
+                        {% if exam.learning_targets %}
+                        <div class="lt-list">
+                            {% for lt in exam.learning_targets %}
+                            <span class="lt-regular">{{ lt }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if exam.notes %}
+                        <div class="notes-text">{{ exam.notes }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <span class="empty-cell">-</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if week.tuesday_notes %}
+                <div class="notes-text">{{ week.tuesday_notes }}</div>
+                {% endif %}
+                {% if week.thursday_notes and week.thursday_notes != week.tuesday_notes %}
+                <div class="notes-text">{{ week.thursday_notes }}</div>
+                {% endif %}
+                {% if not week.tuesday_notes and not week.thursday_notes %}
+                <span class="empty-cell">-</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<div class="schedule-note">
+    <p>The quiz schedule for this semester has not yet been published. Check back later or visit <a href="{{ course.course_hub_url }}" target="_blank" rel="noopener">Course Hub</a> for the most up-to-date schedule.</p>
+</div>
+{% endif %}
+
+<div class="schedule-note" style="margin-top: 2rem;">
+    <strong>Related Pages:</strong>
+    <ul>
+        <li><a href="class-times.html#tuesday-recitations">Tuesday Recitation Times and Locations</a></li>
+        <li><a href="class-times.html#thursday-quiz-hours">Thursday Quiz Hour Times and Locations</a></li>
+        <li><a href="policies.html#quiz-exam-policies">Quiz Session Policies</a></li>
+        <li><a href="learning-targets-list.html">Complete Learning Targets List</a></li>
+    </ul>
+</div>
+{% endblock %}

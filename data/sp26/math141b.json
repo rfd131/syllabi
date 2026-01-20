@@ -891,7 +891,12 @@
         "LT3F",
         "LT4F"
       ],
-      "tuesday_new_lts": [],
+      "tuesday_new_lts": [
+        "LT1Adv",
+        "LT2F",
+        "LT3F",
+        "LT4F"
+      ],
       "tuesday_notes": "",
       "thursday_date": "",
       "thursday_lts": [],
@@ -905,10 +910,12 @@
       "tuesday_lts": [
         "LT3F",
         "LT4",
+        "LT5F LT6F"
+      ],
+      "tuesday_new_lts": [
         "LT5F",
         "LT6F"
       ],
-      "tuesday_new_lts": [],
       "tuesday_notes": "",
       "thursday_date": "02/05/2026",
       "thursday_lts": [
@@ -929,7 +936,28 @@
       "thursday_lts": [],
       "thursday_new_lts": [],
       "thursday_notes": "",
-      "exam_sessions": []
+      "exam_sessions": [
+        {
+          "date": "02/10/2026",
+          "exam_type": "midterm",
+          "session_type": "Midterm",
+          "learning_targets": [
+            "LT1F",
+            "LT1Adv",
+            "LT2F",
+            "LT2Adv",
+            "LT3F",
+            "LT3Adv",
+            "LT4",
+            "LT5F",
+            "LT5Adv",
+            "LT6F",
+            "LT6Adv",
+            "LT7F"
+          ],
+          "notes": ""
+        }
+      ]
     },
     {
       "week": 6,
@@ -943,7 +971,10 @@
         "LT7Adv",
         "LT8F"
       ],
-      "tuesday_new_lts": [],
+      "tuesday_new_lts": [
+        "LT7Adv",
+        "LT8F"
+      ],
       "tuesday_notes": "",
       "thursday_date": "02/19/2026",
       "thursday_lts": [
@@ -969,7 +1000,11 @@
         "LT10",
         "LT11"
       ],
-      "tuesday_new_lts": [],
+      "tuesday_new_lts": [
+        "First attempt for LT9F",
+        "LT10",
+        "and LT11"
+      ],
       "tuesday_notes": "",
       "thursday_date": "02/26/2026",
       "thursday_lts": [
@@ -996,7 +1031,11 @@
         "LT13F",
         "LT14"
       ],
-      "tuesday_new_lts": [],
+      "tuesday_new_lts": [
+        "First attempt for LT12F",
+        "LT13",
+        "LT14"
+      ],
       "tuesday_notes": "",
       "thursday_date": "03/05/2026",
       "thursday_lts": [
@@ -1024,7 +1063,11 @@
         "LT15F",
         "LT16F"
       ],
-      "tuesday_new_lts": [],
+      "tuesday_new_lts": [
+        "First attempt for LT9Adv",
+        "LT15F",
+        "LT16F"
+      ],
       "tuesday_notes": "",
       "thursday_date": "03/19/2026",
       "thursday_lts": [
@@ -1051,7 +1094,15 @@
       "thursday_lts": [],
       "thursday_new_lts": [],
       "thursday_notes": "",
-      "exam_sessions": []
+      "exam_sessions": [
+        {
+          "date": "03/24/2026",
+          "exam_type": "midterm",
+          "session_type": "Midterm",
+          "learning_targets": [],
+          "notes": ""
+        }
+      ]
     },
     {
       "week": 11,
@@ -1229,7 +1280,15 @@
       "thursday_lts": [],
       "thursday_new_lts": [],
       "thursday_notes": "",
-      "exam_sessions": []
+      "exam_sessions": [
+        {
+          "date": "05/06/2026",
+          "exam_type": "final",
+          "session_type": "Final",
+          "learning_targets": [],
+          "notes": ""
+        }
+      ]
     }
   ],
   "office_hours_embed_url": ""

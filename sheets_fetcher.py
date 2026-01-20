@@ -718,49 +718,62 @@ class SheetsFetcher:
                     }
 
                 week_entry = weeks_data[week_num]
-                session = record.get("Session", "").strip().lower()
+                session = record.get("Session", "").strip()
+                session_lower = session.lower()
                 date_str = record.get("Date", "")
 
-                # Parse learning targets (comma or space separated)
+                # Parse learning targets (comma-separated)
                 lts_str = record.get("Learning Targets", "") or record.get("LTs", "")
                 if lts_str:
-                    lts = [lt.strip() for lt in lts_str.replace(",", " ").split() if lt.strip()]
+                    lts = [lt.strip() for lt in str(lts_str).split(",") if lt.strip()]
                 else:
                     lts = []
 
-                # Parse new learning targets
-                new_lts_str = record.get("New LTs", "") or record.get("New", "")
+                # Parse new learning targets (comma-separated)
+                # Note: Column name is "New Lts" (not "New LTs")
+                new_lts_str = record.get("New Lts", "") or record.get("New LTs", "") or record.get("New", "")
                 if new_lts_str:
-                    new_lts = [lt.strip() for lt in new_lts_str.replace(",", " ").split() if lt.strip()]
+                    new_lts = [lt.strip() for lt in str(new_lts_str).split(",") if lt.strip()]
                 else:
                     new_lts = []
 
                 notes = record.get("Notes", "")
 
-                # Check for exam types
-                exam_type = record.get("Exam Type", "") or record.get("Exam", "")
+                # Determine exam type from Session column
+                exam_type = None
+                if session_lower == "midterm":
+                    exam_type = "midterm"
+                elif session_lower == "make-up midterm":
+                    exam_type = "makeup_midterm"
+                elif session_lower == "make-up" or session_lower == "makeup":
+                    exam_type = "makeup"
+                elif session_lower == "final":
+                    exam_type = "final"
 
-                if "tuesday" in session:
+                # Handle regular Tuesday/Thursday sessions
+                if "tuesday" in session_lower:
                     week_entry["tuesday_date"] = date_str
                     week_entry["tuesday_lts"] = lts
                     week_entry["tuesday_new_lts"] = new_lts
                     week_entry["tuesday_notes"] = notes
-                elif "thursday" in session:
+                elif "thursday" in session_lower:
                     week_entry["thursday_date"] = date_str
                     week_entry["thursday_lts"] = lts
                     week_entry["thursday_new_lts"] = new_lts
                     week_entry["thursday_notes"] = notes
 
-                # Handle exam sessions
+                # Handle exam sessions (Midterm, Make-up, Final, etc.)
                 if exam_type:
                     exam_entry = {
                         "date": date_str,
-                        "exam_type": exam_type.lower(),
+                        "exam_type": exam_type,
+                        "session_type": session,
                         "learning_targets": lts,
                         "notes": notes,
                     }
                     # Avoid duplicates
-                    if exam_entry not in week_entry["exam_sessions"]:
+                    existing_dates = [e["date"] for e in week_entry["exam_sessions"]]
+                    if date_str not in existing_dates:
                         week_entry["exam_sessions"].append(exam_entry)
 
             # Sort by week number and return as list

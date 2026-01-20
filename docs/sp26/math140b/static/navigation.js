@@ -114,9 +114,8 @@ const navigationData = {
     quickLinks: [
         {
             icon: "🎯",
-            title: "Course Hub",
-            href: "",  // Replaced by build process
-            external: true
+            title: "Course Hub Login",
+            href: "../../coursehub-login.html"
         },
         {
             icon: "📊",

@@ -152,11 +152,12 @@ const navigationData = {
         // Study Guides removed
     ],
     importantDates: [
-        "Regular Drop Deadline: January 23",
-        "Midterm One: Tuesday, February 17",
-        "Midterm Two: Tuesday, March 31",
-        "Late Drop: April 10",
-        "Finals Week: May 4-8"
+        "Regular Drop Deadline: 01/17/2026",
+        "Midterm One: 2/10/2026",
+        "Midterm Two: 3/24/2026",
+        "Make-up Quiz Session: 3/18/2026",
+        "Make-up Quiz Session: 4/22/2026",
+        "Late Drop: 04/12/2026"
     ]
 };
 
@@ -363,7 +364,7 @@ function generateQuickLinks() {
 
     navigationData.quickLinks.forEach(link => {
         // Skip placeholder links
-        if (link.href === 'https://example.com/course-hub/math140b') return;
+        if (link.href === '') return;
 
         const external = link.external ? ' target="_blank" rel="noopener noreferrer"' : '';
         html += `

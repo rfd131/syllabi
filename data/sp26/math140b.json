@@ -811,11 +811,11 @@
         "LT1F",
         "LT1Adv",
         "LT2F",
-        "LT3F",
-        "LT4F"
+        "LT2Adv",
+        "LT3F"
       ],
       "tuesday_new_lts": [
-        "LT4F"
+        "LT2Adv"
       ],
       "tuesday_notes": "",
       "thursday_date": "",

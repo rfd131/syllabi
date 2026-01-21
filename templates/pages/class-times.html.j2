@@ -183,7 +183,7 @@
         <tbody>
             {% for section in tuesday_sections %}
             <tr>
-                <td class="section-number">Section {{ section.identifier }}</td>
+                <td class="section-number">Section {{ section.identifier or section.number }}</td>
                 <td>{{ section.time }}</td>
                 <td>{{ section.location }}</td>
             </tr>

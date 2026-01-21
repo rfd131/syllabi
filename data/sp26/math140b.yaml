@@ -231,6 +231,15 @@ learning_targets:
     - 13
     - 14
 
+# LA Community Learning Sessions
+la_sessions:
+  location: "075 Willard Building"
+  schedule:
+    - days: "Tuesdays and Wednesdays"
+      time: "6:00 - 7:00 PM"
+    - days: "Tuesdays, Wednesdays, and Thursdays"
+      time: "7:00 - 8:00 PM"
+
 # Study guide resources
 study_guides:
   sample_quizzes_url: "https://drive.google.com/drive/folders/1nGPpPxN42Rw3GTNx5Xtm1qRwq_cGDR-G?usp=sharing"

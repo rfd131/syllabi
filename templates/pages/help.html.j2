@@ -256,8 +256,17 @@
         </ul>
 
         <h4>Schedule:</h4>
+        {% if la_sessions %}
+        <p><strong>Location:</strong> {{ la_sessions.location }}</p>
+        <ul>
+            {% for session in la_sessions.schedule %}
+            <li><strong>{{ session.time }}:</strong> {{ session.days }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
         <p><strong>Times and Locations: TBD</strong></p>
         <p>Complete schedule and room locations will be posted on Canvas at the beginning of the semester.</p>
+        {% endif %}
 
         <div class="alert" style="margin-top: 1rem;">
             <strong>Earn XP:</strong> Participation in LA Community Learning Sessions earns 20 Experience Points per week, contributing to potential grade modifications.

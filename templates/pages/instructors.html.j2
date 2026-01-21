@@ -210,7 +210,11 @@
             <div class="detail-label">Teaching Section{% if instructor.sections|length > 1 %}s{% endif %}:</div>
             <div class="section-badges">
                 {% for section in instructor.sections %}
+                {% if section is mapping %}
                 <span class="section-badge">Section {{ section.number }}{% if section.days %} - {{ section.days }} {{ section.time }}{% endif %}{% if section.location %}, {{ section.location }}{% endif %}</span>
+                {% else %}
+                <span class="section-badge">Section {{ section }}</span>
+                {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -230,6 +234,7 @@
                     <ul class="office-hours-list">
                         {% for hours in instructor.office_hours %}
                         <li>
+                            {% if hours is mapping %}
                             {{ hours.day }} {{ hours.time }}{% if hours.location %}, {{ hours.location }}{% endif %}
                             {% if hours.type == 'Shared' %}
                             <span class="oh-type-badge oh-type-shared">Shared</span>
@@ -237,6 +242,9 @@
                             <span class="oh-type-badge oh-type-drop-in">Drop-in</span>
                             {% elif hours.type == 'Appointment needed' %}
                             <span class="oh-type-badge oh-type-appointment">Appointment</span>
+                            {% endif %}
+                            {% else %}
+                            {{ hours }}
                             {% endif %}
                         </li>
                         {% endfor %}

@@ -152,12 +152,11 @@ const navigationData = {
         // Study Guides removed
     ],
     importantDates: [
-        "Regular Drop Deadline: 01/17/2026",
-        "Midterm One: 2/10/2026",
-        "Midterm Two: 3/24/2026",
-        "Make-up Quiz Session: 3/18/2026",
-        "Make-up Quiz Session: 4/22/2026",
-        "Late Drop: 04/12/2026"
+        "Regular Drop Deadline: January 23",
+        "Midterm One: TBD",
+        "Midterm Two: TBD",
+        "Late Drop: April 10",
+        "Finals Week: May 4-8"
     ]
 };
 
@@ -364,7 +363,7 @@ function generateQuickLinks() {
 
     navigationData.quickLinks.forEach(link => {
         // Skip placeholder links
-        if (link.href === '') return;
+        if (link.href === 'https://example.com/course-hub/math141b') return;
 
         const external = link.external ? ' target="_blank" rel="noopener noreferrer"' : '';
         html += `

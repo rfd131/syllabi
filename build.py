@@ -283,6 +283,7 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
         return True
 
     # Define page order for combined PDF (logical syllabus sequence)
+    # Note: quiz-session-summary and help (FAQ) are excluded - links provided instead
     page_order = [
         "index",
         "instructors",
@@ -291,10 +292,8 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
         "grading",
         "learning-targets",
         "learning-targets-list",
-        "quiz-session-summary",
         "policies",
         "resources",
-        "help",
     ]
 
     # Collect rendered pages for PDF generation
@@ -319,61 +318,100 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
         output_file.write_text(html)
         print(f"  Built: {output_file.relative_to(PROJECT_ROOT)}")
 
-        # Collect for combined PDF
-        if generate_pdf:
+        # Collect for combined PDF (exclude quiz-session-summary)
+        if generate_pdf and page_name in page_order:
             pdf_documents.append((page_name, html))
 
     # Generate combined PDF if requested
     if generate_pdf and pdf_documents:
         from weasyprint import HTML, CSS
 
-        # Compact PDF styles - smaller fonts, tighter spacing
+        # =================================================================
+        # PDF FONT SIZE CONFIGURATION
+        # Adjust these values to change font sizes throughout the PDF
+        # =================================================================
+        # Page title (course code and name in header): 9pt
+        # Header subtitle: 7pt
+        # H2 (main section headers like "Welcome to MATH 140B!"): 8pt
+        # H3 (subsection headers): 7pt
+        # H4 (sub-subsection headers): 7pt
+        # Body text: 7pt
+        # Table text: 6pt
+        # =================================================================
         pdf_css = CSS(string="""
             @page {
                 size: letter;
                 margin: 0.4in 0.5in;
             }
+
+            /* ===== BASE TYPOGRAPHY ===== */
             body {
-                font-size: 8pt;
-                line-height: 1.15;
+                font-size: 7pt;
+                line-height: 1.2;
             }
+
+            /* ===== REMOVE ALL GREY/LIGHT BACKGROUNDS ===== */
+            * {
+                background-color: transparent !important;
+            }
+            /* Re-apply specific backgrounds we want to keep */
+            .section-table th,
+            .grade-table th,
+            .xp-table th {
+                background-color: #001E44 !important;
+                color: white !important;
+            }
+
+            /* ===== PAGE TITLE (header) ===== */
             header {
-                padding: 0.3rem 0;
-                margin-bottom: 0.3rem;
+                padding: 0.1rem 0;
+                margin-bottom: 0.15rem;
                 background: none !important;
-                border-bottom: 1px solid #001E44;
+                border: none !important;
             }
             header h1 {
-                font-size: 12pt;
+                font-size: 9pt;
                 color: #001E44;
-            }
-            header h1 a {
-                color: #001E44;
+                margin: 0;
+                padding: 0;
             }
             header .subtitle {
-                font-size: 9pt;
-                margin-top: 0.1rem;
+                font-size: 7pt;
+                margin-top: 0.05rem;
             }
-            h2 {
-                font-size: 10pt;
-                margin: 0.4rem 0 0.2rem 0;
+
+            /* ===== HEADER HIERARCHY ===== */
+            h2, main h2 {
+                font-size: 8pt !important;
+                margin: 0.2rem 0 0.1rem 0 !important;
+                padding-bottom: 0.05rem !important;
+                border-bottom: 1px solid #001E44 !important;
                 page-break-after: avoid;
             }
             h3 {
-                font-size: 9pt;
-                margin: 0.3rem 0 0.15rem 0;
+                font-size: 7pt !important;
+                margin: 0.15rem 0 0.08rem 0 !important;
                 page-break-after: avoid;
             }
+            h4 {
+                font-size: 7pt !important;
+                margin: 0.1rem 0 0.05rem 0 !important;
+            }
+
+            /* ===== TEXT ELEMENTS ===== */
             p {
-                margin-bottom: 0.15rem;
+                margin-bottom: 0.1rem;
             }
             li {
-                margin-bottom: 0.05rem;
+                margin-bottom: 0.03rem;
             }
             ul, ol {
-                margin-left: 0.8rem;
-                margin-bottom: 0.2rem;
+                margin-left: 0.6rem;
+                margin-bottom: 0.1rem;
+                padding-left: 0;
             }
+
+            /* ===== LAYOUT ===== */
             .container {
                 display: block;
                 padding: 0;
@@ -381,53 +419,234 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
             main {
                 padding: 0;
             }
+            .page-wrapper {
+                min-height: auto;
+            }
+
+            /* ===== HIDE NAVIGATION ===== */
             #sidebar-navigation,
             #quick-links-sidebar,
             .sidebar-navigation,
             .quick-links,
-            nav {
+            nav,
+            footer {
                 display: none !important;
             }
-            .page-wrapper {
-                min-height: auto;
+
+            /* ===== TABLES ===== */
+            .data-table, .section-table, .grade-table, .xp-table {
+                margin: 0.1rem 0;
             }
-            footer {
-                display: none;
+            .data-table th, .data-table td,
+            .section-table th, .section-table td,
+            .grade-table th, .grade-table td,
+            .xp-table th, .xp-table td {
+                padding: 0.1rem 0.2rem;
+                font-size: 6pt;
             }
-            .data-table {
-                margin: 0.2rem 0;
-            }
-            .data-table th,
-            .data-table td {
-                padding: 0.15rem 0.3rem;
-                font-size: 7pt;
-            }
+
+            /* ===== ALERT/INFO BOXES ===== */
             .alert, .info-box {
-                padding: 0.3rem;
-                margin: 0.2rem 0;
-                font-size: 8pt;
+                padding: 0.15rem 0.2rem;
+                margin: 0.1rem 0;
+                font-size: 6pt;
+                border-left-width: 2px;
             }
-            /* Compact learning targets list - headers only */
-            .lt-accordion {
+
+            /* ===== INDEX PAGE ===== */
+            section {
+                background: none !important;
+                background-color: transparent !important;
+            }
+            #welcome, #course-overview, #gen-ed, #prerequisites {
+                background: none !important;
+                background-color: transparent !important;
+            }
+            .welcome-section {
+                background: none !important;
+                background-color: transparent !important;
+                padding: 0.1rem 0;
                 margin-bottom: 0.15rem;
+                border-radius: 0;
+            }
+            .feedback-diagram {
+                display: none !important;
+            }
+            .feedback-container {
+                display: block;
+            }
+            .feedback-text {
+                min-width: auto;
+            }
+            .overview-section {
+                background: none !important;
+                background-color: transparent !important;
+                padding: 0.05rem 0;
+                margin-bottom: 0.1rem;
+            }
+            .overview-card {
+                padding: 0.1rem 0.2rem;
+                margin: 0.1rem 0;
+                background: none !important;
+                background-color: transparent !important;
+            }
+            .gen-ed-objective {
+                padding: 0.1rem 0.2rem;
+                margin: 0.08rem 0;
+                border-left-width: 2px;
+                background: none !important;
+                background-color: transparent !important;
+            }
+            .gen-ed-objective h4 {
+                font-size: 7pt !important;
+                margin-bottom: 0.05rem !important;
+            }
+            .gen-ed-objective p {
+                font-size: 6pt;
+            }
+
+            /* ===== INSTRUCTORS PAGE ===== */
+            .instructor-grid {
+                display: block;
+            }
+            .instructor-card {
+                padding: 0.15rem 0.2rem;
+                margin-bottom: 0.15rem;
+                border-left-width: 2px;
+                page-break-inside: avoid;
+            }
+            .instructor-header {
+                margin-bottom: 0.05rem;
+            }
+            .instructor-name {
+                font-size: 7pt !important;
+            }
+            .instructor-title {
+                font-size: 6pt !important;
+            }
+            .instructor-pronouns {
+                font-size: 6pt;
+                margin-bottom: 0.1rem;
+            }
+            .instructor-details {
+                font-size: 6pt;
+                gap: 0.08rem;
+            }
+            .detail-row {
+                margin-bottom: 0.05rem;
+            }
+            .detail-label {
+                min-width: 50px;
+                font-size: 6pt;
+            }
+            .detail-content {
+                font-size: 6pt;
+            }
+            .sections-taught {
+                margin-top: 0.1rem;
+                padding-top: 0.1rem;
+            }
+            .section-badge {
+                font-size: 5pt;
+                padding: 0.05rem 0.15rem;
+            }
+            .office-hours-list {
+                margin: 0;
+                padding: 0;
+            }
+            .office-hours-list li {
+                margin-bottom: 0.03rem;
+                padding-left: 0.3rem;
+                font-size: 6pt;
+            }
+            .oh-type-badge {
+                font-size: 5pt;
+                padding: 0.02rem 0.1rem;
+            }
+            .appointment-note {
+                font-size: 5pt;
+                margin-top: 0.05rem;
+            }
+            .shared-hours-section {
+                padding: 0.15rem;
+                margin: 0.15rem 0;
+            }
+            .shared-hours-title {
+                font-size: 7pt !important;
+            }
+            .hours-iframe {
+                display: none !important;
+            }
+
+            /* ===== CLASS TIMES PAGE ===== */
+            .thursday-hours-box {
+                padding: 0.15rem;
+                margin: 0.1rem 0;
+            }
+            .hours-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.1rem;
+                margin: 0.1rem 0;
+            }
+            .hour-slot {
+                padding: 0.08rem 0.15rem;
+                flex: 0 0 auto;
+                min-width: 70px;
+            }
+            .hour-time {
+                font-size: 6pt;
+                margin-bottom: 0.03rem;
+            }
+            .hour-location {
+                font-size: 5pt;
+            }
+            .hours-note {
+                margin-top: 0.1rem;
+                margin-bottom: 0.05rem;
+                padding: 0.1rem;
+                font-size: 5pt;
+            }
+
+            /* ===== GRADING PAGE ===== */
+            .important-box, .xp-section, .example-box {
+                padding: 0.15rem;
+                margin: 0.1rem 0;
+            }
+            .math197-section {
+                padding: 0.15rem;
+                margin: 0.1rem 0;
+            }
+            .essential-targets {
+                gap: 0.1rem;
+                margin: 0.05rem 0;
+            }
+            .target-badge {
+                font-size: 5pt;
+                padding: 0.03rem 0.1rem;
+            }
+
+            /* ===== LEARNING TARGETS LIST ===== */
+            .lt-accordion {
+                margin-bottom: 0.08rem;
                 box-shadow: none;
                 border: none;
                 border-bottom: 1px solid #eee;
             }
             .lt-accordion-header {
-                padding: 0.2rem 0.3rem;
+                padding: 0.1rem 0.15rem;
                 border-left-width: 2px;
             }
             .lt-id {
-                font-size: 8pt;
-                min-width: 35px;
+                font-size: 6pt;
+                min-width: 25px;
             }
             .lt-title {
-                font-size: 8pt;
+                font-size: 6pt;
             }
             .type-badge {
-                font-size: 6pt;
-                padding: 0.05rem 0.2rem;
+                font-size: 5pt;
+                padding: 0.02rem 0.1rem;
             }
             .expand-icon,
             .lt-accordion-content {
@@ -448,9 +667,84 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
         # Use public GitHub Pages URL for links in PDF
         public_base_url = f"https://rfd131.github.io/syllabi/{term}/{course}/"
 
+        # =================================================================
+        # PDF-SPECIFIC HTML TRANSFORMATIONS
+        # These modify content for PDF only, not the website
+        # =================================================================
+        # Get course code for dynamic text replacement
+        course_code = config.get("course", {}).get("code", "MATH")
+        learning_targets_total = config.get("learning_targets", {}).get("total", 25)
+
+        def transform_html_for_pdf(page_name, html):
+            """Apply PDF-specific transformations to HTML content."""
+
+            if page_name == "index":
+                # Add syllabus website link after header, before Welcome section
+                syllabus_link = f'''
+                <div style="background-color: #e8f4fd; border: 1px solid #1E407C; border-radius: 4px; padding: 8px 12px; margin-bottom: 12px; text-align: center;">
+                    <strong>Full Interactive Syllabus:</strong> <a href="{public_base_url}" style="color: #1E407C;">{public_base_url}</a>
+                </div>
+                '''
+                # Insert after </header> and before the welcome section
+                html = re.sub(
+                    r'(</header>\s*)',
+                    r'\1' + syllabus_link,
+                    html,
+                    count=1
+                )
+
+            elif page_name == "class-times":
+                # Replace Thursday Quiz Hours block with simplified paragraph + link
+                thursday_replacement = f'''
+                <h2 id="thursday-quiz-hours">Thursday Quiz Hours</h2>
+                <p>Thursday Quiz Hours are additional sessions available for Learning Targets that you have not yet been successful in during a Tuesday or midterm exam session. <strong>Thursday Quiz Hours begin in Week 4.</strong> Learning Targets become available in quiz hours after they have been available at least twice in either a Tuesday session or on a Midterm Exam.</p>
+                <p><strong>See the full syllabus for times and locations:</strong> <a href="{public_base_url}class-times.html#thursday-quiz-hours">{public_base_url}class-times.html#thursday-quiz-hours</a></p>
+                '''
+                # Remove the thursday-hours-box div and its contents
+                html = re.sub(
+                    r'<h2 id="thursday-quiz-hours">.*?</div>\s*(?=\{% endif %\}|</main>|<h2|$)',
+                    thursday_replacement,
+                    html,
+                    flags=re.DOTALL
+                )
+
+            elif page_name == "learning-targets-list":
+                # Replace the learning targets list with a link
+                lt_replacement = f'''
+                <h2>{course_code} Learning Targets</h2>
+                <p>This page lists all {learning_targets_total} Learning Targets for {course_code}. Each target represents a specific skill or concept you'll master during the course.</p>
+                <p><strong>View the complete Learning Targets list on the syllabus website:</strong> <a href="{public_base_url}learning-targets-list.html">{public_base_url}learning-targets-list.html</a></p>
+                '''
+                # Remove everything after the intro paragraph up to </main>
+                html = re.sub(
+                    r'(<main>).*?(</main>)',
+                    r'\1' + lt_replacement + r'\2',
+                    html,
+                    flags=re.DOTALL
+                )
+
+            elif page_name == "resources":
+                # Add link to FAQ at the end
+                faq_link = f'''
+                <h2>Frequently Asked Questions</h2>
+                <p>Have questions about the course? Check our FAQ page for answers to common questions about assignments, grading, office hours, and more.</p>
+                <p><strong>View FAQ:</strong> <a href="{public_base_url}help.html">{public_base_url}help.html</a></p>
+                '''
+                # Add before </main>
+                html = re.sub(
+                    r'(</main>)',
+                    faq_link + r'\1',
+                    html
+                )
+
+            return html
+
         # Render each page and collect all pages
         all_pages = []
         for i, (page_name, html) in enumerate(pdf_documents):
+            # Apply PDF-specific transformations
+            html = transform_html_for_pdf(page_name, html)
+
             # Remove header/footer from all pages except the first (index)
             if i > 0:
                 html = re.sub(r'<header>.*?</header>', '', html, flags=re.DOTALL)

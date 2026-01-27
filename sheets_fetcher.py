@@ -127,6 +127,7 @@ class SheetsFetcher:
             "grading": self._fetch_grading(config_sheet_id),
             "learning_targets": self._fetch_learning_targets(config_sheet_id),
             "quiz_schedule": self._fetch_quiz_schedule(config_sheet_id),
+            "la_sessions": self._fetch_la_sessions(config_sheet_id),
             # study_guides removed - now provided elsewhere
         }
 
@@ -783,6 +784,58 @@ class SheetsFetcher:
             print(f"Warning: Could not fetch quiz schedule: {e}")
 
         return schedule
+
+    def _fetch_la_sessions(self, sheet_id: str) -> Dict[str, Any]:
+        """Fetch LA Community Learning Sessions from LA Sessions tab.
+
+        Expected columns in 'LA Sessions' tab:
+        - Days: e.g., "Tuesdays and Wednesdays" or "Tuesdays, Wednesdays, and Thursdays"
+        - Time: e.g., "6:00 - 7:00 PM"
+
+        The location can be specified in Course Info as "LA Session Location".
+
+        Returns:
+            Dictionary with 'location' and 'schedule' list, or empty dict if not found.
+        """
+        la_sessions = {
+            "location": "",
+            "schedule": [],
+        }
+
+        # Try to get location from Course Info
+        try:
+            records = self.get_all_records(sheet_id, "Course Info")
+            for record in records:
+                if "Setting" in record:
+                    setting = record.get("Setting", "").strip()
+                    if setting.lower() in ("la session location", "la sessions location", "la location"):
+                        la_sessions["location"] = record.get("Value", "").strip()
+                        break
+        except Exception as e:
+            print(f"Warning: Could not fetch LA Session Location from Course Info: {e}")
+
+        # Fetch schedule from LA Sessions tab
+        try:
+            records = self.get_all_records(sheet_id, "LA Sessions")
+            for record in records:
+                days = record.get("Days", "").strip()
+                # Handle both "Time" and "Times" column names
+                time = record.get("Time", "").strip() or record.get("Times", "").strip()
+                if days and time:
+                    la_sessions["schedule"].append({
+                        "days": days,
+                        "time": time,
+                    })
+
+            # If no schedule found, return empty dict (template will handle missing data)
+            if not la_sessions["schedule"]:
+                return {}
+
+        except Exception as e:
+            print(f"Warning: Could not fetch LA Sessions: {e}")
+            return {}
+
+        return la_sessions
 
     def _get_office_hours_embed_url(self, sheet_id: str) -> str:
         """Get office hours embed URL from Course Info if available."""

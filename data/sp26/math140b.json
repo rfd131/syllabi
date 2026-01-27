@@ -69,7 +69,7 @@
         {
           "day": "Tuesday",
           "time": "4:30 - 5:30 PM",
-          "location": "104L McAllister (inside Suite 104)",
+          "location": "103 McAllister",
           "type": "Shared"
         },
         {
@@ -1204,5 +1204,18 @@
       ]
     }
   ],
+  "la_sessions": {
+    "location": "075 Willard",
+    "schedule": [
+      {
+        "days": "Tuesdays and Wednesdays",
+        "time": "6:00 - 7:00 PM"
+      },
+      {
+        "days": "Tuesdays, Wednesdays, and Thursdays",
+        "time": "7:00 - 8:00 PM"
+      }
+    ]
+  },
   "office_hours_embed_url": ""
 }

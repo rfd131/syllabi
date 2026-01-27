@@ -569,7 +569,7 @@
       },
       {
         "id": "LT9",
-        "type": "One-Time",
+        "type": "Two-Part",
         "title": "Linear Models in Biology",
         "description": "Construct differential equation models, find solutions, and interpret results in biological contexts.",
         "f_description": "Construct differential equation models, find solutions, and interpret results in biological contexts.",
@@ -888,14 +888,12 @@
         "LT1F",
         "LT1Adv",
         "LT2F",
-        "LT3F",
-        "LT4F"
+        "LT3F"
       ],
       "tuesday_new_lts": [
         "LT1Adv",
         "LT2F",
-        "LT3F",
-        "LT4F"
+        "LT3F"
       ],
       "tuesday_notes": "",
       "thursday_date": "",
@@ -909,16 +907,18 @@
       "tuesday_date": "02/03/2026",
       "tuesday_lts": [
         "LT3F",
-        "LT4",
-        "LT5F LT6F"
+        "LT4F",
+        "LT5 LT6F"
       ],
       "tuesday_new_lts": [
-        "LT5F",
+        "LT4F",
+        "LT5",
         "LT6F"
       ],
       "tuesday_notes": "",
       "thursday_date": "02/05/2026",
       "thursday_lts": [
+        "LT1F",
         "LT1Adv",
         "LT2F"
       ],
@@ -1291,5 +1291,18 @@
       ]
     }
   ],
+  "la_sessions": {
+    "location": "073 Willard",
+    "schedule": [
+      {
+        "days": "Tuesdays, Wednesdays, and Thursdays",
+        "time": "6:00 - 7:00 PM"
+      },
+      {
+        "days": "Tuesdays, Wednesdays, and Thursdays",
+        "time": "7:00 - 8:00 PM"
+      }
+    ]
+  },
   "office_hours_embed_url": ""
 }

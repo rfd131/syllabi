@@ -835,7 +835,7 @@
         "LT6F"
       ],
       "tuesday_new_lts": [
-        "LT2Adv",
+        "LT4F",
         "LT5F",
         "LT6F"
       ],
@@ -867,7 +867,20 @@
           "date": "02/10/2026",
           "exam_type": "midterm",
           "session_type": "Midterm",
-          "learning_targets": [],
+          "learning_targets": [
+            "LT1F",
+            "LT1Adv",
+            "LT2F",
+            "LT2Adv",
+            "LT3F",
+            "LT3Adv",
+            "LT4F",
+            "LT4Adv",
+            "LT5F",
+            "LT5Adv",
+            "LT6F",
+            "LT6Adv"
+          ],
           "notes": ""
         }
       ]

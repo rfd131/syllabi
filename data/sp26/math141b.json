@@ -908,7 +908,8 @@
       "tuesday_lts": [
         "LT3F",
         "LT4F",
-        "LT5 LT6F"
+        "LT5",
+        "LT6F"
       ],
       "tuesday_new_lts": [
         "LT4F",
@@ -953,8 +954,7 @@
             "LT5",
             "LT6F",
             "LT6Adv",
-            "LT7F",
-            "LT8F"
+            "LT7F"
           ],
           "notes": ""
         }

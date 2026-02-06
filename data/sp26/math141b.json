@@ -27,13 +27,13 @@
         {
           "day": "Friday",
           "time": "2:30 - 3:20 PM",
-          "location": "005 McAllister",
+          "location": "110 Thomas",
           "type": "Shared"
         },
         {
           "day": "Wednesday",
           "time": "1:25 - 2:15  PM",
-          "location": "005 McAllister",
+          "location": "101 EE East",
           "type": "Drop-in"
         }
       ]
@@ -217,7 +217,7 @@
         "name": "Midterm One",
         "date": "2/10/2026",
         "time": "6:15 - 7:30 PM",
-        "location": "TBD",
+        "location": "varies by instructor",
         "makeup_date": "2/12/2026",
         "makeup_time": "4:30 - 8:30 PM",
         "makeup_location": "121 Sparks"
@@ -226,7 +226,7 @@
         "name": "Midterm Two",
         "date": "3/24/2026",
         "time": "6:15 - 7:30 PM",
-        "location": "TBD",
+        "location": "varies by instructor",
         "makeup_date": "3/26/2026",
         "makeup_time": "4:30 - 8:30 PM",
         "makeup_location": "121 Sparks"

@@ -970,11 +970,11 @@
         "LT6Adv",
         "LT7F",
         "LT7Adv",
-        "LT8F"
+        "LT9F"
       ],
       "tuesday_new_lts": [
         "LT7Adv",
-        "LT8F"
+        "LT9F"
       ],
       "tuesday_notes": "",
       "thursday_date": "02/19/2026",
@@ -994,17 +994,15 @@
       "week": 7,
       "tuesday_date": "02/24/2026",
       "tuesday_lts": [
-        "LT1F",
+        "LT6F",
         "LT7Adv",
         "LT8F",
         "LT9F",
-        "LT10",
-        "LT11"
+        "LT10F"
       ],
       "tuesday_new_lts": [
-        "First attempt for LT9F",
-        "LT10",
-        "and LT11"
+        "LT8F",
+        "LT10F"
       ],
       "tuesday_notes": "",
       "thursday_date": "02/26/2026",
@@ -1025,17 +1023,14 @@
       "week": 8,
       "tuesday_date": "03/03/2026",
       "tuesday_lts": [
-        "LT9F",
-        "LT10",
-        "LT11",
-        "LT12F",
-        "LT13F",
-        "LT14"
+        "LT8F",
+        "LT9Adv",
+        "LT10F",
+        "LT11F"
       ],
       "tuesday_new_lts": [
-        "First attempt for LT12F",
-        "LT13",
-        "LT14"
+        "LT9Adv",
+        "LT11F"
       ],
       "tuesday_notes": "",
       "thursday_date": "03/05/2026",
@@ -1045,9 +1040,7 @@
         "LT4Adv",
         "LT5Adv",
         "LT6Adv",
-        "LT7F",
-        "LT7Adv",
-        "LT8F"
+        "LT7F"
       ],
       "thursday_new_lts": [],
       "thursday_notes": "",
@@ -1059,15 +1052,11 @@
       "tuesday_lts": [
         "LT9Adv",
         "LT12F",
-        "LT13F",
-        "LT14",
-        "LT15F",
-        "LT16F"
+        "LT13",
+        "LT14F"
       ],
       "tuesday_new_lts": [
-        "First attempt for LT9Adv",
-        "LT15F",
-        "LT16F"
+        "LT13"
       ],
       "tuesday_notes": "",
       "thursday_date": "03/19/2026",

@@ -966,7 +966,6 @@
       "tuesday_lts": [
         "LT3Adv",
         "LT4Adv",
-        "LT5Adv",
         "LT6Adv",
         "LT7F",
         "LT7Adv",
@@ -983,7 +982,7 @@
         "LT2Adv",
         "LT3F",
         "LT4F",
-        "LT5F",
+        "LT5",
         "LT6F"
       ],
       "thursday_new_lts": [],
@@ -1009,8 +1008,7 @@
       "thursday_lts": [
         "LT2F",
         "LT3F",
-        "LT5F",
-        "LT5Adv",
+        "LT5",
         "LT6F",
         "LT6Adv",
         "LT7F"
@@ -1038,7 +1036,6 @@
         "LT1Adv",
         "LT3Adv",
         "LT4Adv",
-        "LT5Adv",
         "LT6Adv",
         "LT7F"
       ],
@@ -1064,7 +1061,7 @@
         "LT1F",
         "LT2F",
         "LT4F",
-        "LT5F",
+        "LT5",
         "LT6F",
         "LT9F",
         "LT2Adv",

@@ -1049,12 +1049,17 @@
       "week": 9,
       "tuesday_date": "03/17/2026",
       "tuesday_lts": [
-        "LT9Adv",
+        "LT8Adv",
+        "LT8Adv",
+        "LT10Adv",
+        "LT11F",
+        "LT12",
         "LT13",
         "LT14F"
       ],
       "tuesday_new_lts": [
-        "LT13"
+        "LT13",
+        "LT14F"
       ],
       "tuesday_notes": "",
       "thursday_date": "03/19/2026",
@@ -1064,9 +1069,9 @@
         "LT4F",
         "LT5",
         "LT6F",
+        "LT8F",
         "LT9F",
-        "LT2Adv",
-        "LT3Adv"
+        "LT10F"
       ],
       "thursday_new_lts": [],
       "thursday_notes": "",
@@ -1087,7 +1092,22 @@
           "date": "03/24/2026",
           "exam_type": "midterm",
           "session_type": "Midterm",
-          "learning_targets": [],
+          "learning_targets": [
+            "LT8F",
+            "LT8Adv",
+            "LT9F",
+            "LT9Adv",
+            "LT10F",
+            "LT10Adv",
+            "LT11F",
+            "LT11Adv",
+            "LT12",
+            "LT13",
+            "LT14F",
+            "LT15F",
+            "LT16",
+            "LT17F"
+          ],
           "notes": ""
         }
       ]
@@ -1096,28 +1116,26 @@
       "week": 11,
       "tuesday_date": "03/31/2026",
       "tuesday_lts": [
-        "LT8Adv",
-        "LT13Adv",
-        "LT15Adv",
-        "LT16Adv",
+        "LT11Adv",
+        "LT14Adv",
+        "LT15F",
+        "LT16",
         "LT17F",
-        "LT17Adv",
-        "LT18"
+        "LT18F",
+        "LT19F"
       ],
       "tuesday_new_lts": [],
       "tuesday_notes": "",
       "thursday_date": "04/02/2026",
       "thursday_lts": [
-        "LT4F",
-        "LT5Adv",
+        "LT3Adv",
         "LT6Adv",
-        "LT7F",
+        "LT7Adv",
+        "LT8F",
         "LT9F",
-        "LT9Adv",
-        "LT12F",
-        "LT12Adv",
-        "LT14",
-        "LT15F"
+        "LT12",
+        "LT13",
+        "LT14F"
       ],
       "thursday_new_lts": [],
       "thursday_notes": "",
@@ -1127,29 +1145,26 @@
       "week": 12,
       "tuesday_date": "04/07/2026",
       "tuesday_lts": [
-        "LT1Adv",
-        "LT6F",
-        "LT8F",
-        "LT8Adv",
-        "LT13F",
-        "LT14",
+        "LT15Adv",
         "LT17Adv",
-        "LT18",
-        "LT19F"
+        "LT18F",
+        "LT18Adv",
+        "LT19F",
+        "LT20F",
+        "LT21"
       ],
       "tuesday_new_lts": [],
       "tuesday_notes": "",
       "thursday_date": "04/09/2026",
       "thursday_lts": [
-        "LT1F",
+        "LT1Adv",
         "LT2Adv",
         "LT4Adv",
-        "LT12Adv",
-        "LT13Adv",
-        "LT15F",
-        "LT16F",
-        "LT16Adv",
-        "LT17F"
+        "LT7F",
+        "LT10F",
+        "LT11F",
+        "LT16",
+        "LT18F"
       ],
       "thursday_new_lts": [],
       "thursday_notes": "",
@@ -1159,29 +1174,26 @@
       "week": 13,
       "tuesday_date": "04/14/2026",
       "tuesday_lts": [
-        "LT3F",
-        "LT9F",
-        "LT11",
-        "LT16F",
-        "LT17Adv",
-        "LT19F",
+        "LT14Adv",
+        "LT15F",
+        "LT17F",
         "LT19Adv",
         "LT20F",
-        "LT21"
+        "LT21",
+        "LT22"
       ],
       "tuesday_new_lts": [],
       "tuesday_notes": "",
       "thursday_date": "04/16/2026",
       "thursday_lts": [
-        "LT1Adv",
-        "LT2F",
-        "LT3Adv",
-        "LT4F",
-        "LT5Adv",
+        "LT3F",
+        "LT5",
+        "LT7Adv",
         "LT9Adv",
-        "LT16Adv",
-        "LT17F",
-        "LT18"
+        "LT12",
+        "LT13",
+        "LT17Adv",
+        "LT19F"
       ],
       "thursday_new_lts": [],
       "thursday_notes": "",
@@ -1191,10 +1203,8 @@
       "week": 14,
       "tuesday_date": "04/21/2026",
       "tuesday_lts": [
-        "LT12F",
-        "LT12Adv",
-        "LT13F",
-        "LT17F",
+        "LT15Adv",
+        "LT18Adv",
         "LT19Adv",
         "LT20Adv",
         "LT21",
@@ -1207,15 +1217,13 @@
       "thursday_date": "04/23/2026",
       "thursday_lts": [
         "LT2Adv",
-        "LT4Adv",
         "LT6F",
         "LT7Adv",
-        "LT8F",
         "LT8Adv",
+        "LT11Adv",
+        "LT14Adv",
         "LT15Adv",
-        "LT17Adv",
-        "LT18",
-        "LT19F",
+        "LT16",
         "LT20F"
       ],
       "thursday_new_lts": [],
@@ -1226,12 +1234,9 @@
       "week": 15,
       "tuesday_date": "04/28/2026",
       "tuesday_lts": [
-        "LT1F",
-        "LT10",
-        "LT11",
-        "LT13Adv",
-        "LT14",
-        "LT15F",
+        "LT17F",
+        "LT18Adv",
+        "LT19F",
         "LT20Adv",
         "LT21",
         "LT22",
@@ -1242,15 +1247,13 @@
       "tuesday_notes": "",
       "thursday_date": "04/30/2026",
       "thursday_lts": [
-        "LT3Adv",
-        "LT5F",
-        "LT6Adv",
+        "LT1F",
+        "LT4F",
         "LT7F",
-        "LT8Adv",
         "LT9Adv",
-        "LT17F",
+        "LT10Adv",
+        "LT14F",
         "LT17Adv",
-        "LT19F",
         "LT19Adv",
         "LT20F"
       ],
@@ -1273,7 +1276,9 @@
           "date": "05/06/2026",
           "exam_type": "final",
           "session_type": "Final",
-          "learning_targets": [],
+          "learning_targets": [
+            "Any LTs that are \"Not Yet\" will be on your final exam."
+          ],
           "notes": ""
         }
       ]

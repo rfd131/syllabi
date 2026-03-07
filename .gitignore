@@ -1,11 +1,14 @@
 # Environment and secrets
 .env
 
-# Service account credentials (keep out of repo)
+# Service account
 **/service_account*.json
 
 # Cache data is committed (course config JSON files)
 # data/
+
+# Semester data (local only)
+data/sp26/
 
 # Development notes
 myprompts.md

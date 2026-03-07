@@ -4,11 +4,8 @@
 # Service account
 **/service_account*.json
 
-# Cache data is committed (course config JSON files)
-# data/
-
-# Semester data (local only)
-data/sp26/
+# Course data (local only - rebuilt from Google Sheets)
+data/
 
 # Development notes
 myprompts.md

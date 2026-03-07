@@ -1,5 +1,6 @@
 # Environment and secrets
 .env
+.envrc
 
 # Service account
 **/service_account*.json

@@ -57,8 +57,8 @@ const navigationData = {
                 { title: "Overview", href: "grading.html#overview" },
                 { title: "Final Course Grades", href: "grading.html#final-grades" },
                 { title: "Experience Points", href: "grading.html#xp" },
-                { title: "XP Modifications", href: "grading.html#modifiers" }
-                // Math 197 link added conditionally in templates
+                { title: "XP Modifications", href: "grading.html#modifiers" },
+                { title: "Math 197 Option (2 Credits)", href: "math197.html" }
             ]
         },
         {
@@ -106,6 +106,7 @@ const navigationData = {
         { title: "Learning Targets", href: "learning-targets.html" },
         // Writing Projects removed
         { title: "How Your Grade is Determined", href: "grading.html" },
+        { title: "Math 197 Option (2 Credits)", href: "math197.html" },
         { title: "Course Policies", href: "policies.html" },
         { title: "Getting Help", href: "help.html" },
         // Study Guides removed

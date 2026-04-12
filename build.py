@@ -45,6 +45,7 @@ TEMPLATES_DIR = PROJECT_ROOT / "templates"
 DATA_DIR = PROJECT_ROOT / "data"
 OUTPUT_DIR = PROJECT_ROOT / "docs"
 STATIC_DIR = PROJECT_ROOT / "static"
+INTERACTIVES_DIR = PROJECT_ROOT.parent / "interactives"
 
 
 def load_config(config_path: Path) -> dict:
@@ -183,6 +184,20 @@ def setup_jinja_env() -> Environment:
     return env
 
 
+def copy_interactives(output_path: Path):
+    """Copy interactive HTML files to output directory if available."""
+    if not INTERACTIVES_DIR.exists():
+        return
+    dest = output_path / "interactives"
+    if dest.exists():
+        shutil.rmtree(dest)
+    # Copy only .html files (the self-contained interactives)
+    dest.mkdir(parents=True, exist_ok=True)
+    for html_file in INTERACTIVES_DIR.glob("*.html"):
+        shutil.copy2(html_file, dest / html_file.name)
+        print(f"  Copied interactive: {html_file.name}")
+
+
 def copy_static_files(output_path: Path, config: dict):
     """Copy static files (CSS, JS) to output directory.
 
@@ -275,6 +290,9 @@ def build_course(env: Environment, term: str, course: str, from_sheets: bool = F
 
     # Copy static files (with course-specific customization)
     copy_static_files(output_path, config)
+
+    # Copy interactive explorations
+    copy_interactives(output_path)
 
     # Build each page template
     pages_dir = TEMPLATES_DIR / "pages"

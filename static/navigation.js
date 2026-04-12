@@ -96,6 +96,14 @@ const navigationData = {
                 { title: "Academic Support", href: "resources.html#academic-support" },
                 { title: "Technology Resources", href: "resources.html#technology" }
             ]
+        },
+        {
+            title: "Interactives",
+            href: "interactives.html",
+            dropdown: [
+                { title: "Population Model Explorer", href: "interactives.html#population-models" },
+                { title: "Rotation Matrix Explorer", href: "interactives.html#rotation-matrices" }
+            ]
         }
     ],
     sidebarNav: [
@@ -109,7 +117,8 @@ const navigationData = {
         { title: "Course Policies", href: "policies.html" },
         { title: "Getting Help", href: "help.html" },
         // Study Guides removed
-        { title: "Student Resources", href: "resources.html" }
+        { title: "Student Resources", href: "resources.html" },
+        { title: "Interactives", href: "interactives.html" }
     ],
     quickLinks: [
         {

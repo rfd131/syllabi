@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotation Matrix Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface2: #f3f1ec;
+  --text: #2c2a28;
+  --text2: #6b6862;
+  --text3: #9e9a93;
+  --border: #e2dfd8;
+  --accent: #3a6b5e;
+  --accent-light: #e8f0ed;
+  --danger: #b84233;
+  --danger-light: #fbeae7;
+  --warning: #a67a1e;
+  --warning-light: #fdf4e1;
+  --success: #3a6b5e;
+  --success-light: #e8f0ed;
+  --purple: #5a4a9e;
+  --purple-light: #eeedf8;
+  --teal: #1a7a60;
+  --coral: #c8553a;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+.header {
+  padding: 2.25rem 2rem 1.25rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+.header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 760px;
+}
+.main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 940px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+/* Left panel */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 0.5rem;
+}
+
+/* Preset chips */
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chip {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+/* Parameter sliders */
+.param-block {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 0.55rem;
+}
+.param-block:last-child { margin-bottom: 0; }
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.3rem;
+}
+.param-name {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.param-name em {
+  font-style: normal;
+  color: var(--text3);
+  font-weight: 400;
+  font-size: 0.75rem;
+  margin-left: 0.35rem;
+}
+.param-val {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--purple);
+}
+.param-row input[type="range"] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.param-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.param-row input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+.param-hint {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text3);
+  margin-top: 0.25rem;
+}
+
+/* Matrix readout */
+.matrix-readout-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: center;
+}
+.matrix-symbol {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text2);
+}
+.matrix-bracket {
+  display: grid;
+  grid-template-columns: 8px 1fr 8px;
+  gap: 0;
+  align-items: stretch;
+}
+.bracket-left, .bracket-right {
+  border: 2px solid var(--text);
+  min-height: 100%;
+}
+.bracket-left {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+.bracket-right {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 8px 10px;
+}
+.matrix-cell-readout {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0.3rem 0.5rem;
+  min-width: 3.8rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.matrix-formula {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  text-align: center;
+  margin-top: 0.4rem;
+}
+
+/* Eigenvalue display */
+.eigen-list { list-style: none; }
+.eigen-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--surface2);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+.eigen-item:last-child { border-bottom: none; }
+.eigen-symbol { color: var(--text3); min-width: 36px; }
+.eigen-val { color: var(--text); }
+.eigen-mod {
+  margin-left: auto;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.mod-grow { background: var(--danger-light); color: var(--danger); }
+.mod-decay { background: var(--success-light); color: var(--success); }
+.mod-neutral { background: var(--warning-light); color: var(--warning); }
+
+/* Initial condition sliders */
+.ic-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.4rem;
+}
+.ic-row:last-child { margin-bottom: 0; }
+.ic-label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text2);
+  min-width: 46px;
+}
+.ic-row input[type="range"] {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.ic-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--teal);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+.ic-row input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--teal);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+.ic-val {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  min-width: 44px;
+  text-align: right;
+}
+
+/* Steps slider */
+.steps-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.steps-row input[type="range"] {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.steps-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+.steps-val {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  min-width: 38px;
+  text-align: right;
+}
+
+/* Behavior badge */
+.behavior-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.3rem 0.65rem;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+.behavior-grow { background: var(--danger-light); color: var(--danger); }
+.behavior-decline { background: var(--success-light); color: var(--success); }
+.behavior-neutral { background: var(--warning-light); color: var(--warning); }
+.behavior-hint {
+  font-size: 0.7rem;
+  color: var(--text3);
+  margin-top: 0.35rem;
+  font-family: var(--mono);
+}
+
+/* Right side (charts) */
+.charts-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.chart-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.1rem;
+}
+.chart-subtitle {
+  font-size: 0.72rem;
+  color: var(--text3);
+  margin-bottom: 0.7rem;
+}
+.phase-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+.chart-wrap {
+  position: relative;
+  width: 100%;
+}
+.legend-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text2);
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.legend-dot.square { border-radius: 2px; }
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 1080px) {
+  .chart-row { grid-template-columns: 1fr; }
+}
+.spectrum-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+
+/* Info box */
+.info-box {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--text2);
+}
+.info-box strong { color: var(--text); font-weight: 500; }
+.info-box p + p { margin-top: 0.5rem; }
+.info-box code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: var(--surface);
+  padding: 1px 4px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Rotation matrix explorer</h1>
+  <p>Explore 2D iterated maps <em>u</em>(<em>t</em>+1) = <em>M u</em>(<em>t</em>) where <em>M</em> = <em>r</em>·<em>R</em>(<em>θ</em>) is a scaled rotation. The modulus <em>r</em> controls |λ| and the angle <em>θ</em> is the argument of the complex eigenvalues. Pure rotations live on the unit circle; scaling pushes the orbit into a decaying or growing spiral.</p>
+</div>
+
+<div class="main">
+  <div class="panel">
+    <div class="panel-section">
+      <div class="panel-label">Preset</div>
+      <div class="chips" id="presetChips"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Scaling r <em style="text-transform:none;font-style:normal;color:var(--text3);font-weight:400;">(modulus)</em></div>
+      <div class="param-block">
+        <div class="param-header">
+          <span class="param-name">r <em>= |λ|</em></span>
+          <span class="param-val" id="rVal">1.00</span>
+        </div>
+        <div class="param-row">
+          <input type="range" min="0.5" max="1.5" step="0.005" value="1.00" id="rSlider">
+        </div>
+        <div class="param-hint" id="rHint">pure rotation (|λ| = 1)</div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Angle θ <em style="text-transform:none;font-style:normal;color:var(--text3);font-weight:400;">(argument)</em></div>
+      <div class="param-block">
+        <div class="param-header">
+          <span class="param-name">θ <em>= arg(λ)</em></span>
+          <span class="param-val" id="thetaVal">π/6</span>
+        </div>
+        <div class="param-row">
+          <input type="range" min="-3.14159" max="3.14159" step="0.01" value="0.5236" id="thetaSlider">
+        </div>
+        <div class="param-hint" id="thetaHint">≈ 30°</div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Matrix M = r·R(θ)</div>
+      <div class="matrix-readout-wrap">
+        <span class="matrix-symbol">M =</span>
+        <div class="matrix-bracket">
+          <div class="bracket-left"></div>
+          <div class="matrix-grid">
+            <div class="matrix-cell-readout" id="m11">1.00</div>
+            <div class="matrix-cell-readout" id="m12">0.00</div>
+            <div class="matrix-cell-readout" id="m21">0.00</div>
+            <div class="matrix-cell-readout" id="m22">1.00</div>
+          </div>
+          <div class="bracket-right"></div>
+        </div>
+      </div>
+      <div class="matrix-formula">r·[[cos θ, −sin θ], [sin θ, cos θ]]</div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Eigenvalues</div>
+      <ul class="eigen-list" id="eigenList"></ul>
+      <div id="behaviorBadge"></div>
+      <div class="behavior-hint" id="behaviorHint"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Initial vector u(0)</div>
+      <div class="ic-row">
+        <span class="ic-label">u₁(0)</span>
+        <input type="range" min="-3" max="3" step="0.05" value="1" id="u1Slider">
+        <span class="ic-val" id="u1Val">1.00</span>
+      </div>
+      <div class="ic-row">
+        <span class="ic-label">u₂(0)</span>
+        <input type="range" min="-3" max="3" step="0.05" value="0" id="u2Slider">
+        <span class="ic-val" id="u2Val">0.00</span>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Time steps</div>
+      <div class="steps-row">
+        <input type="range" min="5" max="200" value="48" step="1" id="stepsSlider">
+        <span class="steps-val" id="stepsVal">48</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-area">
+    <div class="chart-card">
+      <div class="chart-title">Phase portrait</div>
+      <div class="chart-subtitle">Orbit of u(t) in the plane. Green = start, red = end.</div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e"></span>Orbit u(t)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1a7a60"></span>u(0)</span>
+        <span class="legend-item"><span class="legend-dot square" style="background:#c8553a"></span>u(T)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#a67a1e;opacity:0.65"></span>reference circle |u| = |u(0)|</span>
+      </div>
+      <div class="phase-wrap"><canvas id="phaseChart"></canvas></div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">Eigenvalue spectrum</div>
+        <div class="chart-subtitle">Complex plane. Eigenvalues sit at r·e<sup>±iθ</sup>; unit circle = critical boundary.</div>
+        <div class="spectrum-wrap"><canvas id="complexChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Components over time</div>
+        <div class="chart-subtitle">u₁(t) and u₂(t) — sinusoidal oscillation with envelope r<sup>t</sup></div>
+        <div class="legend-row">
+          <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e"></span>u₁(t)</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#1a7a60"></span>u₂(t)</span>
+          <span class="legend-item" id="envLegend" style="display:none;"><span class="legend-dot" style="background:#a67a1e;opacity:0.65"></span>±|u(0)|·r<sup>t</sup></span>
+        </div>
+        <div class="chart-wrap" style="height: 240px;"><canvas id="tsChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <p><strong>The geometry of complex eigenvalues.</strong> A real 2×2 matrix of the form <code>r·R(θ)</code> rotates every vector by the angle θ while scaling its length by r. The eigenvalues are the complex conjugate pair <code>λ = r·e<sup>±iθ</sup> = r·cos θ ± r·sin θ·i</code>. Their modulus is exactly r, and their argument is exactly ±θ.</p>
+      <p><strong>Three regimes.</strong> When <strong>r = 1</strong> the orbit traces a circle — a pure rotation, energy conserved, population cycling. When <strong>r &lt; 1</strong> the orbit spirals inward toward the origin (damped oscillation). When <strong>r &gt; 1</strong> the orbit spirals outward (amplified oscillation). Watch the eigenvalue points cross the unit circle as you drag r.</p>
+      <p><strong>Period vs. quasiperiod.</strong> When θ is a rational multiple of π the orbit is periodic — for θ = π/6 the period is 12 (since 12·(π/6) = 2π). Irrational θ produces a quasiperiodic orbit that never exactly closes.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======================================================================
+//  Presets
+// ======================================================================
+const PRESETS = {
+  rot30:   { name: 'Pure rotation 30°',  r: 1.00, theta: Math.PI / 6,  u0: [1, 0] },
+  rot60:   { name: 'Pure rotation 60°',  r: 1.00, theta: Math.PI / 3,  u0: [1, 0] },
+  rot90:   { name: 'Pure rotation 90°',  r: 1.00, theta: Math.PI / 2,  u0: [1, 0] },
+  rotIrr:  { name: 'Quasiperiodic',      r: 1.00, theta: 1.0,          u0: [1, 0] },
+  decay:   { name: 'Decay spiral',       r: 0.93, theta: Math.PI / 6,  u0: [2, 0] },
+  growth:  { name: 'Growth spiral',      r: 1.07, theta: Math.PI / 6,  u0: [0.5, 0] },
+  slowDecay: { name: 'Slow decay',       r: 0.98, theta: Math.PI / 12, u0: [2, 0] },
+};
+
+// ======================================================================
+//  State
+// ======================================================================
+let r = 1.0;
+let theta = Math.PI / 6;
+let u0 = [1, 0];
+let steps = 48;
+let activePreset = 'rot30';
+
+// ======================================================================
+//  Math
+// ======================================================================
+function buildM(r, theta) {
+  const c = Math.cos(theta), s = Math.sin(theta);
+  return [[r * c, -r * s], [r * s, r * c]];
+}
+
+function iterate(M, u0, n) {
+  const out = [u0.slice()];
+  for (let i = 0; i < n; i++) {
+    const p = out[out.length - 1];
+    out.push([
+      M[0][0] * p[0] + M[0][1] * p[1],
+      M[1][0] * p[0] + M[1][1] * p[1],
+    ]);
+  }
+  return out;
+}
+
+// Eigenvalues of r·R(θ) are r·e^(±iθ) — closed form, no solver needed
+function eigenvalues(r, theta) {
+  const c = Math.cos(theta), s = Math.sin(theta);
+  return [
+    { re: r * c, im: r * s },
+    { re: r * c, im: -r * s },
+  ];
+}
+
+// ======================================================================
+//  Pretty formatting for θ (show common π fractions)
+// ======================================================================
+const PI_FRACTIONS = [
+  [1, 12], [1, 8], [1, 6], [1, 4], [1, 3], [5, 12], [1, 2],
+  [7, 12], [2, 3], [3, 4], [5, 6], [11, 12], [1, 1],
+];
+function prettyTheta(theta) {
+  if (Math.abs(theta) < 1e-6) return '0';
+  const sign = theta < 0 ? '−' : '';
+  const a = Math.abs(theta);
+  for (const [num, den] of PI_FRACTIONS) {
+    if (Math.abs(a - num * Math.PI / den) < 0.015) {
+      if (num === 1 && den === 1) return sign + 'π';
+      if (num === 1) return `${sign}π/${den}`;
+      return `${sign}${num}π/${den}`;
+    }
+  }
+  return `${sign}${a.toFixed(2)}`;
+}
+function degOfTheta(theta) {
+  return Math.round(theta * 180 / Math.PI);
+}
+
+// ======================================================================
+//  Charts
+// ======================================================================
+
+// Unit circle reference points
+const unitCirclePts = Array.from({ length: 97 }, (_, k) => {
+  const t = 2 * Math.PI * k / 96;
+  return { x: Math.cos(t), y: Math.sin(t) };
+});
+function refCirclePts(radius) {
+  return Array.from({ length: 97 }, (_, k) => {
+    const t = 2 * Math.PI * k / 96;
+    return { x: radius * Math.cos(t), y: radius * Math.sin(t) };
+  });
+}
+
+// Phase portrait: square, orbit + start/end + axes + reference circle
+const phaseChart = new Chart(document.getElementById('phaseChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      // 0: x-axis
+      { label: 'x axis', data: [{x: -3, y: 0}, {x: 3, y: 0}],
+        borderColor: '#c6c3bc', borderWidth: 1, pointRadius: 0, showLine: true },
+      // 1: y-axis
+      { label: 'y axis', data: [{x: 0, y: -3}, {x: 0, y: 3}],
+        borderColor: '#c6c3bc', borderWidth: 1, pointRadius: 0, showLine: true },
+      // 2: reference circle at |u(0)|
+      { label: 'Reference circle', data: [],
+        borderColor: '#a67a1e', borderWidth: 1.2, borderDash: [4, 4],
+        pointRadius: 0, showLine: true, fill: false },
+      // 3: orbit
+      { label: 'Orbit', data: [],
+        borderColor: '#5a4a9e', backgroundColor: '#5a4a9e',
+        borderWidth: 1.5, pointRadius: 2.5, pointHoverRadius: 4,
+        showLine: true, tension: 0 },
+      // 4: start u(0)
+      { label: 'Start', data: [],
+        borderColor: '#1a7a60', backgroundColor: '#1a7a60',
+        pointRadius: 7, pointHoverRadius: 9, showLine: false },
+      // 5: end u(T)
+      { label: 'End', data: [],
+        borderColor: '#c8553a', backgroundColor: '#c8553a',
+        pointRadius: 7, pointHoverRadius: 9, pointStyle: 'rectRot',
+        showLine: false },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    animation: { duration: 120 },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        filter: ctx => ['Orbit', 'Start', 'End'].includes(ctx.dataset.label),
+        callbacks: {
+          label: ctx => {
+            const p = ctx.raw;
+            const idx = ctx.dataIndex;
+            if (ctx.dataset.label === 'Orbit') {
+              return `u(${idx}) = (${p.x.toFixed(3)}, ${p.y.toFixed(3)})`;
+            }
+            if (ctx.dataset.label === 'Start') {
+              return `u(0) = (${p.x.toFixed(3)}, ${p.y.toFixed(3)})`;
+            }
+            return `u(T) = (${p.x.toFixed(3)}, ${p.y.toFixed(3)})`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: { type: 'linear', min: -2, max: 2,
+        title: { display: true, text: 'x', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd822' } },
+      y: { type: 'linear', min: -2, max: 2,
+        title: { display: true, text: 'y', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd844' } },
+    },
+  },
+});
+
+// Eigenvalue spectrum: unit circle + eigenvalue points
+const complexChart = new Chart(document.getElementById('complexChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      { label: 'Re axis', data: [{x: -2, y: 0}, {x: 2, y: 0}],
+        borderColor: '#c6c3bc', borderWidth: 1, pointRadius: 0, showLine: true },
+      { label: 'Im axis', data: [{x: 0, y: -2}, {x: 0, y: 2}],
+        borderColor: '#c6c3bc', borderWidth: 1, pointRadius: 0, showLine: true },
+      { label: 'Unit circle', data: unitCirclePts,
+        borderColor: '#a67a1e', borderWidth: 1.5, borderDash: [4, 4],
+        pointRadius: 0, showLine: true, fill: false },
+      { label: '|λ| circle', data: [],
+        borderColor: '#5a4a9e', borderWidth: 1,
+        pointRadius: 0, showLine: true, fill: false, borderDash: [2, 3] },
+      { label: 'Eigenvalues', data: [],
+        borderColor: '#5a4a9e', backgroundColor: '#5a4a9e',
+        pointRadius: 6, pointHoverRadius: 8, showLine: false },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    animation: { duration: 150 },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        filter: ctx => ctx.dataset.label === 'Eigenvalues',
+        callbacks: {
+          label: ctx => {
+            const p = ctx.raw;
+            const sign = p.y >= 0 ? '+' : '−';
+            const mod = Math.hypot(p.x, p.y);
+            return `λ = ${p.x.toFixed(3)} ${sign} ${Math.abs(p.y).toFixed(3)}i   |λ| = ${mod.toFixed(3)}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: { type: 'linear', min: -1.6, max: 1.6,
+        title: { display: true, text: 'Re(λ)', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd822' } },
+      y: { type: 'linear', min: -1.6, max: 1.6,
+        title: { display: true, text: 'Im(λ)', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd844' } },
+    },
+  },
+});
+
+// Time series: u₁, u₂ with optional envelope
+const tsChart = new Chart(document.getElementById('tsChart'), {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [
+      { label: 'u₁', data: [], borderColor: '#5a4a9e',
+        backgroundColor: '#5a4a9e14', borderWidth: 2, pointRadius: 1.5,
+        tension: 0, fill: false },
+      { label: 'u₂', data: [], borderColor: '#1a7a60',
+        backgroundColor: '#1a7a6014', borderWidth: 2, pointRadius: 1.5,
+        tension: 0, fill: false },
+      { label: '+env', data: [], borderColor: '#a67a1eaa',
+        borderWidth: 1, borderDash: [4, 4], pointRadius: 0,
+        tension: 0, fill: false },
+      { label: '−env', data: [], borderColor: '#a67a1eaa',
+        borderWidth: 1, borderDash: [4, 4], pointRadius: 0,
+        tension: 0, fill: false },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    animation: { duration: 120 },
+    plugins: {
+      legend: { display: false },
+      tooltip: { mode: 'index', intersect: false,
+        filter: ctx => ctx.dataset.label === 'u₁' || ctx.dataset.label === 'u₂' },
+    },
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      x: { title: { display: true, text: 't', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { maxTicksLimit: 10, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd822' } },
+      y: { title: { display: true, text: 'value', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd844' } },
+    },
+  },
+});
+
+// ======================================================================
+//  UI wiring
+// ======================================================================
+const rSlider = document.getElementById('rSlider');
+const rValEl = document.getElementById('rVal');
+const rHintEl = document.getElementById('rHint');
+const thetaSlider = document.getElementById('thetaSlider');
+const thetaValEl = document.getElementById('thetaVal');
+const thetaHintEl = document.getElementById('thetaHint');
+const u1Slider = document.getElementById('u1Slider');
+const u2Slider = document.getElementById('u2Slider');
+const u1Val = document.getElementById('u1Val');
+const u2Val = document.getElementById('u2Val');
+const stepsSlider = document.getElementById('stepsSlider');
+const stepsValEl = document.getElementById('stepsVal');
+
+rSlider.addEventListener('input', () => {
+  r = parseFloat(rSlider.value);
+  clearPreset();
+  update();
+});
+thetaSlider.addEventListener('input', () => {
+  theta = parseFloat(thetaSlider.value);
+  clearPreset();
+  update();
+});
+u1Slider.addEventListener('input', () => {
+  u0[0] = parseFloat(u1Slider.value);
+  update();
+});
+u2Slider.addEventListener('input', () => {
+  u0[1] = parseFloat(u2Slider.value);
+  update();
+});
+stepsSlider.addEventListener('input', () => {
+  steps = parseInt(stepsSlider.value);
+  update();
+});
+
+function clearPreset() {
+  activePreset = null;
+  document.querySelectorAll('#presetChips .chip').forEach(b => b.classList.remove('active'));
+}
+
+function buildPresetChips() {
+  const container = document.getElementById('presetChips');
+  container.innerHTML = '';
+  Object.entries(PRESETS).forEach(([key, p]) => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (key === activePreset ? ' active' : '');
+    btn.textContent = p.name;
+    btn.dataset.preset = key;
+    btn.addEventListener('click', () => loadPreset(key));
+    container.appendChild(btn);
+  });
+}
+
+function loadPreset(key) {
+  const p = PRESETS[key];
+  if (!p) return;
+  r = p.r;
+  theta = p.theta;
+  u0 = p.u0.slice();
+  activePreset = key;
+  rSlider.value = r;
+  thetaSlider.value = theta;
+  u1Slider.value = u0[0];
+  u2Slider.value = u0[1];
+  document.querySelectorAll('#presetChips .chip').forEach(b =>
+    b.classList.toggle('active', b.dataset.preset === key));
+  update();
+}
+
+// ======================================================================
+//  Eigenvalue display
+// ======================================================================
+function modBadge(mod) {
+  if (Math.abs(mod - 1) < 0.005) return `<span class="eigen-mod mod-neutral">|λ| = ${mod.toFixed(3)}</span>`;
+  if (mod > 1) return `<span class="eigen-mod mod-grow">|λ| = ${mod.toFixed(3)}</span>`;
+  return `<span class="eigen-mod mod-decay">|λ| = ${mod.toFixed(3)}</span>`;
+}
+
+function renderEigenvalues() {
+  const list = document.getElementById('eigenList');
+  const badge = document.getElementById('behaviorBadge');
+  const hint = document.getElementById('behaviorHint');
+  list.innerHTML = '';
+
+  const [l1, l2] = eigenvalues(r, theta);
+
+  if (Math.abs(theta) < 1e-6 || Math.abs(Math.abs(theta) - Math.PI) < 1e-6) {
+    // θ = 0 or ±π → real eigenvalues (λ = r and r, or -r and -r, with multiplicity)
+    const li = document.createElement('li');
+    li.className = 'eigen-item';
+    const val = l1.re;
+    li.innerHTML = `<span class="eigen-symbol">λ₁,₂</span><span class="eigen-val">${val.toFixed(4)}</span>${modBadge(Math.abs(val))}`;
+    list.appendChild(li);
+  } else {
+    const li1 = document.createElement('li');
+    li1.className = 'eigen-item';
+    li1.innerHTML = `<span class="eigen-symbol">λ₁</span><span class="eigen-val">${l1.re.toFixed(3)} + ${Math.abs(l1.im).toFixed(3)}i</span>${modBadge(r)}`;
+    list.appendChild(li1);
+    const li2 = document.createElement('li');
+    li2.className = 'eigen-item';
+    li2.innerHTML = `<span class="eigen-symbol">λ₂</span><span class="eigen-val">${l2.re.toFixed(3)} − ${Math.abs(l2.im).toFixed(3)}i</span>${modBadge(r)}`;
+    list.appendChild(li2);
+  }
+
+  // Behavior
+  if (r > 1.005) {
+    badge.innerHTML = `<div class="behavior-badge behavior-grow">Growing spiral &nbsp;·&nbsp; |λ| = ${r.toFixed(3)}</div>`;
+  } else if (r < 0.995) {
+    badge.innerHTML = `<div class="behavior-badge behavior-decline">Decaying spiral &nbsp;·&nbsp; |λ| = ${r.toFixed(3)}</div>`;
+  } else {
+    badge.innerHTML = `<div class="behavior-badge behavior-neutral">Pure rotation &nbsp;·&nbsp; |λ| = ${r.toFixed(3)}</div>`;
+  }
+
+  // Hint: period detection
+  if (Math.abs(r - 1) < 0.005) {
+    // check whether θ is a rational multiple of 2π → detect period
+    const period = detectPeriod(theta);
+    if (period !== null) {
+      hint.textContent = `period = ${period} steps (θ = ${prettyTheta(theta)}·rad)`;
+    } else {
+      hint.textContent = `quasiperiodic (θ / 2π is irrational)`;
+    }
+  } else {
+    hint.textContent = `r·e^(±iθ): scaling factor ${r.toFixed(3)} per step, rotation ${degOfTheta(theta)}° per step`;
+  }
+}
+
+function detectPeriod(theta) {
+  // Find smallest n ≤ 100 such that n·θ ≈ 2π·k for some integer k
+  const twoPi = 2 * Math.PI;
+  // Normalize to positive
+  const t = Math.abs(theta);
+  if (t < 1e-9) return 1;
+  for (let n = 1; n <= 100; n++) {
+    const k = Math.round(n * t / twoPi);
+    if (k === 0) continue;
+    if (Math.abs(n * t - k * twoPi) < 1e-4) return n;
+  }
+  return null;
+}
+
+// ======================================================================
+//  Main update
+// ======================================================================
+function update() {
+  const M = buildM(r, theta);
+  const n = steps;
+  const orbit = iterate(M, u0, n);
+
+  // UI readouts
+  rValEl.textContent = r.toFixed(3);
+  thetaValEl.textContent = prettyTheta(theta);
+  thetaHintEl.textContent = `≈ ${degOfTheta(theta)}°  (${theta.toFixed(3)} rad)`;
+  u1Val.textContent = u0[0].toFixed(2);
+  u2Val.textContent = u0[1].toFixed(2);
+  stepsValEl.textContent = n;
+  rHintEl.textContent = r > 1.005
+    ? `growth factor per step (|λ| > 1)`
+    : (r < 0.995 ? `decay factor per step (|λ| < 1)` : `pure rotation (|λ| = 1)`);
+
+  // Matrix readout
+  document.getElementById('m11').textContent = M[0][0].toFixed(3);
+  document.getElementById('m12').textContent = M[0][1].toFixed(3);
+  document.getElementById('m21').textContent = M[1][0].toFixed(3);
+  document.getElementById('m22').textContent = M[1][1].toFixed(3);
+
+  // Phase portrait
+  const orbitPts = orbit.map(p => ({ x: p[0], y: p[1] }));
+  phaseChart.data.datasets[3].data = orbitPts;
+  phaseChart.data.datasets[4].data = [orbitPts[0]];
+  phaseChart.data.datasets[5].data = [orbitPts[orbitPts.length - 1]];
+  // Reference circle at |u(0)|
+  const u0mod = Math.hypot(u0[0], u0[1]);
+  phaseChart.data.datasets[2].data = u0mod > 1e-6 ? refCirclePts(u0mod) : [];
+  // Auto-range: symmetric around origin, covers whole orbit + reference circle
+  const maxAbs = Math.max(u0mod, ...orbitPts.map(p => Math.max(Math.abs(p.x), Math.abs(p.y))));
+  const ext = Math.max(1.2, maxAbs * 1.15);
+  phaseChart.options.scales.x.min = -ext;
+  phaseChart.options.scales.x.max = ext;
+  phaseChart.options.scales.y.min = -ext;
+  phaseChart.options.scales.y.max = ext;
+  // Axis lines should span the visible range
+  phaseChart.data.datasets[0].data = [{x: -ext, y: 0}, {x: ext, y: 0}];
+  phaseChart.data.datasets[1].data = [{x: 0, y: -ext}, {x: 0, y: ext}];
+  phaseChart.update('none');
+
+  // Eigenvalue spectrum
+  const [l1, l2] = eigenvalues(r, theta);
+  complexChart.data.datasets[4].data = [
+    { x: l1.re, y: l1.im },
+    { x: l2.re, y: l2.im },
+  ];
+  // |λ| circle (dashed at radius r), shown only when r ≠ 1 so it differs from unit circle
+  complexChart.data.datasets[3].data = (Math.abs(r - 1) > 0.005) ? refCirclePts(r) : [];
+  const cExt = Math.max(1.35, r * 1.25);
+  complexChart.options.scales.x.min = -cExt;
+  complexChart.options.scales.x.max = cExt;
+  complexChart.options.scales.y.min = -cExt;
+  complexChart.options.scales.y.max = cExt;
+  complexChart.data.datasets[0].data = [{x: -cExt, y: 0}, {x: cExt, y: 0}];
+  complexChart.data.datasets[1].data = [{x: 0, y: -cExt}, {x: 0, y: cExt}];
+  complexChart.update('none');
+
+  // Time series
+  const labels = orbit.map((_, i) => i);
+  tsChart.data.labels = labels;
+  tsChart.data.datasets[0].data = orbit.map(p => p[0]);
+  tsChart.data.datasets[1].data = orbit.map(p => p[1]);
+  // Envelope r^t (shown when r ≠ 1 to visualize amplification/decay)
+  if (Math.abs(r - 1) > 0.005 && u0mod > 1e-6) {
+    const env = labels.map(t => u0mod * Math.pow(r, t));
+    tsChart.data.datasets[2].data = env;
+    tsChart.data.datasets[3].data = env.map(v => -v);
+    document.getElementById('envLegend').style.display = 'inline-flex';
+  } else {
+    tsChart.data.datasets[2].data = [];
+    tsChart.data.datasets[3].data = [];
+    document.getElementById('envLegend').style.display = 'none';
+  }
+  tsChart.update('none');
+
+  renderEigenvalues();
+}
+
+// ======================================================================
+//  Init
+// ======================================================================
+function init() {
+  buildPresetChips();
+  loadPreset('rot30');
+}
+
+init();
+</script>
+</body>
+</html>

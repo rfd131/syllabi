@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leslie Matrix Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface2: #f3f1ec;
+  --text: #2c2a28;
+  --text2: #6b6862;
+  --text3: #9e9a93;
+  --border: #e2dfd8;
+  --accent: #3a6b5e;
+  --accent-light: #e8f0ed;
+  --danger: #b84233;
+  --danger-light: #fbeae7;
+  --warning: #a67a1e;
+  --warning-light: #fdf4e1;
+  --success: #3a6b5e;
+  --success-light: #e8f0ed;
+  --purple: #5a4a9e;
+  --purple-light: #eeedf8;
+  --teal: #1a7a60;
+  --coral: #c8553a;
+  --amber: #a67a1e;
+  --forest: #3a6b5e;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+.header {
+  padding: 2.25rem 2rem 1.25rem;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+.header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 760px;
+}
+.main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 940px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+/* Left panel */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 0.5rem;
+}
+
+/* Preset + size selectors */
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chip {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+/* Matrix display */
+.matrix-bracket {
+  display: grid;
+  grid-template-columns: 8px 1fr 8px;
+  gap: 0;
+  align-items: stretch;
+}
+.bracket-left, .bracket-right {
+  border: 2px solid var(--text);
+  min-height: 100%;
+}
+.bracket-left {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+.bracket-right {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+.matrix-grid {
+  display: grid;
+  gap: 5px;
+  padding: 4px 6px;
+}
+.matrix-cell {
+  position: relative;
+}
+.matrix-cell input {
+  width: 100%;
+  padding: 0.4rem 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  text-align: center;
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  -moz-appearance: textfield;
+}
+.matrix-cell input::-webkit-outer-spin-button,
+.matrix-cell input::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+.matrix-cell input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.matrix-cell input.zero-cell {
+  color: var(--text3);
+  background: var(--surface2);
+}
+.matrix-cell.focused input {
+  border-color: var(--purple);
+  background: var(--purple-light);
+  box-shadow: 0 0 0 2px rgba(90,74,158,0.15);
+}
+.matrix-cell-label {
+  position: absolute;
+  top: -0.55rem;
+  left: 0.25rem;
+  font-size: 0.52rem;
+  color: var(--text3);
+  font-family: var(--mono);
+  background: var(--surface);
+  padding: 0 2px;
+  pointer-events: none;
+}
+
+/* Focused-cell slider */
+.focus-slider-wrap {
+  background: var(--purple-light);
+  border: 1px solid #d6d2ef;
+  border-radius: 6px;
+  padding: 0.55rem 0.7rem;
+  margin-top: 0.7rem;
+}
+.focus-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.35rem;
+}
+.focus-slider-header .fs-name {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--purple);
+  font-weight: 500;
+}
+.focus-slider-header .fs-val {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.focus-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.focus-slider-row input[type="range"] {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #d3cdec;
+  border-radius: 2px;
+  outline: none;
+}
+.focus-slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.focus-slider-row input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+.focus-slider-range {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--text3);
+}
+
+/* Eigenvalue display */
+.eigen-list { list-style: none; }
+.eigen-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0.32rem 0;
+  border-bottom: 1px solid var(--surface2);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+}
+.eigen-item:last-child { border-bottom: none; }
+.eigen-item.dominant { font-weight: 500; }
+.eigen-item.dominant .eigen-symbol { color: var(--accent); }
+.eigen-symbol {
+  color: var(--text3);
+  min-width: 26px;
+}
+.eigen-val { color: var(--text); }
+.eigen-mod {
+  margin-left: auto;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.mod-grow { background: var(--danger-light); color: var(--danger); }
+.mod-decay { background: var(--success-light); color: var(--success); }
+.mod-neutral { background: var(--warning-light); color: var(--warning); }
+
+/* Initial condition */
+.ic-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.4rem;
+}
+.ic-row:last-child { margin-bottom: 0; }
+.ic-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text2);
+  min-width: 42px;
+}
+.ic-row input[type="range"] {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.ic-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+.ic-row input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+.ic-val {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  min-width: 34px;
+  text-align: right;
+}
+
+/* Steps slider */
+.steps-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.steps-row input[type="range"] {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.steps-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+.steps-row input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+.steps-val {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* Right side */
+.charts-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.chart-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.1rem;
+}
+.chart-subtitle {
+  font-size: 0.72rem;
+  color: var(--text3);
+}
+.mode-chips {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.mode-chip {
+  font-family: var(--font);
+  font-size: 0.68rem;
+  padding: 0.22rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.mode-chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 280px;
+}
+.legend-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text2);
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 1080px) {
+  .chart-row { grid-template-columns: 1fr; }
+}
+
+/* Info box */
+.info-box {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--text2);
+}
+.info-box strong { color: var(--text); font-weight: 500; }
+.info-box p + p { margin-top: 0.5rem; }
+
+/* Long-term behavior badge */
+.behavior-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.3rem 0.65rem;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+.behavior-grow { background: var(--danger-light); color: var(--danger); }
+.behavior-decline { background: var(--success-light); color: var(--success); }
+.behavior-neutral { background: var(--warning-light); color: var(--warning); }
+.behavior-hint {
+  font-size: 0.7rem;
+  color: var(--text3);
+  margin-top: 0.35rem;
+  font-family: var(--mono);
+}
+.preset-source {
+  font-size: 0.68rem;
+  color: var(--text3);
+  font-style: italic;
+  line-height: 1.5;
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.55rem;
+  background: var(--surface2);
+  border-radius: 5px;
+  border-left: 2px solid var(--border);
+}
+.preset-source:empty { display: none; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Leslie matrix explorer</h1>
+  <p>Explore iterated population models <em>u</em>(<em>t</em>+1) = <em>M u</em>(<em>t</em>) with a non-negative transition matrix. Adjust entries and watch eigenvalues move across the complex plane — crossing the unit circle flips the dynamics between decay, oscillation, and growth.</p>
+</div>
+
+<div class="main">
+  <div class="panel">
+    <div class="panel-section">
+      <div class="panel-label">Preset model</div>
+      <div class="chips" id="presetChips"></div>
+      <div class="preset-source" id="presetSource"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Matrix size <em style="text-transform:none;font-style:normal;color:var(--text3);font-weight:400;">(stages)</em></div>
+      <div class="chips" id="sizeChips">
+        <button class="chip" data-size="2">2</button>
+        <button class="chip" data-size="3">3</button>
+        <button class="chip" data-size="4">4</button>
+        <button class="chip" data-size="5">5</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Transition matrix M</div>
+      <div class="matrix-bracket">
+        <div class="bracket-left"></div>
+        <div class="matrix-grid" id="matrixGrid"></div>
+        <div class="bracket-right"></div>
+      </div>
+      <div class="focus-slider-wrap">
+        <div class="focus-slider-header">
+          <span class="fs-name" id="fsName">M[1,1]</span>
+          <span class="fs-val" id="fsVal">0.00</span>
+        </div>
+        <div class="focus-slider-row">
+          <input type="range" id="focusSlider" min="0" max="1" step="0.01" value="0">
+        </div>
+        <div class="focus-slider-range" id="fsRange">range: 0 – 1</div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Eigenvalues of M</div>
+      <ul class="eigen-list" id="eigenList"></ul>
+      <div id="behaviorBadge"></div>
+      <div class="behavior-hint" id="behaviorHint"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Initial population u(0)</div>
+      <div id="icSliders"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-label">Time steps</div>
+      <div class="steps-row">
+        <input type="range" min="10" max="150" value="40" step="1" id="stepsSlider">
+        <span class="steps-val" id="stepsVal">40</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-area">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Population time series</div>
+          <div class="chart-subtitle" id="tsSubtitle">u(t+1) = M·u(t), per stage</div>
+        </div>
+        <div class="mode-chips" id="yModeChips">
+          <button class="mode-chip active" data-mode="linear">Linear</button>
+          <button class="mode-chip" data-mode="log">Log</button>
+          <button class="mode-chip" data-mode="proportions">Proportions</button>
+        </div>
+      </div>
+      <div class="legend-row" id="tsLegend"></div>
+      <div class="chart-wrap"><canvas id="tsChart"></canvas></div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-title">Total population N(t)</div>
+        <div class="chart-subtitle">N(t) = Σ u<sub>i</sub>(t)</div>
+        <div class="chart-wrap" style="height: 220px; margin-top:0.5rem;"><canvas id="totChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Eigenvalue spectrum</div>
+        <div class="chart-subtitle">|λ| &lt; 1 inside unit circle → decay; |λ| &gt; 1 outside → growth</div>
+        <div class="chart-wrap" style="height: 260px; margin-top:0.5rem;"><canvas id="complexChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <p><strong>Reading the spectrum.</strong> For a non-negative matrix, the Perron–Frobenius theorem guarantees a real non-negative eigenvalue λ<sub>PF</sub> with modulus at least as large as every other eigenvalue. This dominant eigenvalue sets the long-term geometric growth rate: if λ<sub>PF</sub> &gt; 1 the population grows, if &lt; 1 it declines.</p>
+      <p><strong>Complex eigenvalues</strong> come in conjugate pairs and produce oscillations. Their modulus |λ| governs whether the oscillation grows (|λ| &gt; 1), decays (|λ| &lt; 1), or persists indefinitely (|λ| = 1). Try the grasshopper preset to see three eigenvalues with |λ| = 1 — populations cycle forever with period 3 and never converge to a stable distribution. The succession presets, by contrast, are column-stochastic Markov chains: total mass is conserved (λ<sub>PF</sub> = 1 exactly), and the proportions view shows convergence to a stationary distribution.</p>
+      <p><strong>Try it.</strong> Click any matrix entry, then drag the purple slider to sweep its value smoothly and watch eigenvalues cross the unit circle. In the owl model, find the critical juvenile survival s<sub>1</sub> = M[2,1] where λ<sub>PF</sub> crosses 1.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======================================================================
+//  Presets
+// ======================================================================
+const PRESETS = {
+  tern: {
+    name: 'Arctic tern',
+    labels: ['Juveniles', 'Adults'],
+    M: [[0.5, 2.0], [0.3, 0.9]],
+    ic: [50, 50],
+    source: null,
+  },
+  owl: {
+    name: 'Spotted owl',
+    labels: ['Juveniles', 'Subadults', 'Adults'],
+    M: [[0, 0, 0.3], [0.18, 0, 0], [0, 0.71, 0.94]],
+    ic: [900, 400, 3000],
+    source: null,
+  },
+  grasshopper: {
+    name: 'Grasshopper',
+    labels: ['Eggs', 'Nymphs', 'Adults'],
+    M: [[0, 0, 50], [0.1, 0, 0], [0, 0.2, 0]],
+    ic: [100, 20, 10],
+    source: 'Bodine, Lenhart & Gross, Mathematics for the Life Sciences (Princeton, 2014).',
+  },
+  wildHorses: {
+    name: 'Wild horses',
+    labels: ['Foals', 'Yearlings', 'Adults'],
+    M: [[0, 0, 0.2], [0.7, 0, 0], [0, 0.8, 0.9]],
+    ic: [0, 0, 100],
+    source: 'Bodine, Lenhart & Gross, Mathematics for the Life Sciences (Princeton, 2014).',
+  },
+  coastalWetland: {
+    name: 'Coastal wetland succession',
+    labels: ['Year-round wet', 'Seasonally wet', 'Dry land'],
+    M: [[0.95, 0, 0], [0.05, 0.9, 0], [0, 0.1, 1]],
+    ic: [1, 0, 0],
+    source: 'Bodine, Lenhart & Gross, Mathematics for the Life Sciences (Princeton, 2014).',
+  },
+  freshwaterSuccession: {
+    name: 'Freshwater succession',
+    labels: ['Littoral', 'Emergent', 'Riparian', 'Upland'],
+    M: [[0.75, 0.05, 0, 0],
+        [0.20, 0.90, 0.05, 0],
+        [0.05, 0.05, 0.85, 0.05],
+        [0, 0, 0.10, 0.95]],
+    ic: [0, 0, 0, 100],
+    source: 'Bodine, Lenhart & Gross, Mathematics for the Life Sciences (Princeton, 2014).',
+  },
+  seaTurtle: {
+    name: 'Loggerhead sea turtle',
+    labels: ['Hatchlings', 'Yearlings', 'Juveniles', 'Subadults', 'Breeders'],
+    M: [[0,    0,    0,     0,    90  ],
+        [0.67, 0.74, 0,     0,    0   ],
+        [0,    0.05, 0.66,  0,    0   ],
+        [0,    0,    0.015, 0.69, 0   ],
+        [0,    0,    0,     0.05, 0.81]],
+    ic: [500, 100, 100, 50, 500],
+    source: 'Adapted (5 stages) from Crouse, Crowder & Caswell (1987), "A stage-based population model for loggerhead sea turtles and implications for conservation," Ecology 68:1412–1423.',
+  },
+};
+
+// ======================================================================
+//  State
+// ======================================================================
+let M = PRESETS.owl.M.map(r => r.slice());
+let ic = PRESETS.owl.ic.slice();
+let classLabels = PRESETS.owl.labels.slice();
+let size = 3;
+let activePreset = 'owl';
+let focused = { i: 0, j: 2 };          // currently "selected" matrix cell
+let yMode = 'linear';                  // 'linear' | 'log' | 'proportions'
+const CLASS_COLORS = ['#5a4a9e', '#1a7a60', '#c8553a', '#a67a1e', '#3a6b5e'];
+
+// ======================================================================
+//  Linear algebra
+// ======================================================================
+function identity(n) {
+  const I = Array.from({length: n}, () => Array(n).fill(0));
+  for (let i = 0; i < n; i++) I[i][i] = 1;
+  return I;
+}
+function matMul(A, B) {
+  const n = A.length, p = B.length, m = B[0].length;
+  const C = Array.from({length: n}, () => Array(m).fill(0));
+  for (let i = 0; i < n; i++)
+    for (let k = 0; k < p; k++) {
+      const aik = A[i][k];
+      if (aik === 0) continue;
+      for (let j = 0; j < m; j++) C[i][j] += aik * B[k][j];
+    }
+  return C;
+}
+function matScale(A, s) { return A.map(r => r.map(v => v * s)); }
+function matAdd(A, B) { return A.map((r, i) => r.map((v, j) => v + B[i][j])); }
+function matTrace(A) { let t = 0; for (let i = 0; i < A.length; i++) t += A[i][i]; return t; }
+function matVec(A, v) {
+  return A.map(r => {
+    let s = 0;
+    for (let j = 0; j < r.length; j++) s += r[j] * v[j];
+    return s;
+  });
+}
+function iterate(A, u0, n) {
+  const out = [u0.slice()];
+  for (let i = 0; i < n; i++) out.push(matVec(A, out[out.length - 1]));
+  return out;
+}
+
+// ======================================================================
+//  Characteristic polynomial (Faddeev–LeVerrier)
+//  Returns coefficients [1, c1, ..., cn] of det(λI − A) = λⁿ + c1 λⁿ⁻¹ + … + cn
+// ======================================================================
+function charPoly(A) {
+  const n = A.length;
+  const I = identity(n);
+  let Mk = I;                              // M_0 = I
+  const c = [1];
+  for (let k = 1; k <= n; k++) {
+    const AMk = matMul(A, Mk);
+    const ck = -matTrace(AMk) / k;
+    c.push(ck);
+    Mk = matAdd(AMk, matScale(I, ck));     // M_k = A·M_{k-1} + c_k I
+  }
+  return c;
+}
+
+// ======================================================================
+//  Complex numbers + polynomial root-finding (Durand–Kerner)
+// ======================================================================
+const cAdd = (a, b) => ({ re: a.re + b.re, im: a.im + b.im });
+const cSub = (a, b) => ({ re: a.re - b.re, im: a.im - b.im });
+const cMul = (a, b) => ({ re: a.re * b.re - a.im * b.im, im: a.re * b.im + a.im * b.re });
+const cDiv = (a, b) => {
+  const d = b.re * b.re + b.im * b.im;
+  return { re: (a.re * b.re + a.im * b.im) / d, im: (a.im * b.re - a.re * b.im) / d };
+};
+const cAbs = a => Math.hypot(a.re, a.im);
+
+function evalPolyC(coeffs, z) {
+  // Horner over complex z, real coefficients
+  let r = { re: coeffs[0], im: 0 };
+  for (let i = 1; i < coeffs.length; i++) {
+    r = cAdd(cMul(r, z), { re: coeffs[i], im: 0 });
+  }
+  return r;
+}
+
+function durandKerner(coeffs) {
+  const n = coeffs.length - 1;
+  if (n === 0) return [];
+  if (n === 1) return [{ re: -coeffs[1], im: 0 }];
+  // Cauchy bound on roots
+  const absMax = Math.max(...coeffs.slice(1).map(v => Math.abs(v)));
+  const R = 1 + absMax;
+  const r0 = 0.5 * R;
+  const z = [];
+  // Spread initial guesses around a circle, slightly off-axis to avoid symmetry traps
+  for (let k = 0; k < n; k++) {
+    const theta = 2 * Math.PI * k / n + 0.4;
+    z.push({ re: r0 * Math.cos(theta), im: r0 * Math.sin(theta) });
+  }
+  const maxIter = 400;
+  for (let iter = 0; iter < maxIter; iter++) {
+    let maxDelta = 0;
+    const next = new Array(n);
+    for (let k = 0; k < n; k++) {
+      const pVal = evalPolyC(coeffs, z[k]);
+      let denom = { re: 1, im: 0 };
+      for (let j = 0; j < n; j++) {
+        if (j === k) continue;
+        denom = cMul(denom, cSub(z[k], z[j]));
+      }
+      const delta = cAbs(denom) > 1e-20 ? cDiv(pVal, denom) : { re: 0, im: 0 };
+      next[k] = cSub(z[k], delta);
+      const d = cAbs(delta);
+      if (d > maxDelta) maxDelta = d;
+    }
+    for (let k = 0; k < n; k++) z[k] = next[k];
+    if (maxDelta < 1e-12) break;
+  }
+  // Snap near-real roots and near-zero imaginary parts
+  return z.map(r => Math.abs(r.im) < 1e-8 ? { re: r.re, im: 0 } : r);
+}
+
+function computeEigenvalues(A) {
+  const c = charPoly(A);
+  const roots = durandKerner(c);
+  // Sort by modulus descending, then by real part
+  roots.sort((a, b) => {
+    const da = cAbs(a), db = cAbs(b);
+    if (Math.abs(da - db) > 1e-9) return db - da;
+    return b.re - a.re;
+  });
+  return roots;
+}
+
+// Find the Perron–Frobenius (real, non-negative, dominant modulus) eigenvalue
+function perronRoot(roots) {
+  // Prefer a real eigenvalue with largest modulus; if tie, largest real part.
+  const reals = roots.filter(r => Math.abs(r.im) < 1e-6);
+  if (reals.length === 0) return roots[0];
+  reals.sort((a, b) => {
+    const da = Math.abs(a.re), db = Math.abs(b.re);
+    if (Math.abs(da - db) > 1e-9) return db - da;
+    return b.re - a.re;
+  });
+  return reals[0];
+}
+
+// ======================================================================
+//  Matrix UI
+// ======================================================================
+const matrixGrid = document.getElementById('matrixGrid');
+let matCells = [];     // input elements
+let cellWrappers = []; // div.matrix-cell wrappers, parallel to matCells
+
+function buildMatrixUI() {
+  matrixGrid.innerHTML = '';
+  matCells = [];
+  cellWrappers = [];
+  matrixGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      const cell = document.createElement('div');
+      cell.className = 'matrix-cell';
+      const label = document.createElement('span');
+      label.className = 'matrix-cell-label';
+      label.textContent = `${i + 1},${j + 1}`;
+      const inp = document.createElement('input');
+      inp.type = 'number';
+      inp.step = '0.01';
+      inp.min = '0';
+      inp.value = formatCell(M[i][j]);
+      inp.addEventListener('input', () => {
+        const v = parseFloat(inp.value);
+        if (!isNaN(v) && v >= 0) {
+          M[i][j] = v;
+          clearActivePreset();
+          styleZeroCells();
+          update();
+          if (focused.i === i && focused.j === j) syncFocusSlider();
+        }
+      });
+      inp.addEventListener('focus', () => setFocused(i, j));
+      inp.addEventListener('click', () => setFocused(i, j));
+      cell.appendChild(label);
+      cell.appendChild(inp);
+      matrixGrid.appendChild(cell);
+      matCells.push(inp);
+      cellWrappers.push(cell);
+    }
+  }
+  styleZeroCells();
+  highlightFocused();
+}
+
+function formatCell(v) {
+  if (v === 0) return '0';
+  if (Math.abs(v) >= 10) return v.toFixed(1);
+  return v.toFixed(2);
+}
+
+function syncMatrixUI() {
+  for (let i = 0; i < size; i++)
+    for (let j = 0; j < size; j++)
+      matCells[i * size + j].value = formatCell(M[i][j]);
+  styleZeroCells();
+}
+
+function styleZeroCells() {
+  matCells.forEach((c, idx) => {
+    const i = Math.floor(idx / size), j = idx % size;
+    c.classList.toggle('zero-cell', M[i][j] === 0);
+  });
+}
+
+function highlightFocused() {
+  cellWrappers.forEach(c => c.classList.remove('focused'));
+  const idx = focused.i * size + focused.j;
+  if (cellWrappers[idx]) cellWrappers[idx].classList.add('focused');
+}
+
+// ======================================================================
+//  Focused-cell slider
+// ======================================================================
+const focusSlider = document.getElementById('focusSlider');
+const fsName = document.getElementById('fsName');
+const fsVal = document.getElementById('fsVal');
+const fsRange = document.getElementById('fsRange');
+
+function setFocused(i, j) {
+  if (i >= size || j >= size) { i = 0; j = 0; }
+  focused = { i, j };
+  highlightFocused();
+  syncFocusSlider();
+}
+
+function syncFocusSlider() {
+  const v = M[focused.i][focused.j];
+  fsName.textContent = `M[${focused.i + 1},${focused.j + 1}]`;
+  // Pick a sensible slider range. Survivals live in [0,1], fecundities can be large.
+  let max;
+  if (v <= 1) max = 1;
+  else if (v <= 5) max = 5;
+  else max = Math.max(10, Math.ceil(v * 1.6));
+  const step = max <= 1 ? 0.01 : (max <= 5 ? 0.02 : 0.1);
+  focusSlider.min = 0;
+  focusSlider.max = max;
+  focusSlider.step = step;
+  focusSlider.value = v;
+  fsVal.textContent = step < 0.1 ? v.toFixed(2) : v.toFixed(1);
+  fsRange.textContent = `range: 0 – ${max}  (click a different cell to focus it)`;
+}
+
+focusSlider.addEventListener('input', () => {
+  const v = parseFloat(focusSlider.value);
+  M[focused.i][focused.j] = v;
+  const step = parseFloat(focusSlider.step);
+  fsVal.textContent = step < 0.1 ? v.toFixed(2) : v.toFixed(1);
+  matCells[focused.i * size + focused.j].value = formatCell(v);
+  styleZeroCells();
+  clearActivePreset();
+  update();
+});
+
+// If user pushes slider right up to max, expand the range automatically
+focusSlider.addEventListener('change', () => {
+  const v = parseFloat(focusSlider.value);
+  const max = parseFloat(focusSlider.max);
+  if (v >= max * 0.99 && max < 1e5) {
+    syncFocusSlider(); // bumps max based on current value
+  }
+});
+
+// ======================================================================
+//  IC sliders
+// ======================================================================
+function buildICSliders() {
+  const container = document.getElementById('icSliders');
+  container.innerHTML = '';
+  // Pick slider parameters from the magnitude of the current IC vector,
+  // so proportion-based models (max ≤ 1) get a [0,1] slider with fine step
+  // while count-based models keep the integer [0,500] slider.
+  const maxIC = Math.max(1e-9, ...ic.map(v => Math.abs(v)));
+  let sMax, sStep, fmt;
+  if (maxIC <= 1.0) {
+    sMax = 1; sStep = 0.01; fmt = v => v.toFixed(2);
+  } else if (maxIC <= 10) {
+    sMax = 10; sStep = 0.1; fmt = v => v.toFixed(1);
+  } else {
+    sMax = Math.max(500, Math.ceil(maxIC * 1.5));
+    sStep = 1; fmt = v => String(Math.round(v));
+  }
+  for (let i = 0; i < size; i++) {
+    const row = document.createElement('div');
+    row.className = 'ic-row';
+    const lbl = document.createElement('span');
+    lbl.className = 'ic-label';
+    lbl.textContent = `u${subscript(i + 1)}(0)`;
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = 0;
+    slider.max = sMax;
+    slider.step = sStep;
+    slider.value = ic[i] ?? 0;
+    const val = document.createElement('span');
+    val.className = 'ic-val';
+    val.textContent = fmt(ic[i] ?? 0);
+    slider.addEventListener('input', () => {
+      ic[i] = parseFloat(slider.value);
+      val.textContent = fmt(ic[i]);
+      update();
+    });
+    row.appendChild(lbl);
+    row.appendChild(slider);
+    row.appendChild(val);
+    container.appendChild(row);
+  }
+}
+
+function subscript(n) {
+  const s = '₀₁₂₃₄₅₆₇₈₉';
+  return String(n).split('').map(d => s[+d]).join('');
+}
+
+// ======================================================================
+//  Steps slider
+// ======================================================================
+const stepsSlider = document.getElementById('stepsSlider');
+const stepsVal = document.getElementById('stepsVal');
+stepsSlider.addEventListener('input', () => {
+  stepsVal.textContent = stepsSlider.value;
+  update();
+});
+
+// ======================================================================
+//  Preset + size chips
+// ======================================================================
+function buildPresetChips() {
+  const container = document.getElementById('presetChips');
+  container.innerHTML = '';
+  Object.entries(PRESETS).forEach(([key, p]) => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (key === activePreset ? ' active' : '');
+    btn.textContent = p.name;
+    btn.dataset.preset = key;
+    btn.addEventListener('click', () => loadPreset(key));
+    container.appendChild(btn);
+  });
+}
+
+function loadPreset(key) {
+  const p = PRESETS[key];
+  if (!p) return;
+  M = p.M.map(r => r.slice());
+  ic = p.ic.slice();
+  classLabels = p.labels.slice();
+  size = M.length;
+  activePreset = key;
+  // Find a reasonable default focused cell: first non-zero row-0 entry (fecundity)
+  let fi = 0, fj = size - 1;
+  for (let j = size - 1; j >= 0; j--) if (M[0][j] > 0) { fj = j; break; }
+  focused = { i: fi, j: fj };
+
+  document.querySelectorAll('#presetChips .chip').forEach(b =>
+    b.classList.toggle('active', b.dataset.preset === key));
+  document.querySelectorAll('#sizeChips .chip').forEach(b =>
+    b.classList.toggle('active', +b.dataset.size === size));
+  document.getElementById('presetSource').textContent = p.source ? `Source: ${p.source}` : '';
+
+  buildMatrixUI();
+  buildICSliders();
+  syncFocusSlider();
+  rebuildLegend();
+  rebuildTsDatasets();
+  update();
+}
+
+function clearActivePreset() {
+  activePreset = null;
+  document.querySelectorAll('#presetChips .chip').forEach(b => b.classList.remove('active'));
+  document.getElementById('presetSource').textContent = '';
+}
+
+function changeSize(newSize) {
+  if (newSize === size) return;
+  // Resize M, ic, labels while preserving overlap
+  const newM = Array.from({length: newSize}, (_, i) =>
+    Array.from({length: newSize}, (_, j) => (M[i] && M[i][j] !== undefined) ? M[i][j] : 0));
+  const newIc = Array.from({length: newSize}, (_, i) => ic[i] ?? 0);
+  const newLabels = Array.from({length: newSize}, (_, i) =>
+    classLabels[i] ?? `Class ${i + 1}`);
+  M = newM; ic = newIc; classLabels = newLabels;
+  size = newSize;
+  if (focused.i >= size || focused.j >= size) focused = { i: 0, j: Math.min(size - 1, 1) };
+  clearActivePreset();
+  document.querySelectorAll('#sizeChips .chip').forEach(b =>
+    b.classList.toggle('active', +b.dataset.size === size));
+  buildMatrixUI();
+  buildICSliders();
+  syncFocusSlider();
+  rebuildLegend();
+  rebuildTsDatasets();
+  update();
+}
+
+document.querySelectorAll('#sizeChips .chip').forEach(btn => {
+  btn.addEventListener('click', () => changeSize(+btn.dataset.size));
+});
+
+// ======================================================================
+//  Y-scale mode chips
+// ======================================================================
+document.querySelectorAll('#yModeChips .mode-chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    yMode = btn.dataset.mode;
+    document.querySelectorAll('#yModeChips .mode-chip').forEach(b =>
+      b.classList.toggle('active', b === btn));
+    update();
+  });
+});
+
+// ======================================================================
+//  Legend
+// ======================================================================
+function rebuildLegend() {
+  const legend = document.getElementById('tsLegend');
+  legend.innerHTML = '';
+  for (let i = 0; i < size; i++) {
+    const item = document.createElement('span');
+    item.className = 'legend-item';
+    item.innerHTML = `<span class="legend-dot" style="background:${CLASS_COLORS[i % CLASS_COLORS.length]}"></span>${classLabels[i] ?? 'Class ' + (i + 1)}`;
+    legend.appendChild(item);
+  }
+}
+
+// ======================================================================
+//  Charts
+// ======================================================================
+const tsChart = new Chart(document.getElementById('tsChart'), {
+  type: 'line',
+  data: { labels: [], datasets: [] },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    animation: { duration: 120 },
+    plugins: {
+      legend: { display: false },
+      tooltip: { mode: 'index', intersect: false },
+    },
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      x: {
+        title: { display: true, text: 't', font: { family: "'Source Sans 3'", size: 13 } },
+        ticks: { maxTicksLimit: 12, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd822' },
+      },
+      y: {
+        title: { display: true, text: 'Population', font: { family: "'Source Sans 3'", size: 13 } },
+        ticks: { font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd844' },
+      },
+    },
+  },
+});
+
+function rebuildTsDatasets() {
+  tsChart.data.datasets = [];
+  for (let i = 0; i < size; i++) {
+    tsChart.data.datasets.push({
+      label: classLabels[i] ?? 'u' + (i + 1),
+      data: [],
+      borderColor: CLASS_COLORS[i % CLASS_COLORS.length],
+      backgroundColor: CLASS_COLORS[i % CLASS_COLORS.length] + '14',
+      borderWidth: 2,
+      pointRadius: 1.5,
+      tension: 0,
+      fill: false,
+    });
+  }
+}
+
+const totChart = new Chart(document.getElementById('totChart'), {
+  type: 'line',
+  data: { labels: [], datasets: [{
+    label: 'N(t)',
+    data: [],
+    borderColor: '#3a6b5e',
+    backgroundColor: '#3a6b5e12',
+    borderWidth: 2,
+    pointRadius: 1.5,
+    tension: 0,
+    fill: true,
+  }] },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    animation: { duration: 120 },
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        title: { display: true, text: 't', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { maxTicksLimit: 10, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd822' },
+      },
+      y: {
+        title: { display: true, text: 'N(t)', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd844' },
+      },
+    },
+  },
+});
+
+// Unit circle points
+const unitCirclePts = Array.from({length: 81}, (_, k) => {
+  const t = 2 * Math.PI * k / 80;
+  return { x: Math.cos(t), y: Math.sin(t) };
+});
+
+const complexChart = new Chart(document.getElementById('complexChart'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      {
+        label: 'Real axis',
+        data: [{x: -2, y: 0}, {x: 2, y: 0}],
+        borderColor: '#c6c3bc',
+        borderWidth: 1,
+        pointRadius: 0,
+        showLine: true,
+      },
+      {
+        label: 'Imag axis',
+        data: [{x: 0, y: -2}, {x: 0, y: 2}],
+        borderColor: '#c6c3bc',
+        borderWidth: 1,
+        pointRadius: 0,
+        showLine: true,
+      },
+      {
+        label: 'Unit circle',
+        data: unitCirclePts,
+        borderColor: '#a67a1e',
+        borderWidth: 1.5,
+        borderDash: [4, 4],
+        pointRadius: 0,
+        showLine: true,
+        fill: false,
+      },
+      {
+        label: 'Eigenvalues',
+        data: [],
+        borderColor: '#5a4a9e',
+        backgroundColor: '#5a4a9e',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        showLine: false,
+      },
+      {
+        label: 'Dominant',
+        data: [],
+        borderColor: '#b84233',
+        backgroundColor: '#b84233',
+        pointRadius: 7,
+        pointHoverRadius: 9,
+        pointStyle: 'rectRot',
+        showLine: false,
+      },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    animation: { duration: 200 },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        filter: ctx => ctx.dataset.label === 'Eigenvalues' || ctx.dataset.label === 'Dominant',
+        callbacks: {
+          label: ctx => {
+            const p = ctx.raw;
+            const mod = Math.hypot(p.x, p.y);
+            const sign = p.y >= 0 ? '+' : '−';
+            const prefix = ctx.dataset.label === 'Dominant' ? 'λ_PF' : 'λ';
+            return `${prefix} = ${p.x.toFixed(3)} ${sign} ${Math.abs(p.y).toFixed(3)}i   |λ| = ${mod.toFixed(3)}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        type: 'linear',
+        min: -1.5, max: 1.5,
+        title: { display: true, text: 'Re(λ)', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd822' },
+      },
+      y: {
+        type: 'linear',
+        min: -1.5, max: 1.5,
+        title: { display: true, text: 'Im(λ)', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#e2dfd844' },
+      },
+    },
+  },
+});
+
+// ======================================================================
+//  Eigenvalue display
+// ======================================================================
+function modBadge(mod) {
+  if (Math.abs(mod - 1) < 0.005) return `<span class="eigen-mod mod-neutral">|λ| = ${mod.toFixed(3)}</span>`;
+  if (mod > 1) return `<span class="eigen-mod mod-grow">|λ| = ${mod.toFixed(3)}</span>`;
+  return `<span class="eigen-mod mod-decay">|λ| = ${mod.toFixed(3)}</span>`;
+}
+
+function formatEigen(r) {
+  if (Math.abs(r.im) < 1e-6) return r.re.toFixed(4);
+  const sign = r.im >= 0 ? '+' : '−';
+  return `${r.re.toFixed(3)} ${sign} ${Math.abs(r.im).toFixed(3)}i`;
+}
+
+function renderEigenvalues(roots) {
+  const list = document.getElementById('eigenList');
+  const badge = document.getElementById('behaviorBadge');
+  const hint = document.getElementById('behaviorHint');
+  list.innerHTML = '';
+
+  const perron = perronRoot(roots);
+  // Group complex conjugates for cleaner display
+  const displayed = [];
+  const used = new Array(roots.length).fill(false);
+  for (let i = 0; i < roots.length; i++) {
+    if (used[i]) continue;
+    used[i] = true;
+    if (Math.abs(roots[i].im) < 1e-6) {
+      displayed.push({ kind: 'real', roots: [roots[i]] });
+      continue;
+    }
+    // Look for conjugate
+    let pair = null;
+    for (let j = i + 1; j < roots.length; j++) {
+      if (used[j]) continue;
+      if (Math.abs(roots[j].re - roots[i].re) < 1e-4 &&
+          Math.abs(roots[j].im + roots[i].im) < 1e-4) { pair = j; break; }
+    }
+    if (pair !== null) {
+      used[pair] = true;
+      displayed.push({ kind: 'pair', roots: [roots[i], roots[pair]] });
+    } else {
+      displayed.push({ kind: 'complex', roots: [roots[i]] });
+    }
+  }
+
+  let idx = 1;
+  displayed.forEach(group => {
+    const li = document.createElement('li');
+    li.className = 'eigen-item';
+    const r = group.roots[0];
+    const isDominant = group.roots.some(x =>
+      Math.abs(x.re - perron.re) < 1e-9 && Math.abs(x.im - perron.im) < 1e-9);
+    if (isDominant) li.classList.add('dominant');
+
+    let symbol;
+    if (group.kind === 'pair') {
+      symbol = `λ${subscript(idx)},${subscript(idx + 1)}`;
+      idx += 2;
+    } else {
+      symbol = `λ${subscript(idx)}`;
+      idx += 1;
+    }
+
+    const valStr = group.kind === 'pair'
+      ? `${r.re.toFixed(3)} ± ${Math.abs(r.im).toFixed(3)}i`
+      : formatEigen(r);
+
+    li.innerHTML =
+      `<span class="eigen-symbol">${symbol}</span>` +
+      `<span class="eigen-val">${valStr}</span>` +
+      modBadge(cAbs(r));
+    list.appendChild(li);
+  });
+
+  // Behavior badge uses |perron|
+  const domAbs = cAbs(perron);
+  if (domAbs > 1.005) {
+    badge.innerHTML = `<div class="behavior-badge behavior-grow">Growing &nbsp;·&nbsp; λ<sub>PF</sub> ≈ ${perron.re.toFixed(3)}</div>`;
+  } else if (domAbs < 0.995) {
+    badge.innerHTML = `<div class="behavior-badge behavior-decline">Declining &nbsp;·&nbsp; λ<sub>PF</sub> ≈ ${perron.re.toFixed(3)}</div>`;
+  } else {
+    badge.innerHTML = `<div class="behavior-badge behavior-neutral">Stable &nbsp;·&nbsp; λ<sub>PF</sub> ≈ ${perron.re.toFixed(3)}</div>`;
+  }
+
+  // Hint about oscillations
+  const maxMod = Math.max(...roots.map(cAbs));
+  const hasOscillation = roots.some(r => Math.abs(r.im) > 1e-6);
+  const subdominantMod = roots
+    .filter(r => !(Math.abs(r.re - perron.re) < 1e-9 && Math.abs(r.im - perron.im) < 1e-9))
+    .reduce((m, r) => Math.max(m, cAbs(r)), 0);
+  let hintText = '';
+  if (hasOscillation) {
+    if (Math.abs(subdominantMod - domAbs) < 0.005 && hasOscillation) {
+      hintText = 'complex |λ| = λ_PF → persistent oscillation';
+    } else if (subdominantMod < domAbs) {
+      hintText = `complex |λ| ≈ ${subdominantMod.toFixed(3)} → oscillation decays to stable distribution`;
+    } else {
+      hintText = `max complex |λ| ≈ ${subdominantMod.toFixed(3)}`;
+    }
+  } else {
+    hintText = 'all eigenvalues real';
+  }
+  hint.textContent = hintText;
+
+  return perron;
+}
+
+// ======================================================================
+//  Main update
+// ======================================================================
+function update() {
+  const n = parseInt(stepsSlider.value);
+  const series = iterate(M, ic, n);
+  const labels = series.map((_, i) => i);
+
+  // Per-class series
+  const perClass = Array.from({length: size}, (_, k) => series.map(d => d[k]));
+  const totals = series.map(d => d.reduce((s, x) => s + x, 0));
+
+  // Apply y-mode
+  let tsSeries;
+  const yAxis = tsChart.options.scales.y;
+  if (yMode === 'proportions') {
+    tsSeries = perClass.map((_, k) => series.map((d, t) => totals[t] > 1e-10 ? d[k] / totals[t] : 0));
+    yAxis.type = 'linear';
+    yAxis.min = 0;
+    yAxis.max = 1;
+    yAxis.title.text = 'Proportion';
+  } else if (yMode === 'log') {
+    // Log scale: clip tiny values so Chart.js can plot them
+    tsSeries = perClass.map(row => row.map(v => v > 1e-6 ? v : null));
+    yAxis.type = 'logarithmic';
+    yAxis.min = undefined;
+    yAxis.max = undefined;
+    yAxis.title.text = 'Population (log)';
+  } else {
+    tsSeries = perClass;
+    yAxis.type = 'linear';
+    yAxis.min = 0;
+    yAxis.max = undefined;
+    yAxis.title.text = 'Population';
+  }
+
+  tsChart.data.labels = labels;
+  for (let k = 0; k < size; k++) {
+    tsChart.data.datasets[k].data = tsSeries[k].map(v =>
+      (v === null || v === undefined) ? null : Math.round(v * 1000) / 1000);
+  }
+  tsChart.update('none');
+
+  totChart.data.labels = labels;
+  totChart.data.datasets[0].data = totals.map(v => Math.round(v * 1000) / 1000);
+  totChart.update('none');
+
+  // Eigenvalues
+  const roots = computeEigenvalues(M);
+  const perron = renderEigenvalues(roots);
+
+  // Complex plane
+  const pts = roots.map(r => ({ x: r.re, y: r.im }));
+  const isPerron = r => Math.abs(r.re - perron.re) < 1e-9 && Math.abs(r.im - perron.im) < 1e-9;
+  complexChart.data.datasets[3].data = pts.filter((_, i) => !isPerron(roots[i]));
+  complexChart.data.datasets[4].data = [{ x: perron.re, y: perron.im }];
+
+  // Symmetric range covering all eigenvalues + unit circle
+  const maxExtent = Math.max(1.2, ...roots.map(r => Math.max(Math.abs(r.re), Math.abs(r.im)) + 0.2));
+  complexChart.options.scales.x.min = -maxExtent;
+  complexChart.options.scales.x.max = maxExtent;
+  complexChart.options.scales.y.min = -maxExtent;
+  complexChart.options.scales.y.max = maxExtent;
+  complexChart.update('none');
+}
+
+// ======================================================================
+//  Init
+// ======================================================================
+function init() {
+  buildPresetChips();
+  document.querySelectorAll('#sizeChips .chip').forEach(b =>
+    b.classList.toggle('active', +b.dataset.size === size));
+  buildMatrixUI();
+  buildICSliders();
+  syncFocusSlider();
+  rebuildLegend();
+  rebuildTsDatasets();
+  update();
+}
+
+init();
+</script>
+</body>
+</html>

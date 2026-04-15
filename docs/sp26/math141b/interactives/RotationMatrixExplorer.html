@@ -12,14 +12,14 @@
   --surface: #ffffff;
   --surface2: #f3f1ec;
   --text: #2c2a28;
-  --text2: #6b6862;
-  --text3: #9e9a93;
-  --border: #e2dfd8;
+  --text2: #5f5c56;
+  --text3: #6a6862;
+  --border: #c9c5bc;
   --accent: #3a6b5e;
   --accent-light: #e8f0ed;
-  --danger: #b84233;
+  --danger: #9c3628;
   --danger-light: #fbeae7;
-  --warning: #a67a1e;
+  --warning: #7a5a10;
   --warning-light: #fdf4e1;
   --success: #3a6b5e;
   --success-light: #e8f0ed;
@@ -33,12 +33,40 @@
   --mono: 'JetBrains Mono', monospace;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18.5px; }
 body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
   line-height: 1.55;
   min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 .header {
   padding: 2.25rem 2rem 1.25rem;
@@ -176,7 +204,7 @@ body {
 }
 .param-hint {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   color: var(--text3);
   margin-top: 0.25rem;
 }
@@ -458,89 +486,91 @@ body {
 <div class="main">
   <div class="panel">
     <div class="panel-section">
-      <div class="panel-label">Preset</div>
-      <div class="chips" id="presetChips"></div>
+      <h2 class="panel-label" id="presetLabel">Preset</h2>
+      <div class="chips" id="presetChips" role="group" aria-labelledby="presetLabel"></div>
     </div>
 
     <div class="panel-section">
-      <div class="panel-label">Scaling r <em style="text-transform:none;font-style:normal;color:var(--text3);font-weight:400;">(modulus)</em></div>
+      <h2 class="panel-label">Scaling r <em style="text-transform:none;font-style:normal;color:var(--text3);font-weight:400;">(modulus)</em></h2>
       <div class="param-block">
         <div class="param-header">
           <span class="param-name">r <em>= |λ|</em></span>
-          <span class="param-val" id="rVal">1.00</span>
+          <span class="param-val" id="rVal" aria-live="polite">1.00</span>
         </div>
         <div class="param-row">
-          <input type="range" min="0.5" max="1.5" step="0.005" value="1.00" id="rSlider">
+          <input type="range" min="0.5" max="1.5" step="0.005" value="1.00" id="rSlider" aria-label="Modulus r, eigenvalue magnitude" aria-describedby="rHint">
         </div>
-        <div class="param-hint" id="rHint">pure rotation (|λ| = 1)</div>
+        <div class="param-hint" id="rHint" aria-live="polite">pure rotation (|λ| = 1)</div>
       </div>
     </div>
 
     <div class="panel-section">
-      <div class="panel-label">Angle θ <em style="text-transform:none;font-style:normal;color:var(--text3);font-weight:400;">(argument)</em></div>
+      <h2 class="panel-label">Angle θ <em style="text-transform:none;font-style:normal;color:var(--text3);font-weight:400;">(argument)</em></h2>
       <div class="param-block">
         <div class="param-header">
           <span class="param-name">θ <em>= arg(λ)</em></span>
-          <span class="param-val" id="thetaVal">π/6</span>
+          <span class="param-val" id="thetaVal" aria-live="polite">π/6</span>
         </div>
         <div class="param-row">
-          <input type="range" min="-3.14159" max="3.14159" step="0.01" value="0.5236" id="thetaSlider">
+          <input type="range" min="-3.14159" max="3.14159" step="0.01" value="0.5236" id="thetaSlider" aria-label="Rotation angle theta in radians" aria-describedby="thetaHint">
         </div>
-        <div class="param-hint" id="thetaHint">≈ 30°</div>
+        <div class="param-hint" id="thetaHint" aria-live="polite">≈ 30°</div>
       </div>
     </div>
 
     <div class="panel-section">
-      <div class="panel-label">Matrix M = r·R(θ)</div>
-      <div class="matrix-readout-wrap">
-        <span class="matrix-symbol">M =</span>
+      <h2 class="panel-label" id="matrixReadoutLabel">Matrix M = r·R(θ)</h2>
+      <div class="matrix-readout-wrap" role="group" aria-labelledby="matrixReadoutLabel">
+        <span class="matrix-symbol" aria-hidden="true">M =</span>
         <div class="matrix-bracket">
-          <div class="bracket-left"></div>
-          <div class="matrix-grid">
-            <div class="matrix-cell-readout" id="m11">1.00</div>
-            <div class="matrix-cell-readout" id="m12">0.00</div>
-            <div class="matrix-cell-readout" id="m21">0.00</div>
-            <div class="matrix-cell-readout" id="m22">1.00</div>
+          <div class="bracket-left" aria-hidden="true"></div>
+          <div class="matrix-grid" aria-live="polite" aria-atomic="true">
+            <div class="matrix-cell-readout" id="m11" aria-label="Row 1 column 1">1.00</div>
+            <div class="matrix-cell-readout" id="m12" aria-label="Row 1 column 2">0.00</div>
+            <div class="matrix-cell-readout" id="m21" aria-label="Row 2 column 1">0.00</div>
+            <div class="matrix-cell-readout" id="m22" aria-label="Row 2 column 2">1.00</div>
           </div>
-          <div class="bracket-right"></div>
+          <div class="bracket-right" aria-hidden="true"></div>
         </div>
       </div>
       <div class="matrix-formula">r·[[cos θ, −sin θ], [sin θ, cos θ]]</div>
     </div>
 
-    <div class="panel-section">
-      <div class="panel-label">Eigenvalues</div>
-      <ul class="eigen-list" id="eigenList"></ul>
-      <div id="behaviorBadge"></div>
+    <div class="panel-section" aria-labelledby="eigenLabel">
+      <h2 class="panel-label" id="eigenLabel">Eigenvalues</h2>
+      <ul class="eigen-list" id="eigenList" aria-live="polite" aria-atomic="true"></ul>
+      <div id="behaviorBadge" aria-live="polite" aria-atomic="true"></div>
       <div class="behavior-hint" id="behaviorHint"></div>
     </div>
 
     <div class="panel-section">
-      <div class="panel-label">Initial vector u(0)</div>
-      <div class="ic-row">
-        <span class="ic-label">u₁(0)</span>
-        <input type="range" min="-3" max="3" step="0.05" value="1" id="u1Slider">
-        <span class="ic-val" id="u1Val">1.00</span>
-      </div>
-      <div class="ic-row">
-        <span class="ic-label">u₂(0)</span>
-        <input type="range" min="-3" max="3" step="0.05" value="0" id="u2Slider">
-        <span class="ic-val" id="u2Val">0.00</span>
+      <h2 class="panel-label" id="icLabel">Initial vector u(0)</h2>
+      <div role="group" aria-labelledby="icLabel">
+        <div class="ic-row">
+          <label class="ic-label" for="u1Slider">u₁(0)</label>
+          <input type="range" min="-3" max="3" step="0.05" value="1" id="u1Slider" aria-label="Initial condition u1, first component">
+          <span class="ic-val" id="u1Val" aria-live="polite">1.00</span>
+        </div>
+        <div class="ic-row">
+          <label class="ic-label" for="u2Slider">u₂(0)</label>
+          <input type="range" min="-3" max="3" step="0.05" value="0" id="u2Slider" aria-label="Initial condition u2, second component">
+          <span class="ic-val" id="u2Val" aria-live="polite">0.00</span>
+        </div>
       </div>
     </div>
 
     <div class="panel-section">
-      <div class="panel-label">Time steps</div>
+      <h2 class="panel-label"><label for="stepsSlider">Time steps</label></h2>
       <div class="steps-row">
-        <input type="range" min="5" max="200" value="48" step="1" id="stepsSlider">
-        <span class="steps-val" id="stepsVal">48</span>
+        <input type="range" min="5" max="200" value="48" step="1" id="stepsSlider" aria-label="Number of time steps to iterate">
+        <span class="steps-val" id="stepsVal" aria-live="polite">48</span>
       </div>
     </div>
   </div>
 
   <div class="charts-area">
     <div class="chart-card">
-      <div class="chart-title">Phase portrait</div>
+      <h2 class="chart-title">Phase portrait</h2>
       <div class="chart-subtitle">Orbit of u(t) in the plane. Green = start, red = end.</div>
       <div class="legend-row">
         <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e"></span>Orbit u(t)</span>
@@ -548,24 +578,27 @@ body {
         <span class="legend-item"><span class="legend-dot square" style="background:#c8553a"></span>u(T)</span>
         <span class="legend-item"><span class="legend-dot" style="background:#a67a1e;opacity:0.65"></span>reference circle |u| = |u(0)|</span>
       </div>
-      <div class="phase-wrap"><canvas id="phaseChart"></canvas></div>
+      <div class="phase-wrap"><canvas id="phaseChart" role="img" aria-label="Phase portrait of the iterated orbit"></canvas></div>
+      <p class="sr-only" id="phaseSummary" aria-live="polite"></p>
     </div>
 
     <div class="chart-row">
       <div class="chart-card">
-        <div class="chart-title">Eigenvalue spectrum</div>
+        <h2 class="chart-title">Eigenvalue spectrum</h2>
         <div class="chart-subtitle">Complex plane. Eigenvalues sit at r·e<sup>±iθ</sup>; unit circle = critical boundary.</div>
-        <div class="spectrum-wrap"><canvas id="complexChart"></canvas></div>
+        <div class="spectrum-wrap"><canvas id="complexChart" role="img" aria-label="Eigenvalue spectrum in the complex plane"></canvas></div>
+        <p class="sr-only" id="spectrumSummary" aria-live="polite"></p>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Components over time</div>
+        <h2 class="chart-title">Components over time</h2>
         <div class="chart-subtitle">u₁(t) and u₂(t) — sinusoidal oscillation with envelope r<sup>t</sup></div>
         <div class="legend-row">
-          <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e"></span>u₁(t)</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#1a7a60"></span>u₂(t)</span>
-          <span class="legend-item" id="envLegend" style="display:none;"><span class="legend-dot" style="background:#a67a1e;opacity:0.65"></span>±|u(0)|·r<sup>t</sup></span>
+          <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e" aria-hidden="true"></span><span style="font-family:var(--mono);font-size:0.6rem;color:#5a4a9e;margin-right:2px;" aria-hidden="true">———</span>u₁(t)</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#1a7a60" aria-hidden="true"></span><span style="font-family:var(--mono);font-size:0.6rem;color:#1a7a60;margin-right:2px;" aria-hidden="true">— —</span>u₂(t)</span>
+          <span class="legend-item" id="envLegend" style="display:none;"><span class="legend-dot" style="background:#a67a1e;opacity:0.65" aria-hidden="true"></span>±|u(0)|·r<sup>t</sup></span>
         </div>
-        <div class="chart-wrap" style="height: 240px;"><canvas id="tsChart"></canvas></div>
+        <div class="chart-wrap" style="height: 240px;"><canvas id="tsChart" role="img" aria-label="u1 and u2 components over time"></canvas></div>
+        <p class="sr-only" id="tsSummary" aria-live="polite"></p>
       </div>
     </div>
 
@@ -578,6 +611,12 @@ body {
 </div>
 
 <script>
+// ======================================================================
+//  Reduced-motion
+// ======================================================================
+const REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+const ANIM_SCALE = REDUCED_MOTION ? 0 : 1;
+
 // ======================================================================
 //  Presets
 // ======================================================================
@@ -676,10 +715,10 @@ const phaseChart = new Chart(document.getElementById('phaseChart'), {
     datasets: [
       // 0: x-axis
       { label: 'x axis', data: [{x: -3, y: 0}, {x: 3, y: 0}],
-        borderColor: '#c6c3bc', borderWidth: 1, pointRadius: 0, showLine: true },
+        borderColor: '#6b6862', borderWidth: 1, pointRadius: 0, showLine: true },
       // 1: y-axis
       { label: 'y axis', data: [{x: 0, y: -3}, {x: 0, y: 3}],
-        borderColor: '#c6c3bc', borderWidth: 1, pointRadius: 0, showLine: true },
+        borderColor: '#6b6862', borderWidth: 1, pointRadius: 0, showLine: true },
       // 2: reference circle at |u(0)|
       { label: 'Reference circle', data: [],
         borderColor: '#a67a1e', borderWidth: 1.2, borderDash: [4, 4],
@@ -702,7 +741,7 @@ const phaseChart = new Chart(document.getElementById('phaseChart'), {
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    animation: { duration: 120 },
+    animation: { duration: 120 * ANIM_SCALE },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -726,11 +765,11 @@ const phaseChart = new Chart(document.getElementById('phaseChart'), {
       x: { type: 'linear', min: -2, max: 2,
         title: { display: true, text: 'x', font: { family: "'Source Sans 3'", size: 12 } },
         ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
-        grid: { color: '#e2dfd822' } },
+        grid: { color: '#b8b4ab88' } },
       y: { type: 'linear', min: -2, max: 2,
         title: { display: true, text: 'y', font: { family: "'Source Sans 3'", size: 12 } },
         ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
-        grid: { color: '#e2dfd844' } },
+        grid: { color: '#b8b4abaa' } },
     },
   },
 });
@@ -741,9 +780,9 @@ const complexChart = new Chart(document.getElementById('complexChart'), {
   data: {
     datasets: [
       { label: 'Re axis', data: [{x: -2, y: 0}, {x: 2, y: 0}],
-        borderColor: '#c6c3bc', borderWidth: 1, pointRadius: 0, showLine: true },
+        borderColor: '#6b6862', borderWidth: 1, pointRadius: 0, showLine: true },
       { label: 'Im axis', data: [{x: 0, y: -2}, {x: 0, y: 2}],
-        borderColor: '#c6c3bc', borderWidth: 1, pointRadius: 0, showLine: true },
+        borderColor: '#6b6862', borderWidth: 1, pointRadius: 0, showLine: true },
       { label: 'Unit circle', data: unitCirclePts,
         borderColor: '#a67a1e', borderWidth: 1.5, borderDash: [4, 4],
         pointRadius: 0, showLine: true, fill: false },
@@ -757,7 +796,7 @@ const complexChart = new Chart(document.getElementById('complexChart'), {
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    animation: { duration: 150 },
+    animation: { duration: 150 * ANIM_SCALE },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -776,11 +815,11 @@ const complexChart = new Chart(document.getElementById('complexChart'), {
       x: { type: 'linear', min: -1.6, max: 1.6,
         title: { display: true, text: 'Re(λ)', font: { family: "'Source Sans 3'", size: 12 } },
         ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
-        grid: { color: '#e2dfd822' } },
+        grid: { color: '#b8b4ab88' } },
       y: { type: 'linear', min: -1.6, max: 1.6,
         title: { display: true, text: 'Im(λ)', font: { family: "'Source Sans 3'", size: 12 } },
         ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
-        grid: { color: '#e2dfd844' } },
+        grid: { color: '#b8b4abaa' } },
     },
   },
 });
@@ -795,7 +834,8 @@ const tsChart = new Chart(document.getElementById('tsChart'), {
         backgroundColor: '#5a4a9e14', borderWidth: 2, pointRadius: 1.5,
         tension: 0, fill: false },
       { label: 'u₂', data: [], borderColor: '#1a7a60',
-        backgroundColor: '#1a7a6014', borderWidth: 2, pointRadius: 1.5,
+        backgroundColor: '#1a7a6014', borderWidth: 2, pointRadius: 2,
+        pointStyle: 'triangle', borderDash: [6, 4],
         tension: 0, fill: false },
       { label: '+env', data: [], borderColor: '#a67a1eaa',
         borderWidth: 1, borderDash: [4, 4], pointRadius: 0,
@@ -807,7 +847,7 @@ const tsChart = new Chart(document.getElementById('tsChart'), {
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    animation: { duration: 120 },
+    animation: { duration: 120 * ANIM_SCALE },
     plugins: {
       legend: { display: false },
       tooltip: { mode: 'index', intersect: false,
@@ -817,10 +857,10 @@ const tsChart = new Chart(document.getElementById('tsChart'), {
     scales: {
       x: { title: { display: true, text: 't', font: { family: "'Source Sans 3'", size: 12 } },
         ticks: { maxTicksLimit: 10, font: { family: "'Source Sans 3'", size: 11 } },
-        grid: { color: '#e2dfd822' } },
+        grid: { color: '#b8b4ab88' } },
       y: { title: { display: true, text: 'value', font: { family: "'Source Sans 3'", size: 12 } },
         ticks: { font: { family: "'Source Sans 3'", size: 11 } },
-        grid: { color: '#e2dfd844' } },
+        grid: { color: '#b8b4abaa' } },
     },
   },
 });
@@ -866,7 +906,10 @@ stepsSlider.addEventListener('input', () => {
 
 function clearPreset() {
   activePreset = null;
-  document.querySelectorAll('#presetChips .chip').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#presetChips .chip').forEach(b => {
+    b.classList.remove('active');
+    b.setAttribute('aria-pressed', 'false');
+  });
 }
 
 function buildPresetChips() {
@@ -874,9 +917,11 @@ function buildPresetChips() {
   container.innerHTML = '';
   Object.entries(PRESETS).forEach(([key, p]) => {
     const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'chip' + (key === activePreset ? ' active' : '');
     btn.textContent = p.name;
     btn.dataset.preset = key;
+    btn.setAttribute('aria-pressed', key === activePreset ? 'true' : 'false');
     btn.addEventListener('click', () => loadPreset(key));
     container.appendChild(btn);
   });
@@ -893,8 +938,11 @@ function loadPreset(key) {
   thetaSlider.value = theta;
   u1Slider.value = u0[0];
   u2Slider.value = u0[1];
-  document.querySelectorAll('#presetChips .chip').forEach(b =>
-    b.classList.toggle('active', b.dataset.preset === key));
+  document.querySelectorAll('#presetChips .chip').forEach(b => {
+    const on = b.dataset.preset === key;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
   update();
 }
 
@@ -1051,6 +1099,42 @@ function update() {
   tsChart.update('none');
 
   renderEigenvalues();
+  updateA11ySummaries(orbit, u0mod);
+}
+
+function updateA11ySummaries(orbit, u0mod) {
+  const start = orbit[0];
+  const end = orbit[orbit.length - 1];
+  const endMod = Math.hypot(end[0], end[1]);
+  const regime = r > 1.005 ? 'growing spiral' : r < 0.995 ? 'decaying spiral' : 'pure rotation on a circle';
+  const period = Math.abs(r - 1) < 0.005 ? detectPeriod(theta) : null;
+  const periodStr = period === null
+    ? (Math.abs(r - 1) < 0.005 ? ' (quasiperiodic — θ/2π irrational)' : '')
+    : ` with period ${period} steps`;
+  const phaseSum =
+    `Phase portrait over ${steps} iterations. ${regime}${periodStr}. ` +
+    `Starting at (${start[0].toFixed(2)}, ${start[1].toFixed(2)}) with |u(0)| = ${u0mod.toFixed(2)}, ` +
+    `ending at (${end[0].toFixed(2)}, ${end[1].toFixed(2)}) with |u(T)| = ${endMod.toFixed(2)}.`;
+
+  const [l1, l2] = eigenvalues(r, theta);
+  const spectrumSum = Math.abs(theta) < 1e-6 || Math.abs(Math.abs(theta) - Math.PI) < 1e-6
+    ? `Eigenvalues are real, both equal to ${l1.re.toFixed(3)}, |λ| = ${Math.abs(l1.re).toFixed(3)}.`
+    : `Complex conjugate eigenvalues at ${l1.re.toFixed(3)} ± ${Math.abs(l1.im).toFixed(3)}i, ` +
+      `modulus ${r.toFixed(3)}, argument ${degOfTheta(theta)} degrees. ` +
+      (r > 1.005 ? 'Outside the unit circle — growth.' :
+       r < 0.995 ? 'Inside the unit circle — decay.' : 'On the unit circle — neutral.');
+
+  const tsSum = `u1 from ${start[0].toFixed(2)} to ${end[0].toFixed(2)}, u2 from ${start[1].toFixed(2)} to ${end[1].toFixed(2)} over ${steps} steps.`;
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('phaseSummary', phaseSum);
+  set('spectrumSummary', spectrumSum);
+  set('tsSummary', tsSum);
+
+  const setAria = (id, v) => { const el = document.getElementById(id); if (el) el.setAttribute('aria-label', v); };
+  setAria('phaseChart', phaseSum);
+  setAria('complexChart', spectrumSum);
+  setAria('tsChart', tsSum);
 }
 
 // ======================================================================

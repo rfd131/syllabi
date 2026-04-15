@@ -10,6 +10,8 @@ data/
 
 # Development notes
 myprompts.md
+PDF_GENERATION_STATUS.md
+PDF_SYLLABUS_GUIDE.md
 
 # Python
 __pycache__/

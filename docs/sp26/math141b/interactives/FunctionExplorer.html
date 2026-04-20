@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Function Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface2: #f3f1ec;
+  --surface3: #ecebe4;
+  --text: #2c2a28;
+  --text2: #5f5c56;
+  --text3: #6a6862;
+  --border: #c9c5bc;
+  --border-strong: #a8a498;
+  --accent: #3a6b5e;
+  --accent-light: #e8f0ed;
+  --danger: #9c3628;
+  --danger-light: #fbeae7;
+  --warning: #7a5a10;
+  --warning-light: #fdf4e1;
+  --success: #3a6b5e;
+  --success-light: #e8f0ed;
+  --purple: #5a4a9e;
+  --purple-light: #eeedf8;
+  --teal: #1a7a60;
+  --coral: #c8553a;
+  --blue: #3a5a8a;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18.5px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.55; min-height: 100vh; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--purple); outline-offset: 2px; border-radius: 4px;
+}
+
+.header { padding: 2.25rem 2rem 1.25rem; max-width: 1240px; margin: 0 auto; }
+.header h1 { font-family: var(--font-serif); font-size: 1.75rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+.header p { color: var(--text2); font-size: 0.95rem; max-width: 900px; }
+.header em { font-family: var(--font-serif); font-style: italic; }
+
+.main {
+  max-width: 1240px; margin: 0 auto; padding: 0 2rem 3rem;
+  display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start;
+}
+@media (max-width: 980px) { .main { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.25rem; position: sticky; top: 1rem;
+}
+@media (max-width: 980px) { .panel { position: static; } }
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label {
+  font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text3); margin-bottom: 0.55rem;
+}
+
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  font-family: var(--font); font-size: 0.72rem; padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border); border-radius: 5px;
+  background: var(--surface); color: var(--text2); cursor: pointer;
+  transition: all 0.15s; text-align: left;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.chip.active { border-color: var(--accent); background: var(--accent); color: white; }
+.chip .chip-sub { display: block; font-size: 0.62rem; color: var(--text3); margin-top: 1px; font-family: var(--mono); }
+.chip.active .chip-sub { color: rgba(255,255,255,0.82); }
+
+.param-block {
+  background: var(--surface2); border-radius: 6px; padding: 0.7rem 0.85rem; margin-bottom: 0.55rem;
+}
+.param-block:last-child { margin-bottom: 0; }
+.param-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.3rem; gap: 0.5rem; }
+.param-name { font-family: var(--mono); font-size: 0.82rem; font-weight: 500; color: var(--text); }
+.param-val { font-family: var(--mono); font-size: 0.82rem; font-weight: 500; color: var(--purple); }
+.param-row { display: flex; align-items: center; gap: 6px; }
+.param-row input[type="range"] {
+  width: 100%; height: 4px; -webkit-appearance: none; appearance: none;
+  background: var(--border); border-radius: 2px; outline: none;
+}
+.param-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--purple); cursor: pointer; border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.param-row input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--purple); cursor: pointer; border: 2px solid var(--surface);
+}
+.param-hint { font-family: var(--mono); font-size: 0.72rem; color: var(--text3); margin-top: 0.3rem; }
+
+.text-input {
+  width: 100%; font-family: var(--mono); font-size: 0.86rem; padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text);
+}
+.text-input:focus { outline: 2px solid var(--purple); outline-offset: 1px; border-color: var(--purple); }
+.text-input.err { border-color: var(--danger); background: var(--danger-light); }
+.small-input {
+  width: 6.5rem; font-family: var(--mono); font-size: 0.82rem; padding: 0.35rem 0.55rem;
+  border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text);
+}
+.small-input:focus { outline: 2px solid var(--purple); outline-offset: 1px; border-color: var(--purple); }
+
+.toggles-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.toggle {
+  font-family: var(--font); font-size: 0.72rem; padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border); border-radius: 5px; background: var(--surface);
+  color: var(--text2); cursor: pointer; transition: all 0.15s;
+}
+.toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.toggle.on { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+.toggle[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+.btn {
+  font-family: var(--font); font-size: 0.78rem; font-weight: 500; padding: 0.42rem 0.8rem;
+  border: 1px solid var(--border); border-radius: 5px; background: var(--surface);
+  color: var(--text); cursor: pointer; transition: all 0.15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn.ghost { background: transparent; color: var(--text2); }
+.btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 0.4rem; }
+
+.parse-feedback { font-family: var(--mono); font-size: 0.72rem; min-height: 1.15em; margin-top: 0.35rem; line-height: 1.4; }
+.parse-feedback.err { color: var(--danger); }
+.parse-feedback.ok { color: var(--success); }
+
+.workspace { display: flex; flex-direction: column; gap: 1.25rem; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+.card-title {
+  font-size: 0.88rem; font-weight: 600; margin-bottom: 0.15rem;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.card-title .counter {
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 400; color: var(--text3);
+  padding: 2px 6px; background: var(--surface2); border-radius: 4px;
+}
+.card-subtitle { font-size: 0.76rem; color: var(--text3); margin-bottom: 0.9rem; }
+
+.plot-wrap { position: relative; width: 100%; height: 460px; }
+@media (max-width: 700px) { .plot-wrap { height: 360px; } }
+.plot-wrap canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
+
+.legend-row { display: flex; gap: 14px; margin-bottom: 0.55rem; font-size: 0.72rem; color: var(--text2); flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-swatch { width: 20px; height: 2.5px; display: inline-block; border-radius: 2px; }
+.legend-swatch.dashed {
+  background-image: linear-gradient(to right, currentColor 50%, transparent 50%);
+  background-size: 6px 2.5px; background-repeat: repeat-x; background-color: transparent;
+}
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.reading-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+@media (max-width: 740px) { .reading-grid { grid-template-columns: 1fr; } }
+.reading-card {
+  background: var(--surface2); border-radius: 6px; padding: 0.75rem 0.9rem;
+  border-top: 3px solid var(--purple);
+}
+.reading-card.probe { border-top-color: var(--purple); }
+.reading-card.target { border-top-color: var(--coral); }
+.reading-card.vlt { border-top-color: var(--warning); }
+.reading-card.ineq { border-top-color: var(--blue); }
+.reading-card h3 {
+  font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text3); margin-bottom: 0.4rem; font-family: var(--font);
+}
+.reading-list { font-family: var(--mono); font-size: 0.82rem; color: var(--text); line-height: 1.5; }
+.reading-list .dim { color: var(--text3); }
+.reading-list .label-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: baseline;
+}
+.verdict { font-weight: 600; font-family: var(--font); font-size: 0.82rem; margin-top: 0.3rem; }
+.verdict.is-fn { color: var(--success); }
+.verdict.not-fn { color: var(--danger); }
+
+.notes-card {
+  background: var(--surface2); border-radius: 6px; padding: 0.9rem 1rem;
+  border-top: 3px solid var(--teal);
+  font-size: 0.82rem; line-height: 1.6; color: var(--text2);
+}
+.notes-card h3 { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; font-family: var(--font); color: var(--text); }
+.notes-card p + p { margin-top: 0.4rem; }
+.notes-card em { font-family: var(--font-serif); font-style: italic; color: var(--text); }
+.notes-card code {
+  font-family: var(--mono); font-size: 0.76rem; background: var(--surface);
+  padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); color: var(--text);
+}
+
+.syntax-legend {
+  font-size: 0.72rem; color: var(--text3); font-family: var(--mono); line-height: 1.55;
+  background: var(--surface2); padding: 0.55rem 0.7rem; border-radius: 5px; margin-top: 0.45rem;
+}
+.syntax-legend strong { color: var(--text2); font-weight: 600; }
+
+.curve-toggle-list { display: flex; flex-direction: column; gap: 4px; margin-top: 0.3rem; }
+.curve-toggle {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 0.78rem; color: var(--text2);
+  padding: 0.35rem 0.55rem; border: 1px solid var(--border); border-radius: 5px;
+  background: var(--surface); cursor: pointer; transition: all 0.15s;
+}
+.curve-toggle:hover { border-color: var(--accent); }
+.curve-toggle.off { opacity: 0.4; }
+.curve-toggle .cdot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 10px; }
+
+.role-chips {
+  display: inline-flex; gap: 4px;
+}
+.role-chip {
+  font-family: var(--mono); font-size: 0.68rem; padding: 1px 6px;
+  border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text3);
+  cursor: pointer;
+}
+.role-chip.active.var { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+.role-chip.active.param { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+.role-chip.correct { box-shadow: inset 0 0 0 1px currentColor; }
+.role-chip.wrong { background: var(--danger-light); color: var(--danger); border-color: var(--danger); }
+
+.role-table { width: 100%; font-size: 0.8rem; margin-top: 0.3rem; border-collapse: collapse; }
+.role-table td { padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--border); }
+.role-table td:first-child { font-family: var(--mono); font-weight: 500; width: 35%; }
+.role-table td:nth-child(2) { color: var(--text3); font-size: 0.75rem; }
+.role-table td:last-child { text-align: right; }
+.role-feedback { font-size: 0.78rem; margin-top: 0.4rem; color: var(--text3); font-family: var(--mono); }
+.role-feedback.ok { color: var(--success); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Function Explorer</h1>
+  <p>Pick a scenario (E. coli populations, atmospheric CO<sub>2</sub>, a vertical-line-test example, a data table, or a custom <em>f</em>). Drag the <em>x</em>-probe to read <em>f</em>(<em>x</em>); drag the <em>y</em>-target to find all <em>x</em> with <em>f</em>(<em>x</em>) = <em>c</em> or where <em>f</em>(<em>x</em>) &gt; <em>c</em>. Counting how many times a vertical line hits a curve is the vertical line test; it answers whether <em>y</em> is a function of <em>x</em>.</p>
+</div>
+
+<div class="main">
+  <div class="panel">
+    <div class="panel-section">
+      <h2 class="panel-label" id="presetLabel">Scenario</h2>
+      <div class="chips" id="presetChips" role="group" aria-labelledby="presetLabel"></div>
+    </div>
+
+    <div class="panel-section" id="customSection" style="display:none;">
+      <h2 class="panel-label"><label for="customInput">Custom <em style="text-transform:none;font-style:normal;color:var(--text3);font-weight:400;">f(x)</em></label></h2>
+      <input type="text" class="text-input" id="customInput" placeholder="e.g.  x^2 - 1" spellcheck="false" autocomplete="off">
+      <div class="btn-row">
+        <button class="btn" id="applyCustomBtn" type="button">Use this f(x)</button>
+      </div>
+      <div class="parse-feedback" id="parseFeedback" aria-live="polite"></div>
+      <div class="syntax-legend">
+        <strong>Allowed.</strong> x, numbers, + − * / ^, parentheses, and sin cos tan asin acos atan exp log ln sqrt abs. Hand-rolled parser — no code execution.
+      </div>
+    </div>
+
+    <div class="panel-section" id="curvesSection" style="display:none;">
+      <h2 class="panel-label">Curves visible</h2>
+      <div class="curve-toggle-list" id="curveToggleList"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label"><label for="xProbeInput">x-probe (vertical line)</label></h2>
+      <div class="param-block">
+        <div class="param-header">
+          <span class="param-name">x</span>
+          <input type="number" class="small-input" id="xProbeInput" step="0.1">
+        </div>
+        <div class="param-row"><input type="range" id="xProbeSlider" aria-label="x-probe"></div>
+        <div class="param-hint" id="xProbeHint" aria-live="polite"></div>
+      </div>
+      <div class="toggles-row">
+        <button class="toggle on" id="showXProbeToggle" type="button" aria-pressed="true">show x-probe</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label"><label for="yTargetInput">y-target (horizontal line)</label></h2>
+      <div class="param-block">
+        <div class="param-header">
+          <span class="param-name">y = c</span>
+          <input type="number" class="small-input" id="yTargetInput" step="0.1">
+        </div>
+        <div class="param-row"><input type="range" id="yTargetSlider" aria-label="y-target"></div>
+        <div class="param-hint" id="yTargetHint" aria-live="polite"></div>
+      </div>
+      <div class="toggles-row">
+        <button class="toggle on" id="showYTargetToggle" type="button" aria-pressed="true">show y-target</button>
+      </div>
+      <div class="toggles-row" style="margin-top:0.4rem;">
+        <button class="toggle" id="ineqNoneBtn" type="button" aria-pressed="true">f(x) = c</button>
+        <button class="toggle" id="ineqGtBtn" type="button" aria-pressed="false">f(x) &gt; c</button>
+        <button class="toggle" id="ineqLtBtn" type="button" aria-pressed="false">f(x) &lt; c</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Display</h2>
+      <div class="toggles-row">
+        <button class="toggle on" id="showGridToggle" type="button" aria-pressed="true">grid</button>
+        <button class="toggle" id="showDoublingToggle" type="button" aria-pressed="false">doubling lines</button>
+        <button class="toggle" id="followMouseToggle" type="button" aria-pressed="false">probe follows mouse</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace">
+
+    <div class="card">
+      <div class="card-title">Graph <span class="counter" id="scenarioBadge">—</span></div>
+      <div class="card-subtitle" id="scenarioSubtitle">—</div>
+      <div class="legend-row" id="legendRow"></div>
+      <div class="plot-wrap"><canvas id="plotCanvas" role="img" aria-label="Function graph with probe lines"></canvas></div>
+      <p class="sr-only" id="plotSummary" aria-live="polite"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Readings</div>
+      <div class="card-subtitle">What the probe and target say right now.</div>
+      <div class="reading-grid">
+        <div class="reading-card probe">
+          <h3>At x-probe: values of f(x)</h3>
+          <div class="reading-list" id="xReadings">—</div>
+        </div>
+        <div class="reading-card target" id="targetCard">
+          <h3 id="targetHeader">Where f(x) = c</h3>
+          <div class="reading-list" id="yReadings">—</div>
+        </div>
+      </div>
+      <div class="reading-grid" style="margin-top:0.9rem;">
+        <div class="reading-card vlt">
+          <h3>Vertical line test at x-probe</h3>
+          <div class="reading-list" id="vltReading">—</div>
+          <div class="verdict" id="vltVerdict">—</div>
+        </div>
+        <div class="reading-card" id="scenarioExtraCard" style="display:none;">
+          <h3 id="scenarioExtraHeader">—</h3>
+          <div class="reading-list" id="scenarioExtraBody">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="rolesCard" style="display:none;">
+      <div class="card-title">Variables or parameters?</div>
+      <div class="card-subtitle">In the E. coli scenario, classify each symbol. A <em>variable</em> changes during the experiment; a <em>parameter</em> is held constant for one experiment but varies between experiments.</div>
+      <table class="role-table" id="rolesTable"></table>
+      <div class="role-feedback" id="rolesFeedback" aria-live="polite">Click <strong>var</strong> or <strong>param</strong> next to each symbol.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">What the scenario shows</div>
+      <div class="card-subtitle">Changes to match the scenario you picked.</div>
+      <div class="notes-card" id="notesCard">—</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// =====================================================================
+//  Safe expression parser for custom f(x)
+// =====================================================================
+const FUNCS = {
+  sin: Math.sin, cos: Math.cos, tan: Math.tan,
+  asin: Math.asin, acos: Math.acos, atan: Math.atan,
+  exp: Math.exp, log: Math.log, ln: Math.log,
+  sqrt: Math.sqrt, abs: Math.abs,
+};
+function tokenizeExpr(src) {
+  const tokens = []; let i = 0; const s = src;
+  while (i < s.length) {
+    const c = s[i];
+    if (c === ' ' || c === '\t' || c === '\n') { i++; continue; }
+    if ('+-*/^(),'.includes(c)) { tokens.push({t:c}); i++; continue; }
+    if ((c >= '0' && c <= '9') || c === '.') {
+      let j = i; let dot = false;
+      while (j < s.length && ((s[j] >= '0' && s[j] <= '9') || (s[j] === '.' && !dot))) {
+        if (s[j] === '.') dot = true; j++;
+      }
+      tokens.push({t:'num', v: parseFloat(s.slice(i,j))}); i = j; continue;
+    }
+    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+      let j = i;
+      while (j < s.length && ((s[j] >= 'a' && s[j] <= 'z') || (s[j] >= 'A' && s[j] <= 'Z') || (s[j] >= '0' && s[j] <= '9'))) j++;
+      tokens.push({t:'id', v: s.slice(i,j).toLowerCase()}); i = j; continue;
+    }
+    throw new Error(`Unexpected character: "${c}"`);
+  }
+  return tokens;
+}
+function parseExpr(src) {
+  const tokens = tokenizeExpr(src); let pos = 0;
+  function peek() { return tokens[pos]; }
+  function eat(t) { const tok = tokens[pos]; if (!tok || tok.t !== t) throw new Error(`Expected ${t}`); pos++; return tok; }
+  function parseE() {
+    let left = parseT();
+    while (peek() && (peek().t === '+' || peek().t === '-')) { const op = peek().t; pos++; const right = parseT(); left = {op, a:left, b:right}; }
+    return left;
+  }
+  function parseT() {
+    let left = parseF();
+    while (peek() && (peek().t === '*' || peek().t === '/')) { const op = peek().t; pos++; const right = parseF(); left = {op, a:left, b:right}; }
+    return left;
+  }
+  function parseF() {
+    const left = parseU();
+    if (peek() && peek().t === '^') { pos++; const right = parseF(); return {op:'^', a:left, b:right}; }
+    return left;
+  }
+  function parseU() {
+    if (peek() && (peek().t === '-' || peek().t === '+')) { const op = peek().t; pos++; const right = parseU(); return {op:'u'+op, a:right}; }
+    return parseP();
+  }
+  function parseP() {
+    const tok = peek(); if (!tok) throw new Error('Unexpected end of input');
+    if (tok.t === 'num') { pos++; return {num:tok.v}; }
+    if (tok.t === 'id') {
+      pos++;
+      if (tok.v === 'x') return {var:'x'};
+      if (tok.v === 'pi') return {num:Math.PI};
+      if (tok.v === 'e') return {num:Math.E};
+      if (peek() && peek().t === '(') {
+        pos++; const arg = parseE(); eat(')'); if (!FUNCS[tok.v]) throw new Error(`Unknown function: ${tok.v}`);
+        return {fn:tok.v, a:arg};
+      }
+      throw new Error(`Unknown identifier: ${tok.v}`);
+    }
+    if (tok.t === '(') { pos++; const e = parseE(); eat(')'); return e; }
+    throw new Error(`Unexpected token: ${tok.t}`);
+  }
+  const ast = parseE();
+  if (pos < tokens.length) throw new Error('Unexpected extra input');
+  return ast;
+}
+function evalAst(ast, x) {
+  if ('num' in ast) return ast.num;
+  if ('var' in ast) return x;
+  if ('fn' in ast) return FUNCS[ast.fn](evalAst(ast.a, x));
+  switch (ast.op) {
+    case '+': return evalAst(ast.a,x) + evalAst(ast.b,x);
+    case '-': return evalAst(ast.a,x) - evalAst(ast.b,x);
+    case '*': return evalAst(ast.a,x) * evalAst(ast.b,x);
+    case '/': return evalAst(ast.a,x) / evalAst(ast.b,x);
+    case '^': return Math.pow(evalAst(ast.a,x), evalAst(ast.b,x));
+    case 'u-': return -evalAst(ast.a,x);
+    case 'u+': return evalAst(ast.a,x);
+  }
+  throw new Error('Bad AST');
+}
+function compileCustom(src) {
+  const ast = parseExpr(src);
+  return x => { try { const v = evalAst(ast, x); return Number.isFinite(v) ? v : NaN; } catch(_) { return NaN; } };
+}
+
+// =====================================================================
+//  Scenario presets
+// =====================================================================
+// Each curve: { label, color, domain:[a,b], kind:'function'|'parametric', fn, tRange?, pts? }
+// For parametric: pts(t) -> [x,y]; tRange=[tmin,tmax].
+const PRESETS = {
+  ecoli: {
+    id: 'ecoli',
+    name: 'E. coli, 3 temps',
+    sub: '3 curves, T parameter',
+    title: 'E. coli populations at three temperatures',
+    blurb: 'Three populations grow from 1 million bacteria under different constant temperatures. Each curve is P = A · 2<sup>t / τ</sup>, where τ is the doubling time. Use the y-target at y = 2 to find each doubling time graphically; at y = 4 to verify doubling is constant.',
+    xLabel: 't (min)', yLabel: 'population (millions)',
+    xDomain: [0, 200], yDomain: [0, 5],
+    showRoles: true,
+    curves: [
+      { label: 'P(t),  T = 70°F',  color: '#9c3628', domain:[0,200], kind:'function', fn: t => Math.pow(2, t/80) },
+      { label: 'Q(t),  T = 100°F', color: '#3a6b5e', domain:[0,60],  kind:'function', fn: t => Math.pow(2, t/20) },
+      { label: 'R(t),  T = 115°F', color: '#5a4a9e', domain:[0,200], kind:'function', fn: t => Math.pow(2, t/200) },
+    ],
+    xInit: 40, yInit: 2,
+    doublingMarkers: [2, 4],
+    extra: {
+      header: 'Doubling times (from y-target at y = 2)',
+      body() {
+        const lines = [
+          { lbl: 'P (T=70°F)', color: '#9c3628', d: 80 },
+          { lbl: 'Q (T=100°F)', color: '#3a6b5e', d: 20 },
+          { lbl: 'R (T=115°F)', color: '#5a4a9e', d: 200 },
+        ];
+        return lines.map(l => `<div><span class="label-dot" style="background:${l.color}"></span>${l.lbl}: doubling time ≈ <b>${l.d} min</b></div>`).join('');
+      }
+    }
+  },
+  co2: {
+    id: 'co2',
+    name: 'CO₂ at Mauna Loa',
+    sub: 'oscillation + trend',
+    title: 'Atmospheric CO₂, Jan 2019 – Jan 2021',
+    blurb: 'The function C(t) gives atmospheric CO<sub>2</sub> concentration in parts per million, t months since Jan 1, 2019. The annual oscillation comes from the Northern Hemisphere growing season; the upward trend is long-term emissions. Use the y-target to solve C(t) = 415, and toggle to <code>C(t) &gt; 415</code> to find when concentrations exceed that level.',
+    xLabel: 't (months since Jan 1, 2019)', yLabel: 'CO₂ (ppm)',
+    xDomain: [0, 24], yDomain: [400, 420],
+    curves: [{
+      label: 'C(t)', color: '#3a5a8a', domain:[0,24], kind:'function',
+      fn: t => 4*Math.sin(Math.PI*(t-0.5)/6) + 410 + (5/24)*t
+    }],
+    xInit: 6, yInit: 415,
+  },
+  vlt: {
+    id: 'vlt',
+    name: 'Is y a function of x?',
+    sub: 'vertical line test',
+    title: 'Two curves: which one is y = f(x)?',
+    blurb: 'The blue curve is <em>y² − 1 = x</em> (a sideways parabola); the teal curve is <em>y = x² − 1</em> (an upward parabola). Drag the x-probe across and watch the intersection count. A curve passes the vertical line test, and so expresses y as a function of x, if every vertical line hits it in <b>at most one</b> point.',
+    xLabel: 'x', yLabel: 'y',
+    xDomain: [-2.5, 4], yDomain: [-3, 3],
+    curves: [
+      { label: 'y² − 1 = x (sideways)', color: '#5a4a9e', kind:'parametric',
+        tRange:[-2,2], pts: t => [t*t - 1, t] },
+      { label: 'y = x² − 1 (upward)', color: '#1a7a60', kind:'function',
+        domain:[-2,2], fn: x => x*x - 1 },
+    ],
+    xInit: 0.5, yInit: 0,
+  },
+  temps: {
+    id: 'temps',
+    name: 'Jan 2021 highs',
+    sub: 'table-based',
+    title: 'Daily high temperatures, State College PA, Jan 2021',
+    blurb: 'Each day has a single maximum temperature, so temperature <em>is</em> a function of the day. But two different days (Jan 4 and Jan 9) share the same high of 38°F, so the day is <b>not</b> a function of the temperature. Use the y-target at y = 38 to see which days those are.',
+    xLabel: 'day', yLabel: 'high temperature (°F)',
+    xDomain: [0, 10], yDomain: [25, 50],
+    pointsOnly: true,
+    points: [[1,42],[2,45],[3,37],[4,38],[5,36],[6,35],[7,40],[8,33],[9,38]],
+    color: '#3a5a8a',
+    xInit: 4, yInit: 38,
+  },
+  custom: {
+    id: 'custom',
+    name: 'Custom f(x)',
+    sub: 'enter your own',
+    title: 'Custom function',
+    blurb: 'Enter any formula in <code>x</code>. Use the x-probe to evaluate f, and the y-target to solve f(x) = c or f(x) &gt; c graphically.',
+    xLabel: 'x', yLabel: 'y',
+    xDomain: [-5, 5], yDomain: [-5, 5],
+    curves: [{
+      label: 'y = f(x)', color: '#3a6b5e', kind:'function', domain:[-5,5],
+      fn: x => x*x - 1,
+    }],
+    xInit: 1, yInit: 0,
+    customSrc: 'x^2 - 1',
+  },
+};
+const PRESET_ORDER = ['ecoli','co2','vlt','temps','custom'];
+
+const ECOLI_ROLES = [
+  { sym: 'P', desc: 'population at T=70°F', correct: 'var' },
+  { sym: 'Q', desc: 'population at T=100°F', correct: 'var' },
+  { sym: 'R', desc: 'population at T=115°F', correct: 'var' },
+  { sym: 't', desc: 'time (minutes)', correct: 'var' },
+  { sym: 'T', desc: 'temperature (°F)', correct: 'param' },
+];
+
+// =====================================================================
+//  State
+// =====================================================================
+const state = {
+  presetId: 'ecoli',
+  xProbe: 40,
+  yTarget: 2,
+  ineq: 'eq', // 'eq' | 'gt' | 'lt'
+  showX: true,
+  showY: true,
+  showGrid: true,
+  showDoubling: false,
+  followMouse: false,
+  curvesOn: [true, true, true, true],
+  customFn: null,
+  customErr: null,
+  roleAnswers: {}, // sym -> 'var'|'param'
+};
+
+function preset() { return PRESETS[state.presetId]; }
+
+// Compile custom fn
+state.customFn = compileCustom(PRESETS.custom.customSrc);
+PRESETS.custom.curves[0].fn = state.customFn;
+
+// =====================================================================
+//  DOM refs
+// =====================================================================
+const $ = id => document.getElementById(id);
+const presetChips = $('presetChips');
+const customSection = $('customSection');
+const customInput = $('customInput');
+const applyCustomBtn = $('applyCustomBtn');
+const parseFeedback = $('parseFeedback');
+const curvesSection = $('curvesSection');
+const curveToggleList = $('curveToggleList');
+const xProbeInput = $('xProbeInput');
+const xProbeSlider = $('xProbeSlider');
+const xProbeHint = $('xProbeHint');
+const yTargetInput = $('yTargetInput');
+const yTargetSlider = $('yTargetSlider');
+const yTargetHint = $('yTargetHint');
+const showXProbeToggle = $('showXProbeToggle');
+const showYTargetToggle = $('showYTargetToggle');
+const ineqNoneBtn = $('ineqNoneBtn');
+const ineqGtBtn = $('ineqGtBtn');
+const ineqLtBtn = $('ineqLtBtn');
+const showGridToggle = $('showGridToggle');
+const showDoublingToggle = $('showDoublingToggle');
+const followMouseToggle = $('followMouseToggle');
+const legendRow = $('legendRow');
+const scenarioBadge = $('scenarioBadge');
+const scenarioSubtitle = $('scenarioSubtitle');
+const plotCanvas = $('plotCanvas');
+const plotSummary = $('plotSummary');
+const xReadings = $('xReadings');
+const yReadings = $('yReadings');
+const targetHeader = $('targetHeader');
+const vltReading = $('vltReading');
+const vltVerdict = $('vltVerdict');
+const scenarioExtraCard = $('scenarioExtraCard');
+const scenarioExtraHeader = $('scenarioExtraHeader');
+const scenarioExtraBody = $('scenarioExtraBody');
+const rolesCard = $('rolesCard');
+const rolesTable = $('rolesTable');
+const rolesFeedback = $('rolesFeedback');
+const notesCard = $('notesCard');
+
+// =====================================================================
+//  Preset chips
+// =====================================================================
+function renderPresetChips() {
+  presetChips.innerHTML = '';
+  PRESET_ORDER.forEach(id => {
+    const p = PRESETS[id];
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'chip' + (id === state.presetId ? ' active' : '');
+    btn.innerHTML = `${p.name}<span class="chip-sub">${p.sub}</span>`;
+    btn.addEventListener('click', () => selectPreset(id));
+    presetChips.appendChild(btn);
+  });
+}
+function selectPreset(id) {
+  state.presetId = id;
+  const p = preset();
+  state.xProbe = p.xInit;
+  state.yTarget = p.yInit;
+  state.curvesOn = (p.curves || []).map(() => true);
+  state.ineq = 'eq';
+  state.showDoubling = id === 'ecoli';
+  // sync slider ranges
+  xProbeSlider.min = p.xDomain[0]; xProbeSlider.max = p.xDomain[1];
+  xProbeSlider.step = (p.xDomain[1]-p.xDomain[0])/400;
+  xProbeSlider.value = state.xProbe;
+  xProbeInput.step = Math.max(0.01, (p.xDomain[1]-p.xDomain[0])/100);
+  xProbeInput.value = state.xProbe;
+  yTargetSlider.min = p.yDomain[0]; yTargetSlider.max = p.yDomain[1];
+  yTargetSlider.step = (p.yDomain[1]-p.yDomain[0])/400;
+  yTargetSlider.value = state.yTarget;
+  yTargetInput.step = Math.max(0.01, (p.yDomain[1]-p.yDomain[0])/100);
+  yTargetInput.value = state.yTarget;
+  // show/hide preset-specific UI
+  customSection.style.display = id === 'custom' ? '' : 'none';
+  if (id === 'custom') {
+    customInput.value = p.customSrc;
+    parseFeedback.textContent = '';
+    parseFeedback.className = 'parse-feedback';
+    customInput.classList.remove('err');
+  }
+  rolesCard.style.display = p.showRoles ? '' : 'none';
+  if (p.showRoles) renderRoles();
+  showDoublingToggle.disabled = id !== 'ecoli';
+  showDoublingToggle.classList.toggle('on', state.showDoubling);
+  // curve toggle list (hide when only 1 curve)
+  if (!p.pointsOnly && (p.curves || []).length >= 2) {
+    curvesSection.style.display = '';
+    curveToggleList.innerHTML = '';
+    p.curves.forEach((c, i) => {
+      const el = document.createElement('button');
+      el.type = 'button'; el.className = 'curve-toggle' + (state.curvesOn[i] ? '' : ' off');
+      el.innerHTML = `<span class="cdot" style="background:${c.color}"></span>${c.label}`;
+      el.addEventListener('click', () => { state.curvesOn[i] = !state.curvesOn[i]; el.classList.toggle('off', !state.curvesOn[i]); render(); });
+      curveToggleList.appendChild(el);
+    });
+  } else {
+    curvesSection.style.display = 'none';
+  }
+  renderPresetChips();
+  renderLegend();
+  scenarioBadge.textContent = p.name;
+  scenarioSubtitle.innerHTML = p.blurb;
+  syncIneqToggles();
+  render();
+}
+
+function renderLegend() {
+  const p = preset();
+  legendRow.innerHTML = '';
+  if (p.pointsOnly) {
+    const span = document.createElement('span');
+    span.className = 'legend-item';
+    span.innerHTML = `<span class="legend-dot" style="background:${p.color}"></span>daily high (data point)`;
+    legendRow.appendChild(span);
+  } else {
+    (p.curves || []).forEach((c, i) => {
+      if (!state.curvesOn[i]) return;
+      const span = document.createElement('span');
+      span.className = 'legend-item';
+      span.innerHTML = `<span class="legend-swatch" style="background:${c.color}"></span>${c.label}`;
+      legendRow.appendChild(span);
+    });
+  }
+  if (state.showX) {
+    const s = document.createElement('span');
+    s.className = 'legend-item';
+    s.innerHTML = `<span class="legend-swatch dashed" style="color:#5a4a9e"></span>x-probe`;
+    legendRow.appendChild(s);
+  }
+  if (state.showY) {
+    const s = document.createElement('span');
+    s.className = 'legend-item';
+    s.innerHTML = `<span class="legend-swatch dashed" style="color:#c8553a"></span>y-target`;
+    legendRow.appendChild(s);
+  }
+}
+
+function syncIneqToggles() {
+  ineqNoneBtn.classList.toggle('on', state.ineq === 'eq');
+  ineqGtBtn.classList.toggle('on',   state.ineq === 'gt');
+  ineqLtBtn.classList.toggle('on',   state.ineq === 'lt');
+  ineqNoneBtn.setAttribute('aria-pressed', state.ineq === 'eq');
+  ineqGtBtn.setAttribute('aria-pressed',   state.ineq === 'gt');
+  ineqLtBtn.setAttribute('aria-pressed',   state.ineq === 'lt');
+  targetHeader.textContent = state.ineq === 'eq' ? 'Where f(x) = c' :
+                              state.ineq === 'gt' ? 'Where f(x) > c' : 'Where f(x) < c';
+}
+
+// =====================================================================
+//  Variable / parameter role quiz (E. coli)
+// =====================================================================
+function renderRoles() {
+  rolesTable.innerHTML = '';
+  ECOLI_ROLES.forEach(r => {
+    const tr = document.createElement('tr');
+    const ans = state.roleAnswers[r.sym];
+    tr.innerHTML = `
+      <td>${r.sym}</td>
+      <td>${r.desc}</td>
+      <td>
+        <span class="role-chips">
+          <button class="role-chip var ${ans==='var'?'active':''}${ans==='var'?(r.correct==='var'?' correct':' wrong'):''}" data-sym="${r.sym}" data-role="var">var</button>
+          <button class="role-chip param ${ans==='param'?'active':''}${ans==='param'?(r.correct==='param'?' correct':' wrong'):''}" data-sym="${r.sym}" data-role="param">param</button>
+        </span>
+      </td>`;
+    rolesTable.appendChild(tr);
+  });
+  rolesTable.querySelectorAll('.role-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sym = btn.dataset.sym, role = btn.dataset.role;
+      state.roleAnswers[sym] = role;
+      renderRoles(); updateRoleFeedback();
+    });
+  });
+  updateRoleFeedback();
+}
+function updateRoleFeedback() {
+  const n = ECOLI_ROLES.length;
+  const answered = ECOLI_ROLES.filter(r => state.roleAnswers[r.sym]).length;
+  const correct = ECOLI_ROLES.filter(r => state.roleAnswers[r.sym] === r.correct).length;
+  if (answered === 0) { rolesFeedback.className = 'role-feedback'; rolesFeedback.innerHTML = 'Click <strong>var</strong> or <strong>param</strong> next to each symbol.'; return; }
+  if (correct === n) { rolesFeedback.className = 'role-feedback ok'; rolesFeedback.innerHTML = '✓ All correct. t and the three populations vary during the experiment; T is constant per experiment (a parameter) but differs across experiments.'; return; }
+  rolesFeedback.className = 'role-feedback';
+  rolesFeedback.innerHTML = `${correct}/${n} correct so far. Ask: does this symbol change <em>during</em> one experiment?`;
+}
+
+// =====================================================================
+//  Root finding: where does curve meet y = c?  Where is f(x) > c?
+// =====================================================================
+// For a function curve: scan domain in N steps, bracket sign changes of f(x)-c,
+// bisect to refine. Returns { roots:[x...], intervals:[[a,b],...] } for f-c > 0.
+function analyzeFunctionAgainstC(fn, domain, c, N=1200) {
+  const [a,b] = domain;
+  const xs = new Array(N+1); const ys = new Array(N+1);
+  for (let i = 0; i <= N; i++) { const x = a + (b-a)*i/N; xs[i]=x; ys[i] = fn(x) - c; }
+  const roots = [];
+  for (let i = 0; i < N; i++) {
+    const y1 = ys[i], y2 = ys[i+1];
+    if (!Number.isFinite(y1) || !Number.isFinite(y2)) continue;
+    if (y1 === 0) { roots.push(xs[i]); continue; }
+    if (y1 * y2 < 0) {
+      // bisect
+      let lo = xs[i], hi = xs[i+1]; let flo = y1, fhi = y2;
+      for (let k = 0; k < 40; k++) {
+        const mid = 0.5*(lo+hi); const fm = fn(mid) - c;
+        if (!Number.isFinite(fm)) break;
+        if (fm === 0) { lo = hi = mid; break; }
+        if (flo * fm < 0) { hi = mid; fhi = fm; } else { lo = mid; flo = fm; }
+        if (hi - lo < 1e-9) break;
+      }
+      roots.push(0.5*(lo+hi));
+    }
+  }
+  // Build intervals where f(x) - c > 0
+  const intervalsGt = [];
+  let inside = false; let startX = a;
+  for (let i = 0; i <= N; i++) {
+    const v = ys[i];
+    const pos = Number.isFinite(v) && v > 0;
+    if (pos && !inside) { startX = xs[i]; inside = true; }
+    else if (!pos && inside) { intervalsGt.push([startX, xs[i-1]]); inside = false; }
+  }
+  if (inside) intervalsGt.push([startX, xs[N]]);
+  // snap interval endpoints to nearby roots (better boundary accuracy)
+  const snap = (v) => {
+    let best = v, dBest = Infinity;
+    for (const r of roots) { const d = Math.abs(r - v); if (d < dBest && d < (b-a)/50) { dBest = d; best = r; } }
+    return best;
+  };
+  const intervals = intervalsGt.map(([p,q]) => [snap(p), snap(q)]);
+  return { roots, intervalsGt: intervals };
+}
+// For a parametric curve: scan t, find intersections of y(t) - c = 0.
+function analyzeParametricAgainstC(pts, tRange, c, N=1200) {
+  const [a,b] = tRange; const xs = new Array(N+1); const ys = new Array(N+1);
+  for (let i = 0; i <= N; i++) { const t = a + (b-a)*i/N; const [x,y] = pts(t); xs[i]=x; ys[i]=y - c; }
+  const roots = [];
+  for (let i = 0; i < N; i++) {
+    const y1 = ys[i], y2 = ys[i+1];
+    if (!Number.isFinite(y1) || !Number.isFinite(y2)) continue;
+    if (y1 === 0) { roots.push(xs[i]); continue; }
+    if (y1 * y2 < 0) {
+      let lo = a + (b-a)*i/N, hi = a + (b-a)*(i+1)/N; let flo = y1;
+      for (let k = 0; k < 40; k++) {
+        const mid = 0.5*(lo+hi); const [,ym] = pts(mid); const fm = ym - c;
+        if (!Number.isFinite(fm)) break;
+        if (fm === 0) { lo = hi = mid; break; }
+        if (flo * fm < 0) hi = mid; else { lo = mid; flo = fm; }
+        if (hi - lo < 1e-9) break;
+      }
+      const [xh] = pts(0.5*(lo+hi)); roots.push(xh);
+    }
+  }
+  return { roots };
+}
+// Vertical line count: how many y-values does the curve produce at x = x0?
+function verticalHits(curve, x0) {
+  if (curve.kind === 'function') {
+    const [a,b] = curve.domain;
+    if (x0 < a - 1e-9 || x0 > b + 1e-9) return [];
+    const y = curve.fn(x0);
+    return Number.isFinite(y) ? [y] : [];
+  }
+  // parametric: find all t with x(t) = x0
+  const [ta, tb] = curve.tRange; const N = 1200;
+  const hits = [];
+  let prev = curve.pts(ta)[0] - x0;
+  for (let i = 1; i <= N; i++) {
+    const t = ta + (tb-ta)*i/N; const cur = curve.pts(t)[0] - x0;
+    if (!Number.isFinite(prev) || !Number.isFinite(cur)) { prev = cur; continue; }
+    if (prev === 0) {
+      const [,y] = curve.pts(ta + (tb-ta)*(i-1)/N); hits.push(y);
+    } else if (prev * cur < 0) {
+      let lo = ta + (tb-ta)*(i-1)/N, hi = ta + (tb-ta)*i/N, flo = prev;
+      for (let k = 0; k < 40; k++) {
+        const mid = 0.5*(lo+hi); const fm = curve.pts(mid)[0] - x0;
+        if (!Number.isFinite(fm)) break;
+        if (fm === 0) { lo = hi = mid; break; }
+        if (flo * fm < 0) hi = mid; else { lo = mid; flo = fm; }
+        if (hi - lo < 1e-10) break;
+      }
+      const [,y] = curve.pts(0.5*(lo+hi)); hits.push(y);
+    }
+    prev = cur;
+  }
+  return hits;
+}
+
+// =====================================================================
+//  Plot (plain 2D canvas)
+// =====================================================================
+const ctx = plotCanvas.getContext('2d');
+let DPR = 1, W = 0, H = 0;
+function resizeCanvas() {
+  const r = plotCanvas.parentElement.getBoundingClientRect();
+  DPR = Math.max(1, window.devicePixelRatio || 1);
+  W = Math.floor(r.width); H = Math.floor(r.height);
+  plotCanvas.width = Math.floor(W * DPR); plotCanvas.height = Math.floor(H * DPR);
+  plotCanvas.style.width = W + 'px'; plotCanvas.style.height = H + 'px';
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+window.addEventListener('resize', () => { resizeCanvas(); render(); });
+const PAD_L = 58, PAD_R = 16, PAD_T = 14, PAD_B = 44;
+function sxOf(x, p) { return PAD_L + (x - p.xDomain[0])/(p.xDomain[1]-p.xDomain[0]) * (W - PAD_L - PAD_R); }
+function syOf(y, p) { return (H - PAD_B) - (y - p.yDomain[0])/(p.yDomain[1]-p.yDomain[0]) * (H - PAD_T - PAD_B); }
+function dxOf(px, p) { return p.xDomain[0] + (px - PAD_L)/(W - PAD_L - PAD_R) * (p.xDomain[1]-p.xDomain[0]); }
+function dyOf(py, p) { return p.yDomain[0] + ((H - PAD_B) - py)/(H - PAD_T - PAD_B) * (p.yDomain[1]-p.yDomain[0]); }
+
+function niceStep(range, target) {
+  const raw = range / target; const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const rel = raw / mag;
+  let step;
+  if (rel < 1.5) step = 1; else if (rel < 3) step = 2; else if (rel < 7) step = 5; else step = 10;
+  return step * mag;
+}
+
+function drawAxes(p) {
+  ctx.save();
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(PAD_L, PAD_T, W - PAD_L - PAD_R, H - PAD_T - PAD_B);
+  // grid
+  const xRange = p.xDomain[1] - p.xDomain[0];
+  const yRange = p.yDomain[1] - p.yDomain[0];
+  const xStep = niceStep(xRange, 8);
+  const yStep = niceStep(yRange, 6);
+  if (state.showGrid) {
+    ctx.strokeStyle = '#ecebe4'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let x = Math.ceil(p.xDomain[0]/xStep)*xStep; x <= p.xDomain[1]+1e-9; x += xStep) {
+      const sx = sxOf(x,p); ctx.moveTo(sx, PAD_T); ctx.lineTo(sx, H - PAD_B);
+    }
+    for (let y = Math.ceil(p.yDomain[0]/yStep)*yStep; y <= p.yDomain[1]+1e-9; y += yStep) {
+      const sy = syOf(y,p); ctx.moveTo(PAD_L, sy); ctx.lineTo(W - PAD_R, sy);
+    }
+    ctx.stroke();
+  }
+  // doubling markers for E. coli
+  if (state.presetId === 'ecoli' && state.showDoubling) {
+    ctx.strokeStyle = '#a8a498'; ctx.setLineDash([2,4]); ctx.lineWidth = 1;
+    ctx.beginPath();
+    [2,4].forEach(yv => { const sy = syOf(yv,p); ctx.moveTo(PAD_L, sy); ctx.lineTo(W - PAD_R, sy); });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#6a6862'; ctx.font = '11px "JetBrains Mono", monospace';
+    ctx.fillText('y = 2  (one doubling)', W - PAD_R - 130, syOf(2,p) - 4);
+    ctx.fillText('y = 4  (two doublings)', W - PAD_R - 135, syOf(4,p) - 4);
+  }
+  // axes
+  ctx.strokeStyle = '#a8a498'; ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(PAD_L, PAD_T); ctx.lineTo(PAD_L, H - PAD_B); ctx.lineTo(W - PAD_R, H - PAD_B);
+  ctx.stroke();
+  // tick labels
+  ctx.fillStyle = '#5f5c56'; ctx.font = '11px "JetBrains Mono", monospace';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let x = Math.ceil(p.xDomain[0]/xStep)*xStep; x <= p.xDomain[1]+1e-9; x += xStep) {
+    const sx = sxOf(x,p); ctx.fillText(fmtTick(x, xStep), sx, H - PAD_B + 6);
+  }
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let y = Math.ceil(p.yDomain[0]/yStep)*yStep; y <= p.yDomain[1]+1e-9; y += yStep) {
+    const sy = syOf(y,p); ctx.fillText(fmtTick(y, yStep), PAD_L - 6, sy);
+  }
+  // axis labels
+  ctx.fillStyle = '#2c2a28'; ctx.font = '12px "Source Sans 3", sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText(p.xLabel, PAD_L + (W - PAD_L - PAD_R)/2, H - 10);
+  ctx.save();
+  ctx.translate(14, PAD_T + (H - PAD_T - PAD_B)/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(p.yLabel, 0, 0);
+  ctx.restore();
+  ctx.restore();
+}
+function fmtTick(v, step) {
+  const dec = step < 0.1 ? 2 : step < 1 ? 1 : 0;
+  return (Math.abs(v) < 1e-9 ? 0 : v).toFixed(dec);
+}
+
+function drawCurveFunction(curve, p) {
+  const [a,b] = curve.domain;
+  const N = 800;
+  ctx.save();
+  ctx.strokeStyle = curve.color; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  let moved = false;
+  for (let i = 0; i <= N; i++) {
+    const x = a + (b-a)*i/N;
+    const y = curve.fn(x);
+    if (!Number.isFinite(y)) { moved = false; continue; }
+    const sx = sxOf(x,p), sy = syOf(y,p);
+    if (sy < PAD_T - 50 || sy > H - PAD_B + 50) { moved = false; continue; }
+    if (!moved) { ctx.moveTo(sx, sy); moved = true; } else ctx.lineTo(sx, sy);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+function drawCurveParametric(curve, p) {
+  const [a,b] = curve.tRange; const N = 800;
+  ctx.save();
+  ctx.strokeStyle = curve.color; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  let moved = false;
+  for (let i = 0; i <= N; i++) {
+    const t = a + (b-a)*i/N;
+    const [x,y] = curve.pts(t);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) { moved = false; continue; }
+    if (x < p.xDomain[0]-1 || x > p.xDomain[1]+1 || y < p.yDomain[0]-3 || y > p.yDomain[1]+3) { moved = false; continue; }
+    const sx = sxOf(x,p), sy = syOf(y,p);
+    if (!moved) { ctx.moveTo(sx, sy); moved = true; } else ctx.lineTo(sx, sy);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+function drawPoints(points, color, p) {
+  ctx.save();
+  ctx.fillStyle = color; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+  for (const [x,y] of points) {
+    const sx = sxOf(x,p), sy = syOf(y,p);
+    ctx.beginPath(); ctx.arc(sx, sy, 5, 0, 2*Math.PI); ctx.fill(); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawProbes(p) {
+  if (state.showX) {
+    ctx.save();
+    ctx.strokeStyle = '#5a4a9e'; ctx.setLineDash([4,4]); ctx.lineWidth = 1.4;
+    const sx = sxOf(state.xProbe, p);
+    ctx.beginPath(); ctx.moveTo(sx, PAD_T); ctx.lineTo(sx, H - PAD_B); ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+  }
+  if (state.showY) {
+    ctx.save();
+    ctx.strokeStyle = '#c8553a'; ctx.setLineDash([4,4]); ctx.lineWidth = 1.4;
+    const sy = syOf(state.yTarget, p);
+    ctx.beginPath(); ctx.moveTo(PAD_L, sy); ctx.lineTo(W - PAD_R, sy); ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+  }
+}
+function drawIntersectionDots(p) {
+  // For each visible curve, plot (x0, f(x0)) at x-probe
+  if (state.showX) {
+    const curves = activeCurves();
+    curves.forEach(c => {
+      const ys = verticalHits(c, state.xProbe);
+      ys.forEach(y => {
+        const sx = sxOf(state.xProbe, p), sy = syOf(y, p);
+        ctx.save();
+        ctx.fillStyle = c.color; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(sx, sy, 5, 0, 2*Math.PI); ctx.fill(); ctx.stroke();
+        ctx.restore();
+      });
+    });
+  }
+  // For each visible curve, mark roots at y = c (intersections with y-target)
+  if (state.showY && state.ineq === 'eq') {
+    const curves = activeCurves();
+    curves.forEach(c => {
+      const roots = rootsForCurve(c, state.yTarget);
+      roots.forEach(x => {
+        const sx = sxOf(x, p), sy = syOf(state.yTarget, p);
+        ctx.save();
+        ctx.fillStyle = '#c8553a'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(sx, sy, 5, 0, 2*Math.PI); ctx.fill(); ctx.stroke();
+        ctx.restore();
+      });
+    });
+  }
+}
+function drawInequalityShading(p) {
+  if (!state.showY || state.ineq === 'eq') return;
+  const curves = activeCurves().filter(c => c.kind === 'function');
+  const gt = state.ineq === 'gt';
+  curves.forEach(c => {
+    const { intervalsGt } = analyzeFunctionAgainstC(c.fn, c.domain, state.yTarget);
+    // f > c => intervalsGt; f < c => complement within domain
+    let intervals = intervalsGt;
+    if (!gt) {
+      // complement on domain
+      const comp = [];
+      let cur = c.domain[0];
+      intervalsGt.forEach(([a,b]) => { if (a > cur) comp.push([cur, a]); cur = Math.max(cur, b); });
+      if (cur < c.domain[1]) comp.push([cur, c.domain[1]]);
+      intervals = comp;
+    }
+    intervals.forEach(([a,b]) => {
+      // Highlight the curve over this interval in a bolder matching color, and shade a faint band between curve and y = c
+      ctx.save();
+      ctx.globalAlpha = 0.14; ctx.fillStyle = c.color;
+      ctx.beginPath();
+      const sy0 = syOf(state.yTarget, p);
+      const N = Math.max(40, Math.floor((b - a) / (c.domain[1]-c.domain[0]) * 400));
+      for (let i = 0; i <= N; i++) {
+        const x = a + (b-a)*i/N; const y = c.fn(x);
+        if (!Number.isFinite(y)) continue;
+        const sx = sxOf(x, p), sy = syOf(y, p);
+        if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+      }
+      // close along y = c
+      ctx.lineTo(sxOf(b,p), sy0); ctx.lineTo(sxOf(a,p), sy0); ctx.closePath(); ctx.fill();
+      ctx.restore();
+      // Redraw curve bold over the interval
+      ctx.save();
+      ctx.strokeStyle = c.color; ctx.lineWidth = 4;
+      ctx.beginPath();
+      let moved = false;
+      for (let i = 0; i <= N; i++) {
+        const x = a + (b-a)*i/N; const y = c.fn(x);
+        if (!Number.isFinite(y)) { moved = false; continue; }
+        const sx = sxOf(x, p), sy = syOf(y, p);
+        if (!moved) { ctx.moveTo(sx, sy); moved = true; } else ctx.lineTo(sx, sy);
+      }
+      ctx.stroke(); ctx.restore();
+    });
+  });
+}
+
+function activeCurves() {
+  const p = preset();
+  if (p.pointsOnly) return [];
+  return (p.curves || []).filter((_, i) => state.curvesOn[i]);
+}
+
+function rootsForCurve(c, target) {
+  if (c.kind === 'function') return analyzeFunctionAgainstC(c.fn, c.domain, target).roots;
+  return analyzeParametricAgainstC(c.pts, c.tRange, target).roots;
+}
+
+function render() {
+  resizeCanvas();
+  const p = preset();
+  ctx.fillStyle = '#faf9f6'; ctx.fillRect(0, 0, W, H);
+  drawAxes(p);
+  drawInequalityShading(p);
+  if (p.pointsOnly) {
+    drawPoints(p.points, p.color, p);
+  } else {
+    (p.curves || []).forEach((c, i) => {
+      if (!state.curvesOn[i]) return;
+      if (c.kind === 'function') drawCurveFunction(c, p);
+      else drawCurveParametric(c, p);
+    });
+  }
+  drawProbes(p);
+  drawIntersectionDots(p);
+  // For tempTable: probe lines still meaningful; mark matching points
+  if (p.pointsOnly && state.showY && state.ineq === 'eq') {
+    p.points.forEach(([x,y]) => {
+      if (Math.abs(y - state.yTarget) < 1e-6) {
+        const sx = sxOf(x,p), sy = syOf(y,p);
+        ctx.save();
+        ctx.strokeStyle = '#c8553a'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(sx, sy, 9, 0, 2*Math.PI); ctx.stroke(); ctx.restore();
+      }
+    });
+  }
+  updateReadings();
+  renderLegend();
+}
+
+// =====================================================================
+//  Readings
+// =====================================================================
+function fmt(v, prec=3) {
+  if (!Number.isFinite(v)) return '—';
+  const abs = Math.abs(v);
+  if (abs === 0) return '0';
+  if (abs >= 1000 || abs < 0.001) return v.toExponential(2);
+  return Number(v.toPrecision(prec+1)).toString();
+}
+function updateReadings() {
+  const p = preset();
+  // x-probe readings: for each visible curve show value(s) at x_probe (a curve may fail to exist)
+  let xHTML = '';
+  let totalHits = 0;
+  if (p.pointsOnly) {
+    // find data point(s) at x = xProbe (nearest integer in range)
+    const xr = Math.round(state.xProbe);
+    const match = p.points.filter(([x,y]) => x === xr);
+    if (match.length) {
+      xHTML += match.map(([x,y]) => `<div><span class="label-dot" style="background:${p.color}"></span>day ${x}: high = <b>${y}°F</b></div>`).join('');
+      totalHits = match.length;
+    } else {
+      xHTML = `<div class="dim">no data point at x = ${fmt(state.xProbe,2)}</div>`;
+    }
+  } else {
+    const curves = activeCurves();
+    if (curves.length === 0) xHTML = '<div class="dim">(no curves visible)</div>';
+    curves.forEach(c => {
+      const ys = verticalHits(c, state.xProbe);
+      totalHits += ys.length;
+      if (ys.length === 0) {
+        xHTML += `<div><span class="label-dot" style="background:${c.color}"></span>${c.label}: <span class="dim">x outside domain</span></div>`;
+      } else {
+        ys.forEach(y => {
+          xHTML += `<div><span class="label-dot" style="background:${c.color}"></span>${c.label}: <b>${fmt(y,3)}</b></div>`;
+        });
+      }
+    });
+  }
+  xReadings.innerHTML = xHTML;
+
+  // y-target readings
+  let yHTML = '';
+  if (p.pointsOnly) {
+    const match = p.points.filter(([x,y]) => y === state.yTarget);
+    if (state.ineq === 'eq') {
+      if (match.length === 0) yHTML = `<div class="dim">no day with high = ${state.yTarget}°F</div>`;
+      else yHTML = `<div><b>${match.length}</b> day(s): ${match.map(([x,y]) => `day ${x}`).join(', ')}</div>`;
+    } else {
+      const cmp = state.ineq === 'gt' ? ((y) => y > state.yTarget) : ((y) => y < state.yTarget);
+      const m = p.points.filter(([x,y]) => cmp(y));
+      yHTML = m.length === 0
+        ? `<div class="dim">no days with high ${state.ineq==='gt'?'>':'<'} ${state.yTarget}°F</div>`
+        : `<div><b>${m.length}</b> day(s): ${m.map(([x,y]) => `day ${x} (${y}°F)`).join(', ')}</div>`;
+    }
+  } else {
+    const curves = activeCurves();
+    if (curves.length === 0) yHTML = '<div class="dim">(no curves visible)</div>';
+    else if (state.ineq === 'eq') {
+      let any = false;
+      curves.forEach(c => {
+        const roots = rootsForCurve(c, state.yTarget);
+        if (roots.length) {
+          any = true;
+          yHTML += `<div><span class="label-dot" style="background:${c.color}"></span>${c.label}: x = ${roots.map(r => fmt(r,3)).join(', ')}</div>`;
+        } else {
+          yHTML += `<div><span class="label-dot" style="background:${c.color}"></span>${c.label}: <span class="dim">no solution on domain</span></div>`;
+        }
+      });
+      if (!any) {}
+    } else {
+      // intervals of inequality; only defined for function curves
+      const gt = state.ineq === 'gt';
+      curves.forEach(c => {
+        if (c.kind !== 'function') {
+          yHTML += `<div><span class="label-dot" style="background:${c.color}"></span>${c.label}: <span class="dim">(parametric curve — inequality not shown)</span></div>`;
+          return;
+        }
+        const { intervalsGt } = analyzeFunctionAgainstC(c.fn, c.domain, state.yTarget);
+        let intervals = intervalsGt;
+        if (!gt) {
+          const comp = []; let cur = c.domain[0];
+          intervalsGt.forEach(([a,b]) => { if (a > cur) comp.push([cur, a]); cur = Math.max(cur, b); });
+          if (cur < c.domain[1]) comp.push([cur, c.domain[1]]);
+          intervals = comp;
+        }
+        if (!intervals.length) {
+          yHTML += `<div><span class="label-dot" style="background:${c.color}"></span>${c.label}: <span class="dim">no solution on domain</span></div>`;
+        } else {
+          yHTML += `<div><span class="label-dot" style="background:${c.color}"></span>${c.label}: ${intervals.map(([a,b]) => `(${fmt(a,3)}, ${fmt(b,3)})`).join(' ∪ ')}</div>`;
+        }
+      });
+    }
+  }
+  yReadings.innerHTML = yHTML || '<div class="dim">—</div>';
+
+  // VLT verdict
+  let vltHTML = '', verdict = '', vClass = '';
+  if (p.pointsOnly) {
+    const xr = Math.round(state.xProbe);
+    const match = p.points.filter(([x,y]) => x === xr);
+    vltHTML = `<div>Days with day = ${xr}: <b>${match.length}</b></div>`;
+    verdict = match.length <= 1 ? 'Consistent with a function (≤ 1 value).' : 'Fails VLT (multiple values).';
+    vClass = match.length <= 1 ? 'is-fn' : 'not-fn';
+  } else {
+    const curves = activeCurves();
+    if (!curves.length) { vltHTML = '<div class="dim">(no curves)</div>'; verdict=''; }
+    else {
+      curves.forEach(c => {
+        const hits = verticalHits(c, state.xProbe);
+        vltHTML += `<div><span class="label-dot" style="background:${c.color}"></span>${c.label}: vertical line hits <b>${hits.length}</b> point${hits.length===1?'':'s'}</div>`;
+      });
+      // For a curve to be a function of x (globally), need max hits ≤ 1 over its x-range; here we report only at current x
+      const maxHits = Math.max(...curves.map(c => verticalHits(c, state.xProbe).length));
+      verdict = maxHits <= 1 ? 'At this x, all visible curves hit ≤ 1 point (locally consistent with y = f(x)).' :
+                               'At this x, at least one curve hits 2+ points — that curve is not y = f(x).';
+      vClass = maxHits <= 1 ? 'is-fn' : 'not-fn';
+    }
+  }
+  vltReading.innerHTML = vltHTML;
+  vltVerdict.textContent = verdict;
+  vltVerdict.className = 'verdict ' + vClass;
+
+  // Scenario extra
+  if (p.extra) {
+    scenarioExtraCard.style.display = '';
+    scenarioExtraHeader.textContent = p.extra.header;
+    scenarioExtraBody.innerHTML = p.extra.body();
+  } else scenarioExtraCard.style.display = 'none';
+
+  // Notes card + scenario blurb
+  const notes = notesForPreset(p);
+  notesCard.innerHTML = `<h3>${notes.h}</h3>${notes.body}`;
+
+  // sr-only summary
+  plotSummary.textContent = `Scenario ${p.name}. x-probe at ${fmt(state.xProbe,3)}, y-target at ${fmt(state.yTarget,3)}. ${verdict}`;
+
+  // hint strings
+  xProbeHint.textContent = `x ∈ [${p.xDomain[0]}, ${p.xDomain[1]}] · total hits at x: ${totalHits}`;
+  const n = state.ineq;
+  yTargetHint.textContent = n === 'eq' ? 'drag to find all x with f(x) = c' :
+                             n === 'gt' ? 'shaded: x with f(x) > c' : 'shaded: x with f(x) < c';
+}
+
+function notesForPreset(p) {
+  switch (p.id) {
+    case 'ecoli': return {
+      h: 'E. coli: variables, parameters, doubling',
+      body: `<p>Three experiments share one model shape — exponential growth — but use three different temperatures. Inside each experiment, only <em>t</em> and the population vary; <em>T</em> is held constant. That is the working distinction between <em>variable</em> and <em>parameter</em>.</p>
+      <p>Doubling time τ is the time for the population to double. Reading the graph at y = 2 gives τ directly: P reaches 2 at t ≈ 80; Q at t ≈ 20; R at t ≈ 200. At y = 4 each curve has doubled again — confirming exponential growth.</p>
+      <p>100°F gives the fastest doubling: <em>E. coli</em> is adapted to mammal body temperature. At 70°F growth is slower by a factor of 4; at 115°F, slower still — past about 120°F the population collapses.</p>`,
+    };
+    case 'co2': return {
+      h: 'CO₂: two behaviors in one curve',
+      body: `<p>C(t) is doing two things at once: an annual oscillation (amplitude ≈ 4 ppm, period 12 months) from photosynthesis in the Northern Hemisphere, plus a roughly linear upward trend from cumulative emissions.</p>
+      <p>Setting y-target = 415 and finding the roots of <code>C(t) = 415</code> locates where the curve crosses that level. Switching to <code>C(t) &gt; 415</code> shades the interval on the t-axis where CO<sub>2</sub> exceeded 415 ppm. In 2019 it does not; in 2020 it does for a stretch in late spring.</p>
+      <p>Note that <em>t</em> is a function of <em>C</em> fails: e.g. C = 412 is hit at several times.</p>`,
+    };
+    case 'vlt': return {
+      h: 'Vertical line test: the one-input-one-output rule',
+      body: `<p>The rule for a function: every input is related to <em>exactly one</em> output. Graphically, every vertical line meets the graph in at most one point.</p>
+      <p>Drag the x-probe across. The upward parabola <em>y = x² − 1</em> always hits exactly one point — it is a function. The sideways parabola <em>y² − 1 = x</em> hits two points whenever x &gt; −1 — so <em>y</em> is not a function of <em>x</em> there.</p>
+      <p>A curve can still be a relation or even a function of <em>y</em>; it just fails to be a function of <em>x</em>.</p>`,
+    };
+    case 'temps': return {
+      h: 'A function from a data table',
+      body: `<p>Each day has exactly one high temperature, so temperature <em>is</em> a function of the day. This is the vertical line test applied to a set of isolated data points: only one dot on each vertical line.</p>
+      <p>The reverse is not true: day is <em>not</em> a function of temperature, because two different days both recorded 38°F. Set y-target = 38 to see which.</p>`,
+    };
+    case 'custom': return {
+      h: 'Custom function',
+      body: `<p>Enter any formula using <code>x</code>. The value of f at the x-probe appears in the readings card; the y-target finds all x-solutions of <code>f(x) = c</code>, or highlights where the inequality <code>f(x) &gt; c</code> holds.</p>`,
+    };
+  }
+  return { h: '', body: '' };
+}
+
+// =====================================================================
+//  Event wiring
+// =====================================================================
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function setXProbe(v) {
+  const p = preset();
+  state.xProbe = clamp(v, p.xDomain[0], p.xDomain[1]);
+  xProbeSlider.value = state.xProbe;
+  xProbeInput.value = Number(state.xProbe.toFixed(3));
+  render();
+}
+function setYTarget(v) {
+  const p = preset();
+  state.yTarget = clamp(v, p.yDomain[0], p.yDomain[1]);
+  yTargetSlider.value = state.yTarget;
+  yTargetInput.value = Number(state.yTarget.toFixed(3));
+  render();
+}
+
+xProbeSlider.addEventListener('input', e => setXProbe(parseFloat(e.target.value)));
+xProbeInput.addEventListener('change', e => { const v = parseFloat(e.target.value); if (Number.isFinite(v)) setXProbe(v); });
+yTargetSlider.addEventListener('input', e => setYTarget(parseFloat(e.target.value)));
+yTargetInput.addEventListener('change', e => { const v = parseFloat(e.target.value); if (Number.isFinite(v)) setYTarget(v); });
+
+showXProbeToggle.addEventListener('click', () => { state.showX = !state.showX; showXProbeToggle.classList.toggle('on', state.showX); showXProbeToggle.setAttribute('aria-pressed', state.showX); render(); });
+showYTargetToggle.addEventListener('click', () => { state.showY = !state.showY; showYTargetToggle.classList.toggle('on', state.showY); showYTargetToggle.setAttribute('aria-pressed', state.showY); render(); });
+ineqNoneBtn.addEventListener('click', () => { state.ineq = 'eq'; syncIneqToggles(); render(); });
+ineqGtBtn.addEventListener('click',   () => { state.ineq = 'gt'; syncIneqToggles(); render(); });
+ineqLtBtn.addEventListener('click',   () => { state.ineq = 'lt'; syncIneqToggles(); render(); });
+showGridToggle.addEventListener('click', () => { state.showGrid = !state.showGrid; showGridToggle.classList.toggle('on', state.showGrid); showGridToggle.setAttribute('aria-pressed', state.showGrid); render(); });
+showDoublingToggle.addEventListener('click', () => {
+  if (showDoublingToggle.disabled) return;
+  state.showDoubling = !state.showDoubling;
+  showDoublingToggle.classList.toggle('on', state.showDoubling);
+  showDoublingToggle.setAttribute('aria-pressed', state.showDoubling);
+  render();
+});
+followMouseToggle.addEventListener('click', () => {
+  state.followMouse = !state.followMouse;
+  followMouseToggle.classList.toggle('on', state.followMouse);
+  followMouseToggle.setAttribute('aria-pressed', state.followMouse);
+});
+
+applyCustomBtn.addEventListener('click', applyCustom);
+customInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyCustom(); });
+function applyCustom() {
+  const src = customInput.value.trim();
+  try {
+    const fn = compileCustom(src);
+    // probe it briefly
+    const y0 = fn(1);
+    if (!Number.isFinite(y0) && !Number.isFinite(fn(0.5))) throw new Error('f returned non-finite at x = 0.5 and x = 1');
+    state.customFn = fn;
+    PRESETS.custom.customSrc = src;
+    PRESETS.custom.curves[0].fn = fn;
+    customInput.classList.remove('err');
+    parseFeedback.className = 'parse-feedback ok'; parseFeedback.textContent = 'Parsed · using this f(x)';
+    render();
+  } catch (err) {
+    customInput.classList.add('err');
+    parseFeedback.className = 'parse-feedback err'; parseFeedback.textContent = 'Error: ' + err.message;
+  }
+}
+
+// Mouse interactions on canvas: click sets x-probe; shift-click sets y-target; follow-mouse mode
+plotCanvas.addEventListener('pointerdown', e => {
+  const rect = plotCanvas.getBoundingClientRect();
+  const px = e.clientX - rect.left, py = e.clientY - rect.top;
+  if (px < PAD_L || px > W - PAD_R || py < PAD_T || py > H - PAD_B) return;
+  const p = preset();
+  if (e.shiftKey || e.button === 2) setYTarget(dyOf(py, p));
+  else setXProbe(dxOf(px, p));
+});
+plotCanvas.addEventListener('contextmenu', e => e.preventDefault());
+plotCanvas.addEventListener('pointermove', e => {
+  if (!state.followMouse) return;
+  const rect = plotCanvas.getBoundingClientRect();
+  const px = e.clientX - rect.left, py = e.clientY - rect.top;
+  if (px < PAD_L || px > W - PAD_R || py < PAD_T || py > H - PAD_B) return;
+  const p = preset();
+  setXProbe(dxOf(px, p));
+  setYTarget(dyOf(py, p));
+});
+
+// =====================================================================
+//  Initial render
+// =====================================================================
+renderPresetChips();
+selectPreset('ecoli');
+</script>
+</body>
+</html>

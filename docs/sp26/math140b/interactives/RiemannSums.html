@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riemann Sums &middot; The Definite Integral as a Limit</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface2: #f3f1ec;
+  --surface3: #ecebe4;
+  --text: #2c2a28;
+  --text2: #5f5c56;
+  --text3: #6a6862;
+  --border: #c9c5bc;
+  --border-strong: #a8a498;
+  --accent: #3a6b5e;
+  --accent-light: #e8f0ed;
+  --danger: #9c3628;
+  --danger-light: #fbeae7;
+  --warning: #7a5a10;
+  --warning-light: #fdf4e1;
+  --success: #3a6b5e;
+  --success-light: #e8f0ed;
+  --purple: #5a4a9e;
+  --purple-light: #eeedf8;
+  --teal: #1a7a60;
+  --teal-light: #e2efe9;
+  --coral: #c8553a;
+  --coral-light: #f7e3dc;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18.5px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.header {
+  padding: 2.25rem 2rem 1.25rem;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+.header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 820px;
+}
+.header p em {
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
+.main {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+/* Left panel */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  position: sticky;
+  top: 1rem;
+}
+@media (max-width: 980px) {
+  .panel { position: static; }
+}
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 0.55rem;
+}
+
+/* Preset chips */
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chip {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+.chip .chip-sub {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--text3);
+  margin-top: 1px;
+  font-family: var(--mono);
+}
+.chip.active .chip-sub { color: rgba(255,255,255,0.82); }
+
+/* Rule buttons - segmented style */
+.rule-chips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+.rule-chip {
+  font-family: var(--font);
+  font-size: 0.75rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  font-weight: 500;
+}
+.rule-chip:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: var(--purple-light);
+}
+.rule-chip.active {
+  border-color: var(--purple);
+  background: var(--purple);
+  color: white;
+}
+
+/* Param block */
+.param-block {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 0.55rem;
+}
+.param-block:last-child { margin-bottom: 0; }
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.3rem;
+}
+.param-name {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.param-name em {
+  font-style: normal;
+  color: var(--text3);
+  font-weight: 400;
+  font-size: 0.75rem;
+  margin-left: 0.35rem;
+}
+.param-val {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--purple);
+}
+.param-row input[type="range"] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.param-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.param-row input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+.param-hint {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+  margin-top: 0.3rem;
+}
+
+/* Number inputs for a, b */
+.ab-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.ab-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ab-field label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+}
+.ab-field input {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  width: 100%;
+}
+.ab-field input:focus {
+  outline: 2px solid var(--purple);
+  outline-offset: 1px;
+  border-color: var(--purple);
+}
+.ab-field input.err {
+  border-color: var(--danger);
+  background: var(--danger-light);
+}
+
+/* Custom function input */
+.fn-input-wrap {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.7rem 0.85rem;
+}
+.fn-input {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+}
+.fn-input:focus {
+  outline: 2px solid var(--purple);
+  outline-offset: 1px;
+  border-color: var(--purple);
+}
+.fn-input.err { border-color: var(--danger); background: var(--danger-light); }
+
+.fn-buttons {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.55rem;
+}
+.btn {
+  font-family: var(--font);
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.btn.primary:hover { background: var(--teal); border-color: var(--teal); color: white; }
+.btn.ghost { background: transparent; color: var(--text2); }
+
+.fn-feedback {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  margin-top: 0.45rem;
+  min-height: 1.1em;
+  line-height: 1.4;
+  color: var(--text3);
+}
+.fn-feedback.err { color: var(--danger); }
+.fn-feedback.ok { color: var(--success); }
+
+.hint-box {
+  font-size: 0.7rem;
+  color: var(--text3);
+  font-family: var(--mono);
+  line-height: 1.5;
+  background: var(--surface2);
+  padding: 0.55rem 0.7rem;
+  border-radius: 5px;
+  margin-top: 0.55rem;
+}
+.hint-box strong { color: var(--text2); font-weight: 600; }
+.hint-box code {
+  background: var(--surface);
+  padding: 0 3px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+/* Toggles */
+.toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text2);
+  cursor: pointer;
+  user-select: none;
+  padding: 0.25rem 0.1rem;
+}
+.toggle-row input[type="checkbox"] {
+  width: 14px; height: 14px;
+  accent-color: var(--purple);
+  cursor: pointer;
+}
+
+/* Workspace */
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title .counter {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text3);
+  padding: 2px 6px;
+  background: var(--surface2);
+  border-radius: 4px;
+}
+.card-subtitle {
+  font-size: 0.76rem;
+  color: var(--text3);
+  margin-bottom: 0.9rem;
+}
+
+/* Main plot canvas */
+.plot-wrap {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  background: var(--surface);
+  border-radius: 6px;
+}
+.plot-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.plot-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text2);
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-swatch {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+  border: 1px solid var(--border);
+}
+.legend-line {
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+/* Readout card */
+.readout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 1.5rem;
+}
+@media (max-width: 560px) {
+  .readout-grid { grid-template-columns: 1fr; }
+}
+.readout-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.readout-label {
+  font-family: var(--font);
+  font-size: 0.68rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 500;
+}
+.readout-value {
+  font-family: var(--mono);
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 500;
+}
+.readout-value.accent { color: var(--purple); }
+.readout-value.err { color: var(--coral); }
+.readout-value.ok { color: var(--teal); }
+.readout-value.sub {
+  font-size: 0.78rem;
+  color: var(--text3);
+  margin-top: 1px;
+  font-weight: 400;
+}
+
+.rule-formula-block {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.75rem 0.95rem;
+  margin-bottom: 0.9rem;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.55;
+  overflow-x: auto;
+}
+.rule-formula-block .rule-name {
+  display: block;
+  font-family: var(--font);
+  font-size: 0.72rem;
+  color: var(--text3);
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 600;
+}
+.rule-formula-block .rule-note {
+  display: block;
+  font-family: var(--font);
+  font-size: 0.76rem;
+  color: var(--text3);
+  margin-top: 0.4rem;
+  font-style: italic;
+}
+
+.qualitative-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.25rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  font-family: var(--mono);
+  margin-top: 0.3rem;
+}
+.qual-over { background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger); }
+.qual-under { background: var(--teal-light); color: var(--teal); border: 1px solid var(--teal); }
+.qual-mixed { background: var(--warning-light); color: var(--warning); border: 1px solid var(--warning); }
+.qual-exact { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent); }
+
+/* Convergence chart wrap */
+.conv-wrap {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+/* Notes panel */
+.notes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+@media (max-width: 720px) {
+  .notes-grid { grid-template-columns: 1fr; }
+}
+.note-card {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.85rem 0.95rem;
+  border-top: 3px solid var(--purple);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text2);
+}
+.note-card.teal { border-top-color: var(--teal); }
+.note-card.coral { border-top-color: var(--coral); }
+.note-card.warning { border-top-color: var(--warning); }
+.note-card h3 {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-family: var(--font);
+  color: var(--text);
+}
+.note-card p { margin-bottom: 0.4rem; }
+.note-card p:last-child { margin-bottom: 0; }
+.note-card em {
+  font-family: var(--font-serif);
+  color: var(--text);
+  font-style: italic;
+}
+.note-card code {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  background: var(--surface);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Riemann sums &amp; the definite integral</h1>
+  <p>The definite integral <em>∫<sub>a</sub><sup>b</sup> f(x) dx</em> is the common limit of left, right, midpoint, and trapezoidal sums as the partition gets finer. Change the rule, the interval, and the number of subintervals; watch the rectangles approach the curve, the readouts converge on the exact value, and the log–log error plot reveal which rules converge faster.</p>
+</div>
+
+<div class="main">
+  <div class="panel">
+
+    <div class="panel-section">
+      <h2 class="panel-label" id="presetLabel">Preset functions</h2>
+      <div class="chips" id="presetChips" role="group" aria-labelledby="presetLabel"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label" id="abLabel">Interval [a, b]</h2>
+      <div class="ab-grid" role="group" aria-labelledby="abLabel">
+        <div class="ab-field">
+          <label for="aInput">a</label>
+          <input type="text" id="aInput" inputmode="decimal" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="ab-field">
+          <label for="bInput">b</label>
+          <input type="text" id="bInput" inputmode="decimal" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+      <div class="fn-feedback" id="abFeedback" aria-live="polite"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label"><label for="nSlider">Subintervals n</label></h2>
+      <div class="param-block">
+        <div class="param-header">
+          <span class="param-name">n <em>= partition size</em></span>
+          <span class="param-val" id="nVal" aria-live="polite">8</span>
+        </div>
+        <div class="param-row">
+          <input type="range" min="1" max="200" step="1" value="8" id="nSlider" aria-label="Number of subintervals">
+        </div>
+        <div class="param-hint" id="dxHint">Δx = (b − a)/n</div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label" id="ruleLabel">Rule</h2>
+      <div class="rule-chips" role="radiogroup" aria-labelledby="ruleLabel">
+        <button type="button" class="rule-chip" data-rule="left"  role="radio" aria-checked="false">Left</button>
+        <button type="button" class="rule-chip" data-rule="right" role="radio" aria-checked="false">Right</button>
+        <button type="button" class="rule-chip" data-rule="mid"   role="radio" aria-checked="true">Midpoint</button>
+        <button type="button" class="rule-chip" data-rule="trap"  role="radio" aria-checked="false">Trapezoidal</button>
+        <button type="button" class="rule-chip" data-rule="simp"  role="radio" aria-checked="false" style="grid-column: span 2;">Simpson (n even)</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label"><label for="fnInput">Custom function f(x)</label></h2>
+      <div class="fn-input-wrap">
+        <input type="text" class="fn-input" id="fnInput" placeholder="e.g.  x^2 + sin(x)" spellcheck="false" autocomplete="off">
+        <div class="fn-buttons">
+          <button class="btn primary" id="fnApplyBtn" type="button">Use f(x)</button>
+          <button class="btn ghost" id="fnClearBtn" type="button">Clear</button>
+        </div>
+        <div class="fn-feedback" id="fnFeedback" aria-live="polite"></div>
+        <div class="hint-box">
+          <strong>Allowed:</strong> <code>x</code>, numbers, <code>+ − * / ^</code>, parentheses, and functions
+          <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>asin</code>, <code>acos</code>, <code>atan</code>,
+          <code>exp</code>, <code>log</code> (=ln), <code>ln</code>, <code>sqrt</code>, <code>abs</code>. Constants <code>pi</code>, <code>e</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Display</h2>
+      <div class="toggle-list">
+        <label class="toggle-row">
+          <input type="checkbox" id="tglRects" checked>
+          <span>Show rectangles / trapezoids</span>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" id="tglExact" checked>
+          <span>Shade exact area under curve</span>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" id="tglSigned" checked>
+          <span>Color by sign (teal &plus; / coral &minus;)</span>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" id="tglSamples">
+          <span>Mark sample points x<sub>i</sub>*</span>
+        </label>
+      </div>
+    </div>
+
+  </div><!-- /.panel -->
+
+  <div class="workspace">
+
+    <div class="card">
+      <div class="card-title">
+        Approximation on the interval
+        <span class="counter" id="intervalBadge">[a, b]</span>
+      </div>
+      <div class="card-subtitle" id="plotSubtitle">f(x) in purple; shaded region is the Riemann sum, colored teal where the sum contributes positive signed area and coral where it contributes negative.</div>
+      <div class="plot-wrap">
+        <canvas id="plotCanvas" role="img" aria-label="Plot of f(x) on the interval with Riemann approximation"></canvas>
+      </div>
+      <div class="plot-legend">
+        <span class="legend-item"><span class="legend-line" style="background:#5a4a9e"></span> f(x)</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:rgba(26,122,96,0.28); border-color:#1a7a60"></span> positive contribution</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:rgba(200,85,58,0.28); border-color:#c8553a"></span> negative contribution</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:rgba(58,107,94,0.10); border-color:#3a6b5e"></span> exact signed area</span>
+      </div>
+      <p class="sr-only" id="plotSummary" aria-live="polite"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        Numerical readout
+        <span class="counter" id="ruleBadge">Midpoint</span>
+      </div>
+      <div class="rule-formula-block" id="ruleFormula" aria-live="polite">
+        <span class="rule-name">Midpoint rule</span>
+        <span id="ruleFormulaBody">S<sub>n</sub> = Σ<sub>i=0</sub><sup>n−1</sup> f(x<sub>i</sub>*) · Δx &nbsp; where x<sub>i</sub>* = a + (i + ½)·Δx</span>
+        <span class="rule-note" id="ruleFormulaNote">Samples at the midpoint of each subinterval.</span>
+      </div>
+
+      <div class="readout-grid" aria-live="polite" aria-atomic="true">
+        <div class="readout-item">
+          <span class="readout-label">Δx = (b − a)/n</span>
+          <span class="readout-value" id="dxVal">0.250</span>
+        </div>
+        <div class="readout-item">
+          <span class="readout-label">Riemann sum S<sub>n</sub></span>
+          <span class="readout-value accent" id="sumVal">—</span>
+        </div>
+        <div class="readout-item">
+          <span class="readout-label">Exact integral</span>
+          <span class="readout-value" id="exactVal">—</span>
+          <span class="readout-value sub" id="exactValSub"></span>
+        </div>
+        <div class="readout-item">
+          <span class="readout-label">Absolute error |S<sub>n</sub> − I|</span>
+          <span class="readout-value" id="absErrVal">—</span>
+        </div>
+        <div class="readout-item">
+          <span class="readout-label">Relative error</span>
+          <span class="readout-value" id="relErrVal">—</span>
+        </div>
+        <div class="readout-item">
+          <span class="readout-label">Qualitative</span>
+          <div id="qualBadge"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        Convergence of |error| vs n
+        <span class="counter">log–log scale</span>
+      </div>
+      <div class="card-subtitle">Each curve shows how the absolute error shrinks as n grows, for one of the four rules. The slope on this log–log plot is the convergence order: left/right are O(1/n), midpoint/trapezoidal are O(1/n²), Simpson's is O(1/n⁴).</div>
+      <div class="conv-wrap">
+        <canvas id="convCanvas" role="img" aria-label="Log-log convergence plot of error versus n"></canvas>
+      </div>
+      <p class="sr-only" id="convSummary" aria-live="polite"></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Notes</div>
+      <div class="card-subtitle">Why this works and what the picture is showing.</div>
+      <div class="notes-grid">
+        <div class="note-card">
+          <h3>Riemann sum, formally</h3>
+          <p>Partition <code>[a, b]</code> into <em>n</em> equal pieces of width <code>Δx = (b − a)/n</code>. Pick a sample point <em>x<sub>i</sub>*</em> in each subinterval <code>[x<sub>i</sub>, x<sub>i+1</sub>]</code>. The Riemann sum is</p>
+          <p><code>S<sub>n</sub> = Σ f(x<sub>i</sub>*) · Δx</code>.</p>
+          <p>When <em>f</em> is continuous, every choice of sample points gives the same limit as <em>n</em> → ∞. That common limit is defined to be <em>∫<sub>a</sub><sup>b</sup> f(x) dx</em>.</p>
+        </div>
+        <div class="note-card teal">
+          <h3>Signed area</h3>
+          <p>If <em>f</em>(<em>x<sub>i</sub>*</em>) is negative, the rectangle contributes a <em>negative</em> number to the sum — that is <strong>signed</strong> area. Try <code>sin(x)</code> on <code>[0, 2π]</code>: the positive bump on <code>[0, π]</code> and the negative bump on <code>[π, 2π]</code> cancel, so the integral is 0.</p>
+        </div>
+        <div class="note-card coral">
+          <h3>Left &amp; right bracket the integral (monotonic case)</h3>
+          <p>If <em>f</em> is increasing on <code>[a, b]</code>, the left rule underestimates the integral and the right rule overestimates it — the exact value is trapped between them. If <em>f</em> is decreasing, the roles swap. Either way, <code>|L<sub>n</sub> − R<sub>n</sub>|</code> gives a crude error bound.</p>
+        </div>
+        <div class="note-card warning">
+          <h3>Why midpoint &amp; trapezoidal converge faster</h3>
+          <p>For smooth <em>f</em>, left/right errors are <em>O</em>(1/<em>n</em>) because each rectangle misses a triangular sliver of size ≈ <em>f′</em>·Δx². Midpoint and trapezoidal cancel the linear piece of the error, leaving <em>O</em>(1/<em>n</em>²). Simpson's rule matches quadratics exactly and achieves <em>O</em>(1/<em>n</em>⁴) for smooth integrands.</p>
+          <p>On the log–log plot on the previous card, convergence order shows up as the <em>slope</em>: rules with steeper slopes converge faster.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.workspace -->
+</div><!-- /.main -->
+
+<script>
+// =====================================================================
+//  Safe expression parser for user-supplied f(x)
+//  Recursive-descent. Whitelist only. No eval / new Function.
+// =====================================================================
+const FUNCS = {
+  sin: Math.sin, cos: Math.cos, tan: Math.tan,
+  asin: Math.asin, acos: Math.acos, atan: Math.atan,
+  exp: Math.exp,
+  log: Math.log,  // natural log (matches common calc usage; we offer 'ln' too)
+  ln:  Math.log,
+  sqrt: Math.sqrt,
+  abs: Math.abs,
+};
+const CONSTS = { pi: Math.PI, e: Math.E };
+
+class ParseError extends Error {
+  constructor(msg, pos) { super(msg); this.pos = pos; }
+}
+
+function tokenizeExpr(src) {
+  const tokens = [];
+  let i = 0;
+  const s = src;
+  while (i < s.length) {
+    const c = s[i];
+    if (c === ' ' || c === '\t') { i++; continue; }
+    if (c === '(' || c === ')' || c === '+' || c === '-' || c === '*' || c === '/' || c === '^' || c === ',') {
+      tokens.push({ t: c, pos: i }); i++; continue;
+    }
+    if (/[0-9.]/.test(c)) {
+      let j = i;
+      let dotCount = 0;
+      while (j < s.length && /[0-9.]/.test(s[j])) {
+        if (s[j] === '.') dotCount++;
+        if (dotCount > 1) throw new ParseError(`Malformed number near position ${i + 1}`, i);
+        j++;
+      }
+      // exponent (scientific) ?
+      if (j < s.length && (s[j] === 'e' || s[j] === 'E')) {
+        let k = j + 1;
+        if (k < s.length && (s[k] === '+' || s[k] === '-')) k++;
+        if (k < s.length && /[0-9]/.test(s[k])) {
+          while (k < s.length && /[0-9]/.test(s[k])) k++;
+          j = k;
+        }
+      }
+      const numStr = s.slice(i, j);
+      const v = parseFloat(numStr);
+      if (!isFinite(v)) throw new ParseError(`Bad number "${numStr}"`, i);
+      tokens.push({ t: 'num', v, pos: i });
+      i = j;
+      continue;
+    }
+    if (/[a-zA-Z_]/.test(c)) {
+      let j = i;
+      while (j < s.length && /[a-zA-Z_0-9]/.test(s[j])) j++;
+      const name = s.slice(i, j).toLowerCase();
+      tokens.push({ t: 'name', v: name, pos: i });
+      i = j;
+      continue;
+    }
+    throw new ParseError(`Unexpected character "${c}" at position ${i + 1}`, i);
+  }
+  tokens.push({ t: 'end', pos: s.length });
+  return tokens;
+}
+
+// Grammar:
+//   expr   := term (('+' | '-') term)*
+//   term   := factor (('*' | '/') factor)*
+//   factor := unary ('^' factor)?        // right-associative
+//   unary  := ('+' | '-') unary | atom
+//   atom   := NUM | NAME | NAME '(' expr ')' | '(' expr ')'
+// Returns a function of one arg: compiled(x) -> number.
+function parseExpr(src) {
+  const toks = tokenizeExpr(src);
+  let p = 0;
+  const peek = () => toks[p];
+  const consume = (t) => {
+    const tok = toks[p];
+    if (tok.t !== t) throw new ParseError(`Expected "${t}" at position ${tok.pos + 1} (got "${tok.t === 'end' ? 'end of input' : (tok.v !== undefined ? tok.v : tok.t)}")`, tok.pos);
+    p++;
+    return tok;
+  };
+
+  function parseE() {
+    let left = parseT();
+    while (peek().t === '+' || peek().t === '-') {
+      const op = peek().t; p++;
+      const right = parseT();
+      const L = left, R = right;
+      left = op === '+' ? (x) => L(x) + R(x) : (x) => L(x) - R(x);
+    }
+    return left;
+  }
+  function parseT() {
+    let left = parseF();
+    while (peek().t === '*' || peek().t === '/') {
+      const op = peek().t; p++;
+      const right = parseF();
+      const L = left, R = right;
+      left = op === '*' ? (x) => L(x) * R(x) : (x) => L(x) / R(x);
+    }
+    return left;
+  }
+  function parseF() {
+    const u = parseU();
+    if (peek().t === '^') {
+      p++;
+      const rhs = parseF(); // right-assoc
+      return (x) => Math.pow(u(x), rhs(x));
+    }
+    return u;
+  }
+  function parseU() {
+    if (peek().t === '+') { p++; return parseU(); }
+    if (peek().t === '-') { p++; const u = parseU(); return (x) => -u(x); }
+    return parseA();
+  }
+  function parseA() {
+    const tok = peek();
+    if (tok.t === 'num') {
+      p++;
+      const v = tok.v;
+      return () => v;
+    }
+    if (tok.t === 'name') {
+      p++;
+      const name = tok.v;
+      // function application?
+      if (peek().t === '(') {
+        p++;
+        const arg = parseE();
+        consume(')');
+        if (!Object.prototype.hasOwnProperty.call(FUNCS, name)) {
+          throw new ParseError(`Unknown function "${name}"`, tok.pos);
+        }
+        const fn = FUNCS[name];
+        return (x) => fn(arg(x));
+      }
+      // bare name — variable x, or a constant
+      if (name === 'x') return (x) => x;
+      if (Object.prototype.hasOwnProperty.call(CONSTS, name)) {
+        const v = CONSTS[name];
+        return () => v;
+      }
+      throw new ParseError(`Unknown name "${name}" (expected x, pi, e, or a function)`, tok.pos);
+    }
+    if (tok.t === '(') {
+      p++;
+      const e = parseE();
+      consume(')');
+      return e;
+    }
+    throw new ParseError(`Unexpected token "${tok.t === 'end' ? 'end of input' : (tok.v !== undefined ? tok.v : tok.t)}" at position ${tok.pos + 1}`, tok.pos);
+  }
+
+  const fn = parseE();
+  if (peek().t !== 'end') {
+    throw new ParseError(`Unexpected trailing tokens starting at position ${peek().pos + 1}`, peek().pos);
+  }
+  // Quick sanity probe: evaluate at x = (0 or 1) to catch obvious runtime errors at parse time
+  // (division by zero may still slip through at runtime; we handle that in the consumer).
+  return fn;
+}
+
+// =====================================================================
+//  Presets
+// =====================================================================
+const PRESETS = [
+  {
+    id: 'xsq',
+    label: 'x²',
+    interval: '[0, 2]',
+    a: 0, b: 2,
+    exprText: 'x^2',
+    exact: 8 / 3,
+    exactLabel: '8/3',
+  },
+  {
+    id: 'xcu',
+    label: 'x³',
+    interval: '[0, 1]',
+    a: 0, b: 1,
+    exprText: 'x^3',
+    exact: 1 / 4,
+    exactLabel: '1/4',
+  },
+  {
+    id: 'sinPi',
+    label: 'sin(x)',
+    interval: '[0, π]',
+    a: 0, b: Math.PI,
+    exprText: 'sin(x)',
+    exact: 2,
+    exactLabel: '2',
+  },
+  {
+    id: 'sin2Pi',
+    label: 'sin(x)',
+    interval: '[0, 2π]  (signed: 0)',
+    a: 0, b: 2 * Math.PI,
+    exprText: 'sin(x)',
+    exact: 0,
+    exactLabel: '0',
+  },
+  {
+    id: 'exp',
+    label: 'e^x',
+    interval: '[0, 1]',
+    a: 0, b: 1,
+    exprText: 'exp(x)',
+    exact: Math.E - 1,
+    exactLabel: 'e − 1',
+  },
+  {
+    id: 'recip',
+    label: '1/x',
+    interval: '[1, 3]',
+    a: 1, b: 3,
+    exprText: '1/x',
+    exact: Math.log(3),
+    exactLabel: 'ln 3',
+  },
+  {
+    id: 'semi',
+    label: '√(1 − x²)',
+    interval: '[−1, 1]',
+    a: -1, b: 1,
+    exprText: 'sqrt(1 - x^2)',
+    exact: Math.PI / 2,
+    exactLabel: 'π/2',
+  },
+  {
+    id: 'quad-neg',
+    label: 'x² − x',
+    interval: '[0, 2]  (mixed sign)',
+    a: 0, b: 2,
+    exprText: 'x^2 - x',
+    exact: 2 / 3,
+    exactLabel: '2/3',
+  },
+  {
+    id: 'cubic',
+    label: '(x−1)(x−2)(x−3)',
+    interval: '[0, 4]',
+    a: 0, b: 4,
+    exprText: '(x-1)*(x-2)*(x-3)',
+    // integral over [0,4] of (x-1)(x-2)(x-3)
+    // Antideriv: let u = x; expand (x-1)(x-2)(x-3) = x^3 - 6x^2 + 11x - 6
+    // F(x) = x^4/4 - 2x^3 + 11x^2/2 - 6x.  F(4) = 64 - 128 + 88 - 24 = 0.
+    // F(0) = 0. So integral = 0.
+    exact: 0,
+    exactLabel: '0',
+  },
+];
+
+// =====================================================================
+//  State
+// =====================================================================
+let state = {
+  preset: PRESETS[0],
+  a: PRESETS[0].a,
+  b: PRESETS[0].b,
+  n: 8,
+  rule: 'mid',
+  f: null,                 // function: (x)=>number
+  fText: PRESETS[0].exprText,
+  fIsCustom: false,        // true when user typed a custom function (exact unknown)
+  exact: PRESETS[0].exact, // number or null (null when custom)
+  exactLabel: PRESETS[0].exactLabel,
+  showRects: true,
+  showExact: true,
+  showSigned: true,
+  showSamples: false,
+};
+
+// Compile the initial preset expression.
+try { state.f = parseExpr(state.fText); }
+catch (e) { console.error(e); }
+
+// =====================================================================
+//  Riemann sums — all four rules + Simpson
+// =====================================================================
+function riemannSum(f, a, b, n, rule) {
+  if (!isFinite(a) || !isFinite(b) || !isFinite(n) || n < 1) return NaN;
+  const dx = (b - a) / n;
+  let s = 0;
+  if (rule === 'left') {
+    for (let i = 0; i < n; i++) s += safeF(f, a + i * dx);
+    return s * dx;
+  }
+  if (rule === 'right') {
+    for (let i = 0; i < n; i++) s += safeF(f, a + (i + 1) * dx);
+    return s * dx;
+  }
+  if (rule === 'mid') {
+    for (let i = 0; i < n; i++) s += safeF(f, a + (i + 0.5) * dx);
+    return s * dx;
+  }
+  if (rule === 'trap') {
+    s = 0.5 * (safeF(f, a) + safeF(f, b));
+    for (let i = 1; i < n; i++) s += safeF(f, a + i * dx);
+    return s * dx;
+  }
+  if (rule === 'simp') {
+    // Simpson's 1/3: requires n even
+    if (n % 2 !== 0) return NaN;
+    s = safeF(f, a) + safeF(f, b);
+    for (let i = 1; i < n; i++) {
+      const x = a + i * dx;
+      s += (i % 2 === 0 ? 2 : 4) * safeF(f, x);
+    }
+    return s * dx / 3;
+  }
+  return NaN;
+}
+
+function safeF(f, x) {
+  try {
+    const y = f(x);
+    return isFinite(y) ? y : 0;
+  } catch {
+    return 0;
+  }
+}
+
+// Sample points used for drawing rectangles, for the main plot
+function samplePoints(a, b, n, rule) {
+  const dx = (b - a) / n;
+  const pts = [];
+  for (let i = 0; i < n; i++) {
+    if (rule === 'left')  pts.push(a + i * dx);
+    else if (rule === 'right') pts.push(a + (i + 1) * dx);
+    else if (rule === 'mid')   pts.push(a + (i + 0.5) * dx);
+    else if (rule === 'trap')  pts.push(a + i * dx); // not really used
+    else if (rule === 'simp')  pts.push(a + (i + 0.5) * dx); // for display only
+  }
+  return pts;
+}
+
+// =====================================================================
+//  Formatting helpers
+// =====================================================================
+function fmt(v, digits = 6) {
+  if (v === null || v === undefined || !isFinite(v)) return '—';
+  // significant-figure style for 'nice' numbers; fall back to fixed for very small/large
+  const a = Math.abs(v);
+  if (a === 0) return '0';
+  if (a >= 1e-3 && a < 1e6) return Number(v.toPrecision(digits)).toString();
+  return v.toExponential(3);
+}
+function fmtErr(v) {
+  if (v === null || v === undefined || !isFinite(v)) return '—';
+  const a = Math.abs(v);
+  if (a === 0) return '0';
+  if (a < 1e-9) return a.toExponential(2);
+  if (a < 1e-3) return a.toExponential(3);
+  return a.toPrecision(4);
+}
+
+// =====================================================================
+//  DOM handles
+// =====================================================================
+const presetChipsEl = document.getElementById('presetChips');
+const aInput = document.getElementById('aInput');
+const bInput = document.getElementById('bInput');
+const abFeedback = document.getElementById('abFeedback');
+const nSlider = document.getElementById('nSlider');
+const nValEl = document.getElementById('nVal');
+const dxHintEl = document.getElementById('dxHint');
+const ruleChipsEls = document.querySelectorAll('.rule-chip');
+const fnInput = document.getElementById('fnInput');
+const fnFeedback = document.getElementById('fnFeedback');
+const fnApplyBtn = document.getElementById('fnApplyBtn');
+const fnClearBtn = document.getElementById('fnClearBtn');
+const tglRects = document.getElementById('tglRects');
+const tglExact = document.getElementById('tglExact');
+const tglSigned = document.getElementById('tglSigned');
+const tglSamples = document.getElementById('tglSamples');
+
+const intervalBadge = document.getElementById('intervalBadge');
+const ruleBadge = document.getElementById('ruleBadge');
+const ruleFormulaBody = document.getElementById('ruleFormulaBody');
+const ruleFormulaNote = document.getElementById('ruleFormulaNote');
+const ruleNameEl = document.querySelector('#ruleFormula .rule-name');
+const dxValEl = document.getElementById('dxVal');
+const sumValEl = document.getElementById('sumVal');
+const exactValEl = document.getElementById('exactVal');
+const exactValSub = document.getElementById('exactValSub');
+const absErrValEl = document.getElementById('absErrVal');
+const relErrValEl = document.getElementById('relErrVal');
+const qualBadgeEl = document.getElementById('qualBadge');
+const plotSummary = document.getElementById('plotSummary');
+const convSummary = document.getElementById('convSummary');
+
+// =====================================================================
+//  Preset chips
+// =====================================================================
+function buildPresetChips() {
+  presetChipsEl.innerHTML = '';
+  for (const p of PRESETS) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip' + (p.id === state.preset.id && !state.fIsCustom ? ' active' : '');
+    btn.innerHTML = `${p.label}<span class="chip-sub">on ${p.interval}</span>`;
+    btn.addEventListener('click', () => loadPreset(p.id));
+    presetChipsEl.appendChild(btn);
+  }
+}
+
+function loadPreset(id) {
+  const p = PRESETS.find(x => x.id === id);
+  if (!p) return;
+  state.preset = p;
+  state.a = p.a;
+  state.b = p.b;
+  state.fText = p.exprText;
+  state.fIsCustom = false;
+  state.exact = p.exact;
+  state.exactLabel = p.exactLabel;
+  try {
+    state.f = parseExpr(p.exprText);
+    fnFeedback.textContent = '';
+    fnFeedback.className = 'fn-feedback';
+    fnInput.classList.remove('err');
+  } catch (e) {
+    console.error(e);
+  }
+  aInput.value = formatEndpoint(state.a);
+  bInput.value = formatEndpoint(state.b);
+  aInput.classList.remove('err');
+  bInput.classList.remove('err');
+  abFeedback.textContent = '';
+  fnInput.value = '';
+  highlightPresetChip();
+  renderAll();
+}
+
+function highlightPresetChip() {
+  const chips = presetChipsEl.querySelectorAll('.chip');
+  chips.forEach((c, idx) => {
+    const p = PRESETS[idx];
+    c.classList.toggle('active', !state.fIsCustom && p.id === state.preset.id);
+  });
+}
+
+function formatEndpoint(v) {
+  // Display π endpoints as 'pi' shorthand the user can understand
+  if (Math.abs(v - Math.PI) < 1e-9) return 'pi';
+  if (Math.abs(v - 2 * Math.PI) < 1e-9) return '2*pi';
+  if (Math.abs(v + Math.PI) < 1e-9) return '-pi';
+  // otherwise use a reasonable precision
+  return Number(v.toPrecision(10)).toString();
+}
+
+// Parse a simple user-entered endpoint number. We allow 'pi', 'e', arithmetic, etc.
+// using the same expression parser but evaluated at x=0 (x isn't expected to appear).
+function parseEndpoint(str) {
+  const t = String(str).trim();
+  if (t === '') throw new Error('empty');
+  const fn = parseExpr(t);
+  const v = fn(0);
+  if (!isFinite(v)) throw new Error('not finite');
+  return v;
+}
+
+// =====================================================================
+//  Rule selector
+// =====================================================================
+function updateRuleChips() {
+  ruleChipsEls.forEach(b => {
+    const on = b.dataset.rule === state.rule;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+}
+ruleChipsEls.forEach(b => {
+  b.addEventListener('click', () => {
+    state.rule = b.dataset.rule;
+    updateRuleChips();
+    renderAll();
+  });
+});
+
+// =====================================================================
+//  Sliders / endpoints / custom fn
+// =====================================================================
+nSlider.addEventListener('input', () => {
+  state.n = parseInt(nSlider.value);
+  renderAll();
+});
+
+function applyEndpoints() {
+  let aOk = true, bOk = true;
+  let av, bv;
+  try { av = parseEndpoint(aInput.value); aInput.classList.remove('err'); }
+  catch { aOk = false; aInput.classList.add('err'); }
+  try { bv = parseEndpoint(bInput.value); bInput.classList.remove('err'); }
+  catch { bOk = false; bInput.classList.add('err'); }
+  if (!aOk || !bOk) {
+    abFeedback.textContent = 'Enter valid numbers (pi, e, + − * / ^ allowed).';
+    abFeedback.className = 'fn-feedback err';
+    return;
+  }
+  if (av === bv) {
+    abFeedback.textContent = 'a and b must differ.';
+    abFeedback.className = 'fn-feedback err';
+    return;
+  }
+  abFeedback.textContent = '';
+  abFeedback.className = 'fn-feedback';
+  state.a = av;
+  state.b = bv;
+  // If we change the endpoints away from the preset, we're no longer on a named preset's fixed integral.
+  // But since f is still a preset expression, exact integral is no longer valid — mark as "custom" for exact-integral purposes.
+  if (!state.fIsCustom) {
+    const p = state.preset;
+    if (Math.abs(av - p.a) > 1e-12 || Math.abs(bv - p.b) > 1e-12) {
+      state.exact = null;
+      state.exactLabel = null;
+    } else {
+      state.exact = p.exact;
+      state.exactLabel = p.exactLabel;
+    }
+  }
+  highlightPresetChip();
+  renderAll();
+}
+aInput.addEventListener('change', applyEndpoints);
+bInput.addEventListener('change', applyEndpoints);
+aInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyEndpoints(); });
+bInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyEndpoints(); });
+
+fnApplyBtn.addEventListener('click', applyCustomFn);
+fnInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); applyCustomFn(); } });
+fnClearBtn.addEventListener('click', () => {
+  fnInput.value = '';
+  fnFeedback.textContent = '';
+  fnFeedback.className = 'fn-feedback';
+  fnInput.classList.remove('err');
+  // revert to preset
+  loadPreset(state.preset.id);
+});
+
+function applyCustomFn() {
+  const text = fnInput.value.trim();
+  if (!text) {
+    fnFeedback.textContent = 'Type an expression in terms of x, then press Use f(x).';
+    fnFeedback.className = 'fn-feedback err';
+    return;
+  }
+  let compiled;
+  try { compiled = parseExpr(text); }
+  catch (e) {
+    fnInput.classList.add('err');
+    fnFeedback.textContent = e.message || 'Parse error.';
+    fnFeedback.className = 'fn-feedback err';
+    return;
+  }
+  // Probe at a couple of test points to catch runtime issues fast
+  let probeOk = true;
+  try {
+    const x0 = 0.5 * (state.a + state.b);
+    const y0 = compiled(x0);
+    if (!isFinite(y0)) probeOk = false;
+  } catch { probeOk = false; }
+  if (!probeOk) {
+    fnFeedback.textContent = 'Parsed, but f is not finite at the interval midpoint — check for divisions by zero or domain issues.';
+    fnFeedback.className = 'fn-feedback err';
+    fnInput.classList.add('err');
+    // Still accept it; the plot will show gaps.
+  } else {
+    fnFeedback.textContent = 'Using custom f(x). Exact integral unavailable.';
+    fnFeedback.className = 'fn-feedback ok';
+    fnInput.classList.remove('err');
+  }
+  state.f = compiled;
+  state.fText = text;
+  state.fIsCustom = true;
+  state.exact = null;
+  state.exactLabel = null;
+  highlightPresetChip();
+  renderAll();
+}
+
+// Toggles
+[tglRects, tglExact, tglSigned, tglSamples].forEach(el => {
+  el.addEventListener('change', () => {
+    state.showRects = tglRects.checked;
+    state.showExact = tglExact.checked;
+    state.showSigned = tglSigned.checked;
+    state.showSamples = tglSamples.checked;
+    drawMainPlot();
+  });
+});
+
+// =====================================================================
+//  Main plot (custom 2D canvas)
+// =====================================================================
+const mainCanvas = document.getElementById('plotCanvas');
+const mctx = mainCanvas.getContext('2d');
+
+function fitCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.max(1, Math.round(rect.width * dpr));
+  canvas.height = Math.max(1, Math.round(rect.height * dpr));
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return rect;
+}
+
+function niceStep(range, targetTicks) {
+  // pick a 1/2/5 step so roughly targetTicks ticks fit in range
+  const raw = range / Math.max(1, targetTicks);
+  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const frac = raw / pow;
+  let step;
+  if (frac < 1.5) step = 1 * pow;
+  else if (frac < 3) step = 2 * pow;
+  else if (frac < 7) step = 5 * pow;
+  else step = 10 * pow;
+  return step;
+}
+
+function drawMainPlot() {
+  const rect = fitCanvas(mainCanvas);
+  const W = rect.width, H = rect.height;
+  mctx.clearRect(0, 0, W, H);
+
+  const { a, b, n, rule, f, showRects, showExact, showSigned, showSamples } = state;
+
+  // Sample curve densely to find y-range and to draw
+  const NSAMP = 600;
+  const xs = new Float64Array(NSAMP + 1);
+  const ys = new Float64Array(NSAMP + 1);
+  let yMin = Infinity, yMax = -Infinity;
+  for (let i = 0; i <= NSAMP; i++) {
+    const t = i / NSAMP;
+    const x = a + t * (b - a);
+    xs[i] = x;
+    let y;
+    try { y = f(x); if (!isFinite(y)) y = NaN; } catch { y = NaN; }
+    ys[i] = y;
+    if (isFinite(y)) {
+      if (y < yMin) yMin = y;
+      if (y > yMax) yMax = y;
+    }
+  }
+  // Always include y=0 in view so baseline is visible
+  if (!isFinite(yMin) || !isFinite(yMax)) { yMin = -1; yMax = 1; }
+  if (yMin > 0) yMin = 0;
+  if (yMax < 0) yMax = 0;
+  // small padding
+  const ySpan = Math.max(1e-9, yMax - yMin);
+  yMin -= 0.08 * ySpan;
+  yMax += 0.08 * ySpan;
+
+  // Margins for ticks/labels
+  const mL = 48, mR = 18, mT = 14, mB = 34;
+  const plotW = Math.max(10, W - mL - mR);
+  const plotH = Math.max(10, H - mT - mB);
+
+  const xToPx = (x) => mL + ((x - a) / (b - a)) * plotW;
+  const yToPx = (y) => mT + ((yMax - y) / (yMax - yMin)) * plotH;
+
+  // Background
+  mctx.fillStyle = '#fdfcf8';
+  mctx.fillRect(mL, mT, plotW, plotH);
+
+  // Grid: compute nice tick steps for x and y
+  const xStep = niceStep(b - a, 8);
+  const yRange = yMax - yMin;
+  const yStep = niceStep(yRange, 6);
+
+  mctx.strokeStyle = '#e6e3da';
+  mctx.lineWidth = 1;
+  mctx.setLineDash([]);
+  mctx.beginPath();
+  // vertical gridlines
+  const xFirst = Math.ceil(a / xStep) * xStep;
+  for (let gx = xFirst; gx <= b + 1e-9; gx += xStep) {
+    const px = xToPx(gx);
+    mctx.moveTo(px, mT);
+    mctx.lineTo(px, mT + plotH);
+  }
+  // horizontal gridlines
+  const yFirst = Math.ceil(yMin / yStep) * yStep;
+  for (let gy = yFirst; gy <= yMax + 1e-9; gy += yStep) {
+    const py = yToPx(gy);
+    mctx.moveTo(mL, py);
+    mctx.lineTo(mL + plotW, py);
+  }
+  mctx.stroke();
+
+  // Plot border
+  mctx.strokeStyle = '#c9c5bc';
+  mctx.lineWidth = 1;
+  mctx.strokeRect(mL + 0.5, mT + 0.5, plotW - 1, plotH - 1);
+
+  // EXACT AREA SHADING (under the curve, signed)
+  if (showExact) {
+    // Draw region between y=0 and y=f(x)
+    mctx.save();
+    mctx.beginPath();
+    mctx.rect(mL, mT, plotW, plotH);
+    mctx.clip();
+    const baseline = yToPx(0);
+    mctx.fillStyle = 'rgba(58, 107, 94, 0.12)';  // accent-light, low alpha
+    mctx.beginPath();
+    // walk along curve from a to b
+    let started = false;
+    for (let i = 0; i <= NSAMP; i++) {
+      const px = xToPx(xs[i]);
+      const y = ys[i];
+      if (!isFinite(y)) { started = false; continue; }
+      const py = yToPx(y);
+      if (!started) { mctx.moveTo(px, baseline); mctx.lineTo(px, py); started = true; }
+      else { mctx.lineTo(px, py); }
+    }
+    // close down to baseline at end
+    mctx.lineTo(xToPx(xs[NSAMP]), baseline);
+    mctx.lineTo(xToPx(xs[0]), baseline);
+    mctx.closePath();
+    mctx.fill();
+    mctx.restore();
+  }
+
+  // RECTANGLES / TRAPEZOIDS
+  if (showRects) {
+    mctx.save();
+    mctx.beginPath();
+    mctx.rect(mL, mT, plotW, plotH);
+    mctx.clip();
+    const dx = (b - a) / n;
+    const baseline = yToPx(0);
+    for (let i = 0; i < n; i++) {
+      const xL = a + i * dx;
+      const xR = xL + dx;
+      let yL, yR;
+
+      if (rule === 'trap') {
+        yL = safeFVal(f, xL);
+        yR = safeFVal(f, xR);
+      } else if (rule === 'simp') {
+        // For visualization, show the "panel" as trapezoid between xL and xR;
+        // the actual Simpson rule uses pairs of subintervals and a parabolic fit.
+        yL = safeFVal(f, xL);
+        yR = safeFVal(f, xR);
+      } else {
+        // rectangle rule (left/right/mid)
+        let x_star;
+        if (rule === 'left') x_star = xL;
+        else if (rule === 'right') x_star = xR;
+        else x_star = (xL + xR) / 2;
+        const h = safeFVal(f, x_star);
+        yL = h; yR = h;
+      }
+
+      // Sign for coloring: if y is positive at midpoint, count as positive; else negative.
+      // For a flat rectangle it's just the sign of h; for trapezoids we use sign of average.
+      const yAvg = (yL + yR) / 2;
+      const isPos = yAvg >= 0;
+      const color = showSigned
+        ? (isPos ? 'rgba(26, 122, 96, 0.28)' : 'rgba(200, 85, 58, 0.28)')
+        : 'rgba(90, 74, 158, 0.20)';
+      const stroke = showSigned
+        ? (isPos ? '#1a7a60' : '#c8553a')
+        : '#5a4a9e';
+
+      mctx.fillStyle = color;
+      mctx.strokeStyle = stroke;
+      mctx.lineWidth = 1;
+
+      const pxL = xToPx(xL), pxR = xToPx(xR);
+      const pyL = yToPx(yL), pyR = yToPx(yR);
+
+      mctx.beginPath();
+      mctx.moveTo(pxL, baseline);
+      mctx.lineTo(pxL, pyL);
+      mctx.lineTo(pxR, pyR);
+      mctx.lineTo(pxR, baseline);
+      mctx.closePath();
+      mctx.fill();
+      mctx.stroke();
+    }
+    mctx.restore();
+  }
+
+  // y = 0 baseline
+  const baseline = yToPx(0);
+  if (baseline >= mT && baseline <= mT + plotH) {
+    mctx.strokeStyle = '#7f7b72';
+    mctx.lineWidth = 1.25;
+    mctx.setLineDash([]);
+    mctx.beginPath();
+    mctx.moveTo(mL, baseline);
+    mctx.lineTo(mL + plotW, baseline);
+    mctx.stroke();
+  }
+
+  // Curve f(x)
+  mctx.save();
+  mctx.beginPath();
+  mctx.rect(mL, mT, plotW, plotH);
+  mctx.clip();
+  mctx.strokeStyle = '#5a4a9e';
+  mctx.lineWidth = 2;
+  mctx.beginPath();
+  let penDown = false;
+  for (let i = 0; i <= NSAMP; i++) {
+    const y = ys[i];
+    if (!isFinite(y)) { penDown = false; continue; }
+    const px = xToPx(xs[i]);
+    const py = yToPx(y);
+    if (!penDown) { mctx.moveTo(px, py); penDown = true; }
+    else { mctx.lineTo(px, py); }
+  }
+  mctx.stroke();
+  mctx.restore();
+
+  // Sample points x_i*
+  if (showSamples && (rule === 'left' || rule === 'right' || rule === 'mid')) {
+    mctx.save();
+    mctx.beginPath();
+    mctx.rect(mL, mT, plotW, plotH);
+    mctx.clip();
+    const pts = samplePoints(a, b, n, rule);
+    for (const xs_ of pts) {
+      const y = safeFVal(f, xs_);
+      const px = xToPx(xs_);
+      const py = yToPx(y);
+      mctx.fillStyle = '#2c2a28';
+      mctx.beginPath();
+      mctx.arc(px, py, 2.6, 0, 2 * Math.PI);
+      mctx.fill();
+    }
+    mctx.restore();
+  }
+
+  // x-axis ticks
+  mctx.fillStyle = '#5f5c56';
+  mctx.font = '11px "JetBrains Mono", monospace';
+  mctx.textAlign = 'center';
+  mctx.textBaseline = 'top';
+  for (let gx = xFirst; gx <= b + 1e-9; gx += xStep) {
+    const px = xToPx(gx);
+    mctx.fillText(niceLabel(gx, xStep), px, mT + plotH + 6);
+    // tick
+    mctx.strokeStyle = '#a8a498';
+    mctx.beginPath();
+    mctx.moveTo(px, mT + plotH);
+    mctx.lineTo(px, mT + plotH + 4);
+    mctx.stroke();
+  }
+  // y-axis ticks
+  mctx.textAlign = 'right';
+  mctx.textBaseline = 'middle';
+  for (let gy = yFirst; gy <= yMax + 1e-9; gy += yStep) {
+    const py = yToPx(gy);
+    mctx.fillText(niceLabel(gy, yStep), mL - 6, py);
+    mctx.strokeStyle = '#a8a498';
+    mctx.beginPath();
+    mctx.moveTo(mL - 3, py);
+    mctx.lineTo(mL, py);
+    mctx.stroke();
+  }
+
+  // axis labels
+  mctx.fillStyle = '#6a6862';
+  mctx.font = 'italic 12px "Source Serif 4", Georgia, serif';
+  mctx.textAlign = 'center';
+  mctx.textBaseline = 'top';
+  mctx.fillText('x', mL + plotW / 2, H - 14);
+  mctx.save();
+  mctx.translate(12, mT + plotH / 2);
+  mctx.rotate(-Math.PI / 2);
+  mctx.fillText('f(x)', 0, 0);
+  mctx.restore();
+}
+
+function safeFVal(f, x) {
+  try {
+    const y = f(x);
+    return isFinite(y) ? y : 0;
+  } catch { return 0; }
+}
+
+function niceLabel(v, step) {
+  // format tick labels nicely given the step magnitude
+  const a = Math.abs(v);
+  if (a < 1e-12) return '0';
+  // Special recognition: multiples of π
+  const piRatio = v / Math.PI;
+  if (Math.abs(piRatio - Math.round(piRatio)) < 1e-6 && Math.abs(step - Math.PI) < step * 0.5) {
+    const k = Math.round(piRatio);
+    if (k === 0) return '0';
+    if (k === 1) return 'π';
+    if (k === -1) return '−π';
+    return `${k}π`;
+  }
+  // Choose decimals based on step magnitude
+  const decimals = Math.max(0, -Math.floor(Math.log10(step)) + 1);
+  let s = v.toFixed(decimals);
+  // strip trailing zeros
+  if (s.indexOf('.') >= 0) s = s.replace(/0+$/, '').replace(/\.$/, '');
+  // Replace leading '-' with en-dash for nicer typography? Stick with hyphen for copy-paste.
+  return s;
+}
+
+// =====================================================================
+//  Convergence plot (Chart.js log-log)
+// =====================================================================
+// n-ladder for the convergence plot
+const N_LADDER = [1, 2, 4, 8, 16, 32, 64, 128, 256];
+const RULE_STYLES = {
+  left:  { color: '#c8553a', label: 'Left' },
+  right: { color: '#7a5a10', label: 'Right' },
+  mid:   { color: '#5a4a9e', label: 'Midpoint' },
+  trap:  { color: '#1a7a60', label: 'Trapezoidal' },
+  simp:  { color: '#3a6b5e', label: "Simpson" },
+};
+
+let convChart = null;
+
+function makeConvChart() {
+  const ctx = document.getElementById('convCanvas').getContext('2d');
+  convChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: N_LADDER,
+      datasets: ['left', 'right', 'mid', 'trap', 'simp'].map(rule => ({
+        label: RULE_STYLES[rule].label,
+        data: [],
+        borderColor: RULE_STYLES[rule].color,
+        backgroundColor: RULE_STYLES[rule].color,
+        borderWidth: 1.5,
+        pointRadius: 2.5,
+        pointHoverRadius: 4,
+        tension: 0,
+        _rule: rule,
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 120 },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            font: { family: "'Source Sans 3'", size: 11 },
+            boxWidth: 14, boxHeight: 2, usePointStyle: false,
+          },
+        },
+        tooltip: {
+          callbacks: {
+            title: (items) => `n = ${items[0].label}`,
+            label: (ctx) => `${ctx.dataset.label}: |err| = ${fmtErr(ctx.raw)}`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'logarithmic',
+          title: { display: true, text: 'n (subintervals)', font: { family: "'Source Sans 3'", size: 12 } },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 10 },
+                   callback: (v) => Number.isInteger(Math.log2(v)) ? v : '' },
+          grid: { color: '#b8b4ab66' },
+        },
+        y: {
+          type: 'logarithmic',
+          title: { display: true, text: '|error|', font: { family: "'Source Sans 3'", size: 12 } },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 10 } },
+          grid: { color: '#b8b4ab66' },
+        },
+      },
+    },
+  });
+}
+
+function updateConvChart() {
+  if (!convChart) return;
+  const { a, b, f, exact } = state;
+  if (exact === null || !isFinite(exact)) {
+    // custom function — no exact integral to compare against. Clear lines.
+    convChart.data.datasets.forEach(ds => { ds.data = []; ds.hidden = true; });
+    convChart.update('none');
+    return;
+  }
+  convChart.data.datasets.forEach(ds => {
+    const rule = ds._rule;
+    const arr = [];
+    for (const n of N_LADDER) {
+      let s;
+      if (rule === 'simp' && n % 2 !== 0) {
+        arr.push(null);
+        continue;
+      }
+      s = riemannSum(f, a, b, n, rule);
+      if (!isFinite(s)) { arr.push(null); continue; }
+      const err = Math.abs(s - exact);
+      // Log-scale needs positive values; floor at tiny
+      arr.push(err > 0 ? err : 1e-16);
+    }
+    ds.data = arr;
+    // Emphasize the current rule
+    const isCurrent = rule === state.rule;
+    ds.borderWidth = isCurrent ? 2.8 : 1.2;
+    ds.pointRadius = isCurrent ? 4 : 2.2;
+    ds.hidden = false;
+  });
+  convChart.update('none');
+}
+
+// =====================================================================
+//  Readout / qualitative description
+// =====================================================================
+const RULE_INFO = {
+  left: {
+    name: 'Left Riemann sum',
+    formula: 'L<sub>n</sub> = Σ<sub>i=0</sub><sup>n−1</sup> f(x<sub>i</sub>) · Δx &nbsp; where x<sub>i</sub> = a + i·Δx',
+    note: 'Samples at the left endpoint of each subinterval.',
+    badge: 'Left',
+  },
+  right: {
+    name: 'Right Riemann sum',
+    formula: 'R<sub>n</sub> = Σ<sub>i=1</sub><sup>n</sup> f(x<sub>i</sub>) · Δx &nbsp; where x<sub>i</sub> = a + i·Δx',
+    note: 'Samples at the right endpoint of each subinterval.',
+    badge: 'Right',
+  },
+  mid: {
+    name: 'Midpoint rule',
+    formula: 'M<sub>n</sub> = Σ<sub>i=0</sub><sup>n−1</sup> f(x<sub>i</sub>*) · Δx &nbsp; where x<sub>i</sub>* = a + (i + ½)·Δx',
+    note: 'Samples at the midpoint of each subinterval.',
+    badge: 'Midpoint',
+  },
+  trap: {
+    name: 'Trapezoidal rule',
+    formula: 'T<sub>n</sub> = (Δx/2) · [ f(a) + 2 Σ<sub>i=1</sub><sup>n−1</sup> f(x<sub>i</sub>) + f(b) ]',
+    note: 'Replaces each subinterval by a trapezoid through (x<sub>i</sub>, f(x<sub>i</sub>)) and (x<sub>i+1</sub>, f(x<sub>i+1</sub>)).',
+    badge: 'Trapezoidal',
+  },
+  simp: {
+    name: "Simpson's rule",
+    formula: "S<sub>n</sub> = (Δx/3) · [ f(a) + 4·Σ<sub>odd i</sub> f(x<sub>i</sub>) + 2·Σ<sub>even i</sub> f(x<sub>i</sub>) + f(b) ]",
+    note: "Fits a parabola across each pair of subintervals. Requires n even.",
+    badge: "Simpson's",
+  },
+};
+
+function qualitativeDescription(s, exact, a, b, f) {
+  if (exact === null || !isFinite(exact) || !isFinite(s)) return { text: '—', cls: '' };
+  const err = s - exact;
+  if (Math.abs(err) < Math.max(1e-12, 1e-9 * Math.max(1, Math.abs(exact)))) {
+    return { text: 'exact', cls: 'qual-exact' };
+  }
+  // Classify monotonicity on [a,b] by sampling the derivative via finite differences
+  const mono = detectMonotonicity(f, a, b);
+  if (mono === 'mixed') return { text: err > 0 ? 'over-estimate (mixed sign)' : 'under-estimate (mixed sign)', cls: 'qual-mixed' };
+  return { text: err > 0 ? 'over-estimate' : 'under-estimate', cls: err > 0 ? 'qual-over' : 'qual-under' };
+}
+
+function detectMonotonicity(f, a, b) {
+  const N = 40;
+  const h = 1e-5 * Math.max(1, Math.abs(b - a));
+  let sign = 0;
+  for (let i = 0; i <= N; i++) {
+    const x = a + (i / N) * (b - a);
+    let d;
+    try {
+      d = (f(x + h) - f(x - h)) / (2 * h);
+    } catch { d = 0; }
+    if (!isFinite(d)) continue;
+    if (Math.abs(d) < 1e-8) continue;
+    const s = d > 0 ? 1 : -1;
+    if (sign === 0) sign = s;
+    else if (sign !== s) return 'mixed';
+  }
+  if (sign === 1) return 'increasing';
+  if (sign === -1) return 'decreasing';
+  return 'mixed';
+}
+
+function renderReadout() {
+  const { a, b, n, rule, f, exact, exactLabel } = state;
+  const dx = (b - a) / n;
+  const s = riemannSum(f, a, b, n, rule);
+  const info = RULE_INFO[rule];
+
+  ruleBadge.textContent = info.badge + (rule === 'simp' ? ` · n = ${n}${n % 2 !== 0 ? ' (odd!)' : ''}` : '');
+  ruleNameEl.textContent = info.name;
+  ruleFormulaBody.innerHTML = info.formula;
+  ruleFormulaNote.innerHTML = info.note + (rule === 'simp' && n % 2 !== 0 ? ' <strong>n must be even — increase or decrease n by 1.</strong>' : '');
+
+  dxValEl.textContent = fmt(dx, 6);
+  sumValEl.textContent = isFinite(s) ? fmt(s, 7) : 'n/a';
+
+  if (exact !== null && isFinite(exact)) {
+    exactValEl.textContent = fmt(exact, 7);
+    exactValSub.textContent = exactLabel ? `= ${exactLabel}` : '';
+  } else {
+    exactValEl.textContent = '—';
+    exactValSub.textContent = state.fIsCustom ? 'custom f — unavailable' : 'interval changed — unavailable';
+  }
+
+  if (exact !== null && isFinite(exact) && isFinite(s)) {
+    const absErr = Math.abs(s - exact);
+    absErrValEl.textContent = fmtErr(absErr);
+    absErrValEl.className = 'readout-value';
+    if (Math.abs(exact) > 1e-12) {
+      const rel = absErr / Math.abs(exact);
+      relErrValEl.textContent = (rel * 100).toPrecision(3) + '%';
+    } else {
+      relErrValEl.textContent = 'n/a (exact = 0)';
+    }
+  } else {
+    absErrValEl.textContent = '—';
+    relErrValEl.textContent = '—';
+  }
+
+  // Qualitative badge
+  const q = qualitativeDescription(s, exact, a, b, f);
+  qualBadgeEl.innerHTML = q.text === '—' ? '<span class="readout-value sub">—</span>' : `<span class="qualitative-badge ${q.cls}">${q.text}</span>`;
+
+  // Update interval & Δx hints
+  intervalBadge.textContent = `[${fmt(a, 4)}, ${fmt(b, 4)}]`;
+  dxHintEl.textContent = `Δx = (b − a)/n = ${fmt(dx, 5)}`;
+  nValEl.textContent = n;
+
+  // Summary for screen readers
+  const summary =
+    `${info.name} on [${fmt(a, 3)}, ${fmt(b, 3)}] with n=${n}, Δx=${fmt(dx, 4)}. ` +
+    `Riemann sum = ${fmt(s, 6)}. ` +
+    (exact !== null && isFinite(exact)
+      ? `Exact integral = ${fmt(exact, 6)}. Absolute error = ${fmtErr(Math.abs(s - exact))}. ${q.text}.`
+      : `Exact integral unavailable for custom function.`);
+  plotSummary.textContent = summary;
+}
+
+// =====================================================================
+//  Master render
+// =====================================================================
+function renderAll() {
+  updateRuleChips();
+  drawMainPlot();
+  renderReadout();
+  updateConvChart();
+  updateConvSummary();
+}
+
+function updateConvSummary() {
+  const { exact, rule } = state;
+  if (exact === null) {
+    convSummary.textContent = 'Convergence plot unavailable for custom function (exact integral unknown).';
+    return;
+  }
+  const ruleName = RULE_INFO[rule].name;
+  convSummary.textContent = `Log-log convergence plot. Current rule: ${ruleName} (highlighted). As n doubles, left and right errors roughly halve; midpoint and trapezoidal errors drop by a factor of about 4; Simpson by about 16.`;
+}
+
+// Resize handler
+let resizeRaf = null;
+window.addEventListener('resize', () => {
+  if (resizeRaf) cancelAnimationFrame(resizeRaf);
+  resizeRaf = requestAnimationFrame(() => {
+    drawMainPlot();
+  });
+});
+
+// =====================================================================
+//  Init
+// =====================================================================
+function init() {
+  buildPresetChips();
+  makeConvChart();
+  loadPreset(PRESETS[0].id);
+  // Slightly nicer default: use 8 subintervals and midpoint rule
+  state.n = 8;
+  nSlider.value = 8;
+  state.rule = 'mid';
+  renderAll();
+}
+init();
+
+// =====================================================================
+//  Sanity self-test (dev aid) — not shown in UI, but logs to console.
+//  Expected: f=x^2 on [0,1], n=4, trapezoidal = 0.34375;
+//            sin(x) on [0, 2π], any reasonable n, midpoint ≈ 0.
+// =====================================================================
+(function selftest() {
+  const sq = (x) => x * x;
+  const t = riemannSum(sq, 0, 1, 4, 'trap');
+  const m = riemannSum(Math.sin, 0, 2 * Math.PI, 20, 'mid');
+  const okT = Math.abs(t - 0.34375) < 1e-9;
+  const okM = Math.abs(m) < 1e-9;
+  if (!okT || !okM) {
+    console.warn('Riemann sum self-test failed:', { trap_x2_n4: t, mid_sin_2pi_n20: m });
+  } else {
+    console.info('Riemann sum self-test passed.');
+  }
+})();
+</script>
+</body>
+</html>

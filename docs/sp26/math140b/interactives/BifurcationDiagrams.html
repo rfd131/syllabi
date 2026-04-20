@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1D Bifurcation Diagrams</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface2: #f3f1ec;
+  --surface3: #ecebe4;
+  --text: #2c2a28;
+  --text2: #5f5c56;
+  --text3: #6a6862;
+  --border: #c9c5bc;
+  --border-strong: #a8a498;
+  --accent: #3a6b5e;
+  --accent-light: #e8f0ed;
+  --danger: #9c3628;
+  --danger-light: #fbeae7;
+  --warning: #7a5a10;
+  --warning-light: #fdf4e1;
+  --success: #3a6b5e;
+  --success-light: #e8f0ed;
+  --purple: #5a4a9e;
+  --purple-light: #eeedf8;
+  --teal: #1a7a60;
+  --coral: #c8553a;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18.5px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.header {
+  padding: 2.25rem 2rem 1.25rem;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+.header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 860px;
+}
+.header p em { font-family: var(--font-serif); }
+
+.main {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  position: sticky;
+  top: 1rem;
+}
+@media (max-width: 980px) {
+  .panel { position: static; }
+}
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 0.55rem;
+}
+.panel-label em {
+  text-transform: none;
+  font-style: normal;
+  color: var(--text3);
+  font-weight: 400;
+  font-size: 0.72rem;
+  margin-left: 0.35rem;
+}
+
+/* Preset chips */
+.chips {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.chip {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  display: block;
+  width: 100%;
+}
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+.chip .chip-sub {
+  display: block;
+  font-size: 0.66rem;
+  color: var(--text3);
+  margin-top: 2px;
+  font-family: var(--mono);
+  letter-spacing: 0.01em;
+}
+.chip.active .chip-sub { color: rgba(255,255,255,0.82); }
+
+/* Parameter sliders */
+.param-block {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 0.55rem;
+}
+.param-block.primary {
+  background: var(--purple-light);
+  border: 1px solid var(--border);
+}
+.param-block:last-child { margin-bottom: 0; }
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.3rem;
+}
+.param-name {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.param-name em {
+  font-style: italic;
+  font-family: var(--font-serif);
+  color: var(--text3);
+  font-weight: 400;
+  font-size: 0.78rem;
+  margin-left: 0.35rem;
+}
+.param-val {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--purple);
+}
+.param-row input[type="range"] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.param-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.param-row input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+.param-block.secondary input[type="range"]::-webkit-slider-thumb {
+  background: var(--teal);
+  width: 14px; height: 14px;
+}
+.param-block.secondary input[type="range"]::-moz-range-thumb {
+  background: var(--teal);
+  width: 14px; height: 14px;
+}
+.param-hint {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  margin-top: 0.3rem;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.btn.primary:hover { background: var(--teal); border-color: var(--teal); color: white; }
+.btn.primary.active {
+  background: var(--coral);
+  border-color: var(--coral);
+}
+.btn.primary.active:hover { background: var(--coral); border-color: var(--coral); }
+.btn.ghost { background: transparent; color: var(--text2); }
+
+/* Model readout */
+.model-readout {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+.model-readout .eq-label {
+  font-size: 0.68rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--font);
+  font-weight: 500;
+  display: inline-block;
+  min-width: 4.4em;
+  margin-right: 0.2em;
+}
+.model-readout .eq-f { color: var(--teal); }
+.model-readout .eq-g { color: var(--coral); }
+
+/* Workspace */
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-subtitle {
+  font-size: 0.76rem;
+  color: var(--text3);
+  margin-bottom: 0.8rem;
+}
+
+.legend-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text2);
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.legend-dot.open {
+  background: var(--surface) !important;
+  border: 1.5px solid var(--text2);
+}
+.legend-dash {
+  display: inline-block;
+  width: 18px;
+  border-top: 2px dashed var(--text2);
+  vertical-align: middle;
+}
+.legend-solid {
+  display: inline-block;
+  width: 18px;
+  border-top: 2.5px solid var(--text2);
+  vertical-align: middle;
+}
+
+/* Phase-line-with-rates row: inflow/outflow + phase line strip */
+.ioplot-grid {
+  display: grid;
+  grid-template-columns: 1fr 56px;
+  gap: 12px;
+  align-items: stretch;
+}
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 280px;
+}
+.chart-wrap.tall { height: 300px; }
+.chart-wrap.short { height: 220px; }
+
+.phaseline-strip {
+  position: relative;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  min-height: 280px;
+}
+.phaseline-strip svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.phaseline-strip .pl-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  fill: var(--text3);
+}
+.phaseline-strip .pl-axis {
+  stroke: var(--text2);
+  stroke-width: 1.2;
+  fill: none;
+}
+.phaseline-strip .pl-tick {
+  stroke: var(--text3);
+  stroke-width: 1;
+}
+.phaseline-strip .pl-tick-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  fill: var(--text3);
+}
+.phaseline-strip .pl-arrow {
+  stroke: var(--purple);
+  stroke-width: 2;
+  fill: none;
+}
+.phaseline-strip .pl-arrow-head {
+  fill: var(--purple);
+  stroke: none;
+}
+.phaseline-strip .pl-stable {
+  fill: var(--teal);
+  stroke: var(--teal);
+}
+.phaseline-strip .pl-unstable {
+  fill: var(--surface);
+  stroke: var(--coral);
+  stroke-width: 2;
+}
+
+/* Bifurcation/time-series row */
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 1080px) {
+  .chart-row { grid-template-columns: 1fr; }
+}
+
+/* Notes */
+.notes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.9rem;
+}
+@media (max-width: 820px) {
+  .notes-grid { grid-template-columns: 1fr; }
+}
+.note-card {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.85rem 0.95rem;
+  border-top: 3px solid var(--purple);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+.note-card.saddle { border-top-color: var(--coral); }
+.note-card.transcritical { border-top-color: var(--teal); }
+.note-card.pitchfork { border-top-color: var(--purple); }
+.note-card h3 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-family: var(--font);
+  color: var(--text);
+}
+.note-card p { color: var(--text2); margin-bottom: 0.45rem; }
+.note-card p:last-child { margin-bottom: 0; }
+.note-card em { color: var(--text); font-style: italic; }
+.note-card .sketch {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  background: var(--surface);
+  border-radius: 4px;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  white-space: pre;
+  line-height: 1.35;
+  margin-top: 0.35rem;
+  overflow-x: auto;
+}
+
+.info-box {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.9rem 1.05rem;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text2);
+  margin-top: 0.8rem;
+}
+.info-box strong { color: var(--text); font-weight: 600; }
+.info-box em { font-family: var(--font-serif); font-style: italic; color: var(--text); }
+.info-box p + p { margin-top: 0.5rem; }
+.info-box code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: var(--surface);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.status-line {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+  margin-top: 0.5rem;
+}
+.status-line .eq-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin: 0 3px 2px 0;
+}
+.status-line .eq-dot.stable { background: var(--teal); }
+.status-line .eq-dot.unstable {
+  background: var(--surface);
+  border: 1.5px solid var(--coral);
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Bifurcation diagrams for inflow–outflow models</h1>
+  <p>Scalar ODEs of the form <em>dy/dt = f(y) − g(y)</em> model a quantity balanced by an inflow and an outflow. Equilibria sit where the two rate curves cross; as a parameter slides, those crossings move, merge, or split — giving the <em>saddle-node</em>, <em>transcritical</em>, and <em>pitchfork</em> bifurcations. Watch the four panels stay in sync as you sweep the active parameter.</p>
+</div>
+
+<div class="main">
+  <div class="panel">
+    <div class="panel-section">
+      <h2 class="panel-label" id="presetLabel">Model</h2>
+      <div class="chips" id="presetChips" role="group" aria-labelledby="presetLabel"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Model formula</h2>
+      <div class="model-readout" id="modelReadout" aria-live="polite"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label" id="bifLabel">Bifurcation parameter</h2>
+      <div class="param-block primary" id="bifParamBlock">
+        <div class="param-header">
+          <span class="param-name" id="bifParamName">p</span>
+          <span class="param-val" id="bifParamVal">0.00</span>
+        </div>
+        <div class="param-row">
+          <input type="range" id="bifParamSlider" min="0" max="1" step="0.01" value="0.5" aria-labelledby="bifLabel">
+        </div>
+        <div class="param-hint" id="bifParamHint"></div>
+      </div>
+      <div class="btn-row" style="margin-top: 0.6rem;">
+        <button class="btn primary" id="autoplayBtn" type="button" aria-pressed="false">Autoplay sweep</button>
+        <button class="btn ghost" id="resetBtn" type="button">Reset defaults</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Other parameters</h2>
+      <div id="secondaryParams"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label"><label for="y0Slider">Initial condition y(0)</label></h2>
+      <div class="param-block">
+        <div class="param-header">
+          <span class="param-name">y(0)</span>
+          <span class="param-val" id="y0Val">1.00</span>
+        </div>
+        <div class="param-row">
+          <input type="range" id="y0Slider" min="0" max="3" step="0.01" value="1">
+        </div>
+        <div class="param-hint" id="y0Hint">Used for the time-series simulation.</div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Equilibria at current parameter</h2>
+      <div class="status-line" id="equilibriaList" aria-live="polite">—</div>
+    </div>
+  </div>
+
+  <div class="workspace">
+
+    <div class="card">
+      <div class="card-title">Inflow <span style="color:var(--teal);">f(y)</span> and outflow <span style="color:var(--coral);">g(y)</span></div>
+      <div class="card-subtitle" id="ioSubtitle">Equilibria are the intersections f(y) = g(y). The shaded band is the net rate f − g: positive (green) means y grows, negative (red) means y decays. The vertical strip is the phase line.</div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-solid" style="border-top-color:#1a7a60"></span>inflow f(y)</span>
+        <span class="legend-item"><span class="legend-solid" style="border-top-color:#c8553a"></span>outflow g(y)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1a7a60"></span>stable equilibrium</span>
+        <span class="legend-item"><span class="legend-dot open"></span>unstable equilibrium</span>
+      </div>
+      <div class="ioplot-grid">
+        <div class="chart-wrap tall"><canvas id="ioChart" role="img" aria-label="Inflow and outflow as functions of y"></canvas></div>
+        <div class="phaseline-strip" aria-label="Phase line">
+          <svg id="phaseLineSvg" viewBox="0 0 56 300" preserveAspectRatio="none"></svg>
+        </div>
+      </div>
+      <p class="sr-only" id="ioSummary" aria-live="polite"></p>
+    </div>
+
+    <div class="chart-row">
+      <div class="card">
+        <div class="card-title">Bifurcation diagram</div>
+        <div class="card-subtitle" id="bifSubtitle">Equilibrium branches as the parameter varies. Solid = stable, dashed = unstable. The vertical line marks the current parameter.</div>
+        <div class="legend-row">
+          <span class="legend-item"><span class="legend-solid" style="border-top-color:#1a7a60"></span>stable branch</span>
+          <span class="legend-item"><span class="legend-dash" style="border-top-color:#c8553a"></span>unstable branch</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e"></span>current parameter</span>
+        </div>
+        <div class="chart-wrap"><canvas id="bifChart" role="img" aria-label="Bifurcation diagram: equilibria versus parameter"></canvas></div>
+        <p class="sr-only" id="bifSummary" aria-live="polite"></p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Time series</div>
+        <div class="card-subtitle">Numerical solution y(t) from y(0) via RK4. Dashed horizontals are current equilibria.</div>
+        <div class="legend-row">
+          <span class="legend-item"><span class="legend-solid" style="border-top-color:#5a4a9e"></span>y(t)</span>
+          <span class="legend-item"><span class="legend-dash" style="border-top-color:#6b6862"></span>equilibria</span>
+        </div>
+        <div class="chart-wrap"><canvas id="tsChart" role="img" aria-label="Time series simulation of y of t"></canvas></div>
+        <p class="sr-only" id="tsSummary" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">About this model</div>
+      <div class="card-subtitle">Physical interpretation of the preset, its parameter, and the bifurcation it displays.</div>
+      <div class="info-box" id="modelNote"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">The three bifurcations</div>
+      <div class="card-subtitle">As a parameter slides, equilibria can collide, exchange stability, or split. The sketches below show qualitative shapes of the branches near each bifurcation point (parameter on the horizontal axis, y* vertical).</div>
+      <div class="notes-grid">
+        <div class="note-card saddle">
+          <h3>Saddle-node (fold)</h3>
+          <p>Two equilibria — one stable, one unstable — collide and annihilate. Below threshold there are two; above, none.</p>
+          <p><em>Normal form:</em> <span style="font-family:var(--mono);">dy/dt = r + y²</span> for <em>r &lt; 0</em> → two roots; <em>r = 0</em> → tangent; <em>r &gt; 0</em> → no roots.</p>
+          <div class="sketch">
+      y*
+      │   ───●  stable
+      │  ╱
+      │ ● fold point
+      │  ╲
+      │   ─ ─ ─  unstable
+      └──────────── p</div>
+        </div>
+
+        <div class="note-card transcritical">
+          <h3>Transcritical</h3>
+          <p>Two branches cross and <em>exchange stability</em>. The same two equilibria persist on both sides; which one is stable flips.</p>
+          <p><em>Normal form:</em> <span style="font-family:var(--mono);">dy/dt = r·y − y²</span>. Branches <em>y = 0</em> and <em>y = r</em> cross at the origin.</p>
+          <div class="sketch">
+      y*
+      │         ───  y = r  stable
+      │        ╱
+      │  ─ ─ ─╳─ ─ ─ y = 0  unstable (right)
+      │      ╱
+      │ ───            stable (left)
+      └──────────── p</div>
+        </div>
+
+        <div class="note-card pitchfork">
+          <h3>Pitchfork</h3>
+          <p>One equilibrium loses stability and two new ones are born symmetrically on either side.</p>
+          <p><em>Supercritical form:</em> <span style="font-family:var(--mono);">dy/dt = r·y − y³</span>. For <em>r &lt; 0</em> only <em>y = 0</em> (stable); for <em>r &gt; 0</em>, <em>y = 0</em> becomes unstable and <em>y = ±√r</em> appear stable.</p>
+          <div class="sketch">
+      y*
+      │        ___  +√r  stable
+      │       ╱
+      │ ───── ─ ─ ─  y = 0
+      │       ╲
+      │        ‾‾‾  −√r  stable
+      └──────────── p</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======================================================================
+//  Model definitions
+// ======================================================================
+// Each preset specifies:
+//   id, name, sub, params (object), bifParam (key into params),
+//   bifRange: {min, max, step}, yRange: {min, max}, y0Range: {min, max, step, default},
+//   f(y, params): inflow rate
+//   g(y, params): outflow rate
+//   fExpr(params): human-readable inflow
+//   gExpr(params): human-readable outflow
+//   note(params): physical-interpretation HTML
+//   tMax: simulation horizon
+//   bifLabels(branchData): optional list of annotations on the bifurcation diagram
+const PRESETS = {
+  lake: {
+    name: 'Lake phosphorus',
+    sub: 'saddle-node · bistability',
+    params: { L: 0.3, s: 0.8, r: 1.0, m: 1.0, q: 8 },
+    bifParam: 'L',
+    bifRange: { min: 0, max: 1.1, step: 0.005 },
+    yRange: { min: 0, max: 3 },
+    y0Range: { min: 0, max: 3, step: 0.01, default: 0.2 },
+    tMax: 40,
+    secondary: [
+      { key: 's', label: 's', desc: 'sedimentation rate', min: 0.3, max: 1.5, step: 0.01 },
+      { key: 'r', label: 'r', desc: 'recycling strength', min: 0, max: 2,   step: 0.01 },
+      { key: 'm', label: 'm', desc: 'half-saturation',   min: 0.3, max: 2,   step: 0.01 },
+      { key: 'q', label: 'q', desc: 'Hill exponent',     min: 2,   max: 12,  step: 1    },
+    ],
+    f: (y, p) => p.L + p.r * Math.pow(y, p.q) / (Math.pow(p.m, p.q) + Math.pow(y, p.q)),
+    g: (y, p) => p.s * y,
+    fExpr: p => `L + r·y^q / (m^q + y^q)`,
+    gExpr: p => `s·y`,
+    note: p => `
+      <p><strong>Eutrophication of a shallow lake.</strong> Phosphorus concentration <em>y</em> is driven upward by external loading <em>L</em> (runoff, wastewater) and by internal recycling that releases phosphorus from sediment when <em>y</em> is already high. The recycling term is a Hill function that switches on near <em>y ≈ m</em>.</p>
+      <p><strong>Parameter:</strong> <code>L</code> — external phosphorus loading. Increasing <code>L</code> eventually pushes the lake past a <em>saddle-node</em>: the oligotrophic (clear-water) equilibrium collides with the middle unstable equilibrium and disappears, and the lake collapses to the eutrophic state. Reducing <code>L</code> brings the eutrophic branch to a second saddle-node — but at a <em>lower</em> <code>L</code> than the forward one, producing hysteresis.</p>
+    `,
+  },
+
+  kelp: {
+    name: 'Kelp vs. urchin grazing',
+    sub: 'saddle-node · alternative stable states',
+    params: { r: 1.0, K: 3.0, gamma: 0.9, h: 0.5 },
+    bifParam: 'gamma',
+    bifRange: { min: 0, max: 2.5, step: 0.01 },
+    yRange: { min: 0, max: 3.2 },
+    y0Range: { min: 0, max: 3.2, step: 0.01, default: 2 },
+    tMax: 40,
+    secondary: [
+      { key: 'r', label: 'r',   desc: 'intrinsic kelp growth', min: 0.1, max: 2,   step: 0.01 },
+      { key: 'K', label: 'K',   desc: 'kelp carrying capacity', min: 1,  max: 5,   step: 0.05 },
+      { key: 'h', label: 'h',   desc: 'grazing half-saturation', min: 0.1, max: 1.5, step: 0.01 },
+    ],
+    f: (y, p) => p.r * y * (1 - y / p.K),
+    g: (y, p) => p.gamma * y / (y + p.h),
+    fExpr: p => `r·K·(1 − K/Kmax)`,
+    gExpr: p => `γ·K / (K + h)`,
+    note: p => `
+      <p><strong>Kelp forest with urchin grazing.</strong> Kelp <em>K</em> grows logistically up to a carrying capacity; urchins eat kelp with a Type II (saturating) response that is steepest at low kelp density. When grazing is strong enough at low kelp density, it overwhelms logistic growth and drives kelp to zero — an <em>urchin barren</em>.</p>
+      <p><strong>Parameter:</strong> <code>γ</code> — maximum grazing rate. Small <code>γ</code>: kelp-dominant stable state. Large <code>γ</code>: barren stable state. In between the system is <em>bistable</em> and transitions happen via saddle-node bifurcations at each end.</p>
+    `,
+  },
+
+  ice: {
+    name: 'Ice-albedo feedback',
+    sub: 'saddle-node · snowball tipping',
+    // C = ocean-mixed-layer heat capacity (J/m²/K). With tMax in years and a year of seconds,
+    // f and g are expressed in K/year so the time axis reads as years.
+    params: { S0: 1368, eps: 0.62, Tice: 265, aHi: 0.62, aLo: 0.28 },
+    bifParam: 'S0',
+    bifRange: { min: 1100, max: 1700, step: 2 },
+    yRange: { min: 220, max: 320 },
+    y0Range: { min: 220, max: 320, step: 0.5, default: 290 },
+    tMax: 80,   // years
+    secondary: [
+      { key: 'eps', label: 'ε', desc: 'emissivity', min: 0.4, max: 0.9, step: 0.005 },
+      { key: 'aHi', label: 'α_ice', desc: 'albedo when iced', min: 0.4, max: 0.8, step: 0.005 },
+      { key: 'aLo', label: 'α_bare', desc: 'albedo when bare', min: 0.15, max: 0.4, step: 0.005 },
+    ],
+    // albedo transitions smoothly from aHi (cold) to aLo (warm).
+    // Rates are returned in K / year, using C = 5e8 J/m²/K (mixed ocean layer, ~120 m),
+    // and a year ≈ 3.1536e7 s, so factor = 3.1536e7 / 5e8 ≈ 0.063 (K/yr per W/m²).
+    f: (T, p) => {
+      const width = 10;
+      const w = 1 / (1 + Math.exp((p.Tice - T) / width));  // 0 cold, 1 warm
+      const alpha = p.aHi + (p.aLo - p.aHi) * w;
+      return 0.063 * (p.S0 / 4) * (1 - alpha);
+    },
+    g: (T, p) => 0.063 * p.eps * 5.670374e-8 * Math.pow(T, 4),
+    fExpr: p => `(S₀/4)·(1 − α(T))`,
+    gExpr: p => `ε·σ·T⁴`,
+    note: p => `
+      <p><strong>Zero-dimensional energy balance.</strong> Global mean temperature <em>T</em> is driven by absorbed shortwave <em>(S₀/4)(1 − α)</em> and cooled by outgoing longwave <em>εσT⁴</em>. The albedo <em>α(T)</em> is high when Earth is icy and low when it is bare, giving a positive feedback.</p>
+      <p><strong>Parameter:</strong> <code>S₀</code> — solar constant. Lowering <code>S₀</code> past a critical value annihilates the warm equilibrium (saddle-node): the planet tips into a <em>snowball</em> state. Raising <code>S₀</code> past the other threshold annihilates the snowball state and the planet warms out of it.</p>
+    `,
+  },
+
+  logConst: {
+    name: 'Logistic with constant harvest',
+    sub: 'saddle-node · textbook fold',
+    params: { r: 1, K: 4, H: 0.5 },
+    bifParam: 'H',
+    bifRange: { min: 0, max: 1.5, step: 0.005 },
+    yRange: { min: 0, max: 4.5 },
+    y0Range: { min: 0, max: 4.5, step: 0.01, default: 3 },
+    tMax: 20,
+    secondary: [
+      { key: 'r', label: 'r', desc: 'intrinsic growth',    min: 0.3, max: 2, step: 0.01 },
+      { key: 'K', label: 'K', desc: 'carrying capacity',   min: 1,   max: 6, step: 0.05 },
+    ],
+    f: (y, p) => p.r * y * (1 - y / p.K),
+    g: (y, p) => p.H,
+    fExpr: p => `r·y·(1 − y/K)`,
+    gExpr: p => `H`,
+    note: p => `
+      <p><strong>Classic fishery model.</strong> A population grows logistically and is harvested at a constant rate <em>H</em> regardless of population size.</p>
+      <p><strong>Parameter:</strong> <code>H</code> — harvest rate. The parabolic inflow has maximum value <code>r·K/4</code>. When <em>H &lt; rK/4</em> there are two equilibria (upper stable, lower unstable — the threshold below which the population collapses). At <em>H = rK/4</em> they collide in a <em>saddle-node</em>. For <em>H &gt; rK/4</em> harvest exceeds every possible growth rate and the population goes to zero. This is the cleanest textbook example.</p>
+    `,
+  },
+
+  logProp: {
+    name: 'Logistic with proportional harvest',
+    sub: 'transcritical',
+    params: { r: 1, K: 4, h: 0.5 },
+    bifParam: 'h',
+    bifRange: { min: 0, max: 1.5, step: 0.005 },
+    yRange: { min: -0.5, max: 4.5 },
+    y0Range: { min: 0, max: 4.5, step: 0.01, default: 2 },
+    tMax: 20,
+    secondary: [
+      { key: 'r', label: 'r', desc: 'intrinsic growth',    min: 0.3, max: 2, step: 0.01 },
+      { key: 'K', label: 'K', desc: 'carrying capacity',   min: 1,   max: 6, step: 0.05 },
+    ],
+    f: (y, p) => p.r * y * (1 - y / p.K),
+    g: (y, p) => p.h * y,
+    fExpr: p => `r·y·(1 − y/K)`,
+    gExpr: p => `h·y`,
+    note: p => `
+      <p><strong>Harvest proportional to stock.</strong> With fishing effort <em>h</em>, the harvest rate is <em>h·y</em>: halving the population halves the catch.</p>
+      <p><strong>Parameter:</strong> <code>h</code> — effort (per-capita harvest). The nontrivial equilibrium is <em>y* = K(1 − h/r)</em>, which crosses through zero exactly when <em>h = r</em>. Below <em>h = r</em> the populated equilibrium is stable and zero is unstable; above <em>h = r</em> they swap — a <em>transcritical</em> bifurcation. Biologically: if effort exceeds intrinsic growth rate, the population collapses to zero.</p>
+    `,
+  },
+};
+
+// ======================================================================
+//  State
+// ======================================================================
+let activePresetId = 'logConst';
+let params = null;        // current parameter object
+let y0 = 1;
+let preset = null;
+let autoplayHandle = null;
+let autoplayDir = 1;
+let branchCache = null;   // cached branch computation for current preset + secondary params
+
+// ======================================================================
+//  Numerical helpers
+// ======================================================================
+function rhs(y, p) {
+  return preset.f(y, p) - preset.g(y, p);
+}
+
+// Find equilibria of rhs(y) on a y-interval by dense sign-change scan + bisection
+function findEquilibria(p, yMin, yMax, nGrid) {
+  const roots = [];
+  const h = (yMax - yMin) / nGrid;
+  let yPrev = yMin;
+  let fPrev = rhs(yPrev, p);
+  for (let i = 1; i <= nGrid; i++) {
+    const yCur = yMin + i * h;
+    const fCur = rhs(yCur, p);
+    if (Math.abs(fPrev) < 1e-12) {
+      roots.push(yPrev);
+    } else if (fPrev * fCur < 0) {
+      // bisect between yPrev and yCur
+      let a = yPrev, fa = fPrev, b = yCur, fb = fCur;
+      for (let k = 0; k < 60; k++) {
+        const m = 0.5 * (a + b);
+        const fm = rhs(m, p);
+        if (Math.abs(fm) < 1e-10 || (b - a) < 1e-10) { a = m; break; }
+        if (fa * fm <= 0) { b = m; fb = fm; }
+        else { a = m; fa = fm; }
+      }
+      roots.push(0.5 * (a + b));
+    }
+    yPrev = yCur; fPrev = fCur;
+  }
+  // dedupe close roots
+  roots.sort((a, b) => a - b);
+  const scale = (yMax - yMin) || 1;
+  const tol = scale * 1e-5;
+  const out = [];
+  for (const r of roots) {
+    if (out.length === 0 || Math.abs(r - out[out.length - 1]) > tol) out.push(r);
+  }
+  return out;
+}
+
+// Stability via central difference of rhs
+function stabilityAt(y, p, scale) {
+  const h = Math.max(1e-6, (scale || 1) * 1e-4);
+  const deriv = (rhs(y + h, p) - rhs(y - h, p)) / (2 * h);
+  // stable if deriv < 0 (perturbations decay), unstable if > 0
+  if (Math.abs(deriv) < 1e-9) return { stable: null, deriv }; // marginal
+  return { stable: deriv < 0, deriv };
+}
+
+function classifyEquilibria(yStars, p, yRange) {
+  const scale = yRange.max - yRange.min;
+  return yStars.map(y => {
+    const s = stabilityAt(y, p, scale);
+    return { y, stable: s.stable, deriv: s.deriv };
+  });
+}
+
+// RK4 simulation
+function simulateRK4(y0, tMax, nSteps, p) {
+  const dt = tMax / nSteps;
+  const ts = new Array(nSteps + 1);
+  const ys = new Array(nSteps + 1);
+  ts[0] = 0; ys[0] = y0;
+  let y = y0;
+  for (let i = 0; i < nSteps; i++) {
+    const t = i * dt;
+    const k1 = rhs(y, p);
+    const k2 = rhs(y + 0.5 * dt * k1, p);
+    const k3 = rhs(y + 0.5 * dt * k2, p);
+    const k4 = rhs(y + dt * k3, p);
+    y = y + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4);
+    // clamp to avoid overflow in pathological sweeps
+    if (!Number.isFinite(y)) { y = ys[i]; }
+    ts[i + 1] = (i + 1) * dt;
+    ys[i + 1] = y;
+  }
+  return { ts, ys };
+}
+
+// Compute bifurcation branches.
+// For each parameter value in a dense grid, find equilibria and classify.
+// Then link consecutive points into continuous segments (one per branch).
+function computeBranches(preset, baseParams) {
+  const { min: pMin, max: pMax } = preset.bifRange;
+  const nP = 260;
+  const yRange = preset.yRange;
+  const nY = 900;
+  // Choose sample set: slight jitter-free dense set
+  const samples = [];
+  for (let i = 0; i <= nP; i++) {
+    const pv = pMin + (pMax - pMin) * i / nP;
+    const p = Object.assign({}, baseParams, { [preset.bifParam]: pv });
+    const eqs = findEquilibria(p, yRange.min, yRange.max, nY);
+    const classed = classifyEquilibria(eqs, p, yRange);
+    samples.push({ pv, eqs: classed });
+  }
+  // Build branch segments by linking nearest equilibria between consecutive pv values.
+  // Two-pass: for each sample, greedily match each equilibrium to closest in previous sample
+  // that hasn't been used and has same stability class (to avoid jumping across branches at a fold).
+  const stableSegs = []; // array of {pts: [{x,y}]}
+  const unstableSegs = [];
+
+  let prev = null; // list of { y, stable, segRef }
+  for (let i = 0; i < samples.length; i++) {
+    const s = samples[i];
+    const cur = s.eqs.map(e => ({ y: e.y, stable: e.stable, segRef: null }));
+    if (prev) {
+      const used = new Set();
+      for (const c of cur) {
+        let best = -1, bestD = Infinity;
+        for (let j = 0; j < prev.length; j++) {
+          if (used.has(j)) continue;
+          if (prev[j].stable !== c.stable) continue;
+          const d = Math.abs(prev[j].y - c.y);
+          if (d < bestD) { bestD = d; best = j; }
+        }
+        const yScale = yRange.max - yRange.min;
+        const threshold = 0.08 * yScale;
+        if (best >= 0 && bestD < threshold) {
+          c.segRef = prev[best].segRef;
+          used.add(best);
+          c.segRef.pts.push({ x: s.pv, y: c.y });
+        } else {
+          const seg = { pts: [{ x: s.pv, y: c.y }] };
+          (c.stable ? stableSegs : unstableSegs).push(seg);
+          c.segRef = seg;
+        }
+      }
+    } else {
+      for (const c of cur) {
+        const seg = { pts: [{ x: s.pv, y: c.y }] };
+        (c.stable ? stableSegs : unstableSegs).push(seg);
+        c.segRef = seg;
+      }
+    }
+    prev = cur;
+  }
+  return { stableSegs, unstableSegs, samples };
+}
+
+// ======================================================================
+//  Number formatting helpers
+// ======================================================================
+function fmt(v, digits) {
+  if (!Number.isFinite(v)) return '—';
+  const d = digits === undefined ? 2 : digits;
+  const a = Math.abs(v);
+  if (a === 0) return '0';
+  if (a >= 1000) return v.toFixed(0);
+  if (a >= 100) return v.toFixed(1);
+  return v.toFixed(d);
+}
+function fmtParam(key, v) {
+  if (key === 'S0') return v.toFixed(0);
+  if (key === 'q')  return v.toFixed(0);
+  return v.toFixed(2);
+}
+
+// ======================================================================
+//  Charts
+// ======================================================================
+const FONT = "'Source Sans 3'";
+
+function makeIoChart() {
+  return new Chart(document.getElementById('ioChart'), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        // 0: positive net rate area (fill vs. x-axis) — drawn first so curves sit on top
+        { label: 'f − g > 0', data: [], borderColor: '#1a7a6000', backgroundColor: '#1a7a601c',
+          borderWidth: 0, pointRadius: 0, showLine: true, fill: 'origin', order: 10 },
+        // 1: negative net rate area
+        { label: 'f − g < 0', data: [], borderColor: '#c8553a00', backgroundColor: '#c8553a18',
+          borderWidth: 0, pointRadius: 0, showLine: true, fill: 'origin', order: 10 },
+        // 2: zero-axis
+        { label: 'zero', data: [], borderColor: '#6b686266', borderWidth: 1, pointRadius: 0, showLine: true, order: 5 },
+        // 3: inflow f
+        { label: 'f(y)', data: [], borderColor: '#1a7a60', backgroundColor: '#1a7a6014', borderWidth: 2.5, pointRadius: 0, showLine: true, tension: 0, order: 2 },
+        // 4: outflow g
+        { label: 'g(y)', data: [], borderColor: '#c8553a', backgroundColor: '#c8553a14', borderWidth: 2.5, pointRadius: 0, showLine: true, tension: 0, order: 2 },
+        // 5: stable equilibria
+        { label: 'stable eq.', data: [], borderColor: '#1a7a60', backgroundColor: '#1a7a60',
+          pointRadius: 6.5, pointHoverRadius: 8, showLine: false, order: 1 },
+        // 6: unstable equilibria (open)
+        { label: 'unstable eq.', data: [], borderColor: '#c8553a', backgroundColor: '#faf9f6',
+          pointRadius: 6.5, pointHoverRadius: 8, borderWidth: 2.2, showLine: false, order: 1 },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 90 },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: ctx => ['f(y)', 'g(y)', 'stable eq.', 'unstable eq.'].includes(ctx.dataset.label),
+          callbacks: {
+            label: ctx => {
+              const p = ctx.raw;
+              if (ctx.dataset.label.includes('eq.')) {
+                return `${ctx.dataset.label}  y* = ${fmt(p.x, 3)}`;
+              }
+              return `${ctx.dataset.label} at y = ${fmt(p.x, 3)}: ${fmt(p.y, 3)}`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'y', font: { family: FONT, size: 12 } },
+          ticks: { font: { family: FONT, size: 11 } },
+          grid: { color: '#b8b4ab55' },
+        },
+        y: {
+          type: 'linear',
+          title: { display: true, text: 'rate', font: { family: FONT, size: 12 } },
+          ticks: { font: { family: FONT, size: 11 } },
+          grid: { color: '#b8b4ab77' },
+        },
+      },
+    },
+  });
+}
+
+function makeBifChart() {
+  return new Chart(document.getElementById('bifChart'), {
+    type: 'scatter',
+    data: { datasets: [] },  // populated dynamically
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 60 },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: ctx => ctx.dataset.label && (ctx.dataset.label.startsWith('stable') || ctx.dataset.label.startsWith('unstable') || ctx.dataset.label === 'current'),
+          callbacks: {
+            label: ctx => {
+              const p = ctx.raw;
+              if (ctx.dataset.label === 'current') return `current:  parameter = ${fmt(p.x, 3)},  y* = ${fmt(p.y, 3)}`;
+              const kind = ctx.dataset.label.startsWith('stable') ? 'stable' : 'unstable';
+              return `${kind}:  parameter = ${fmt(p.x, 3)},  y* = ${fmt(p.y, 3)}`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'parameter', font: { family: FONT, size: 12 } },
+          ticks: { font: { family: FONT, size: 11 } },
+          grid: { color: '#b8b4ab55' },
+        },
+        y: {
+          type: 'linear',
+          title: { display: true, text: 'equilibrium  y*', font: { family: FONT, size: 12 } },
+          ticks: { font: { family: FONT, size: 11 } },
+          grid: { color: '#b8b4ab77' },
+        },
+      },
+    },
+  });
+}
+
+function makeTsChart() {
+  return new Chart(document.getElementById('tsChart'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'y(t)', data: [], borderColor: '#5a4a9e', backgroundColor: '#5a4a9e14',
+          borderWidth: 2, pointRadius: 0, tension: 0, fill: false },
+        // equilibrium hlines will be appended dynamically
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 60 },
+      plugins: {
+        legend: { display: false },
+        tooltip: { mode: 'index', intersect: false,
+          filter: ctx => ctx.dataset.label === 'y(t)' },
+      },
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 't', font: { family: FONT, size: 12 } },
+          ticks: { font: { family: FONT, size: 11 }, maxTicksLimit: 8 },
+          grid: { color: '#b8b4ab55' },
+        },
+        y: {
+          type: 'linear',
+          title: { display: true, text: 'y', font: { family: FONT, size: 12 } },
+          ticks: { font: { family: FONT, size: 11 } },
+          grid: { color: '#b8b4ab77' },
+        },
+      },
+    },
+  });
+}
+
+const ioChart = makeIoChart();
+const bifChart = makeBifChart();
+const tsChart = makeTsChart();
+
+// ======================================================================
+//  UI — presets, params
+// ======================================================================
+function renderPresetChips() {
+  const wrap = document.getElementById('presetChips');
+  wrap.innerHTML = '';
+  for (const [id, p] of Object.entries(PRESETS)) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip' + (id === activePresetId ? ' active' : '');
+    btn.setAttribute('aria-pressed', id === activePresetId ? 'true' : 'false');
+    btn.innerHTML = `${p.name}<span class="chip-sub">${p.sub}</span>`;
+    btn.addEventListener('click', () => loadPreset(id));
+    wrap.appendChild(btn);
+  }
+}
+
+function renderSecondaryParams() {
+  const wrap = document.getElementById('secondaryParams');
+  wrap.innerHTML = '';
+  if (!preset.secondary || preset.secondary.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'param-hint';
+    empty.textContent = 'This model has no additional tuning parameters.';
+    wrap.appendChild(empty);
+    return;
+  }
+  for (const s of preset.secondary) {
+    const block = document.createElement('div');
+    block.className = 'param-block secondary';
+    block.innerHTML = `
+      <div class="param-header">
+        <span class="param-name">${s.label} <em>${s.desc}</em></span>
+        <span class="param-val" data-for="${s.key}">${fmtParam(s.key, params[s.key])}</span>
+      </div>
+      <div class="param-row">
+        <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${params[s.key]}"
+          data-param="${s.key}" aria-label="${s.desc}">
+      </div>
+    `;
+    wrap.appendChild(block);
+    const slider = block.querySelector('input');
+    slider.addEventListener('input', () => {
+      const v = parseFloat(slider.value);
+      params[s.key] = v;
+      block.querySelector(`.param-val[data-for="${s.key}"]`).textContent = fmtParam(s.key, v);
+      branchCache = null;   // secondary changes invalidate branch cache
+      update();
+    });
+  }
+}
+
+function renderModelReadout() {
+  const wrap = document.getElementById('modelReadout');
+  wrap.innerHTML = `
+    <div><span class="eq-label">dy/dt</span> = f(y) − g(y)</div>
+    <div><span class="eq-label eq-f">inflow</span> <span class="eq-f">f(y) = ${preset.fExpr(params)}</span></div>
+    <div><span class="eq-label eq-g">outflow</span> <span class="eq-g">g(y) = ${preset.gExpr(params)}</span></div>
+  `;
+}
+
+function renderBifParamControl() {
+  const key = preset.bifParam;
+  const name = document.getElementById('bifParamName');
+  const slider = document.getElementById('bifParamSlider');
+  const block = document.getElementById('bifParamBlock');
+  const hint = document.getElementById('bifParamHint');
+  const label = preset.secondary?.find(s => s.key === key)?.label ?? (key === 'gamma' ? 'γ' : (key === 'eps' ? 'ε' : key));
+  // find description if listed (primary param usually not in `secondary` since it IS the bifurcation parameter)
+  const descMap = {
+    L: 'external loading',
+    gamma: 'grazing rate',
+    S0: 'solar constant (W/m²)',
+    eps: 'emissivity',
+    H: 'harvest rate',
+    h: 'per-capita harvest (effort)',
+  };
+  name.innerHTML = `${label} <em>${descMap[key] || 'parameter'}</em>`;
+  slider.min = preset.bifRange.min;
+  slider.max = preset.bifRange.max;
+  slider.step = preset.bifRange.step;
+  slider.value = params[key];
+  document.getElementById('bifParamVal').textContent = fmtParam(key, params[key]);
+  hint.textContent = `slider range: ${fmtParam(key, preset.bifRange.min)} to ${fmtParam(key, preset.bifRange.max)}`;
+}
+
+function renderY0Control() {
+  const slider = document.getElementById('y0Slider');
+  slider.min = preset.y0Range.min;
+  slider.max = preset.y0Range.max;
+  slider.step = preset.y0Range.step;
+  slider.value = y0;
+  document.getElementById('y0Val').textContent = fmt(y0, 2);
+}
+
+// ======================================================================
+//  Phase-line SVG (vertical strip)
+// ======================================================================
+function renderPhaseLine(eqs) {
+  const svg = document.getElementById('phaseLineSvg');
+  // Fixed viewBox 56 x 300. Map y-range to y-pixel linearly (y increases upward).
+  const yMin = preset.yRange.min, yMax = preset.yRange.max;
+  const vbH = 300;
+  const xAxis = 30;
+  const yToPx = v => vbH - 20 - (v - yMin) / (yMax - yMin) * (vbH - 40);
+
+  // sort equilibria ascending in y
+  const eqsSorted = eqs.slice().sort((a, b) => a.y - b.y);
+
+  // flow direction on intervals between equilibria (and outside)
+  // use rhs sign
+  const testPoints = [yMin + (eqsSorted[0]?.y ?? yMax - yMin) * 0.5];
+  // intervals: [yMin, eq0], [eq0, eq1], ..., [eqN, yMax]
+  const intervals = [];
+  const bounds = [yMin, ...eqsSorted.map(e => e.y), yMax];
+  for (let i = 0; i < bounds.length - 1; i++) {
+    const a = bounds[i], b = bounds[i + 1];
+    const mid = 0.5 * (a + b);
+    const dir = Math.sign(rhs(mid, params));
+    intervals.push({ yMid: mid, dir, yLow: a, yHi: b });
+  }
+
+  let html = '';
+  // axis
+  html += `<line class="pl-axis" x1="${xAxis}" y1="${yToPx(yMax)}" x2="${xAxis}" y2="${yToPx(yMin)}"/>`;
+  // y-axis ticks (min, midpoints, max) — just min & max
+  const tickVals = [yMin, 0.5 * (yMin + yMax), yMax].filter((v, i, arr) => arr.indexOf(v) === i);
+  for (const v of tickVals) {
+    const py = yToPx(v);
+    html += `<line class="pl-tick" x1="${xAxis - 3}" y1="${py}" x2="${xAxis + 3}" y2="${py}"/>`;
+    html += `<text class="pl-tick-label" x="${xAxis - 6}" y="${py + 3}" text-anchor="end">${fmt(v, v > 100 ? 0 : 1)}</text>`;
+  }
+  // axis label
+  html += `<text class="pl-label" x="${xAxis}" y="14" text-anchor="middle">y</text>`;
+  // flow arrows on each interval
+  for (const iv of intervals) {
+    if (iv.dir === 0) continue;
+    const yMidPx = yToPx(iv.yMid);
+    const intvPx = Math.abs(yToPx(iv.yHi) - yToPx(iv.yLow));
+    const len = Math.min(26, intvPx * 0.5);
+    if (len < 6) continue;
+    // dir > 0 → y increases → arrow points up → tip at smaller px (top of segment)
+    const halfLen = len / 2;
+    const topPx = yMidPx - halfLen;       // smaller px
+    const botPx = yMidPx + halfLen;       // larger px
+    const tipPx = iv.dir > 0 ? topPx : botPx;
+    const tailPx = iv.dir > 0 ? botPx : topPx;
+    html += `<line class="pl-arrow" x1="${xAxis}" y1="${tailPx}" x2="${xAxis}" y2="${tipPx}"/>`;
+    // arrowhead triangle at tip, pointing in direction of flow
+    const headSize = 5;
+    const headBaseY = iv.dir > 0 ? tipPx + headSize : tipPx - headSize;
+    const points = `${xAxis},${tipPx} ${xAxis - headSize},${headBaseY} ${xAxis + headSize},${headBaseY}`;
+    html += `<polygon class="pl-arrow-head" points="${points}"/>`;
+  }
+  // equilibria dots
+  for (const e of eqsSorted) {
+    const py = yToPx(e.y);
+    if (e.stable) {
+      html += `<circle class="pl-stable" cx="${xAxis}" cy="${py}" r="5.5"/>`;
+    } else {
+      html += `<circle class="pl-unstable" cx="${xAxis}" cy="${py}" r="5"/>`;
+    }
+  }
+  svg.innerHTML = html;
+}
+
+// ======================================================================
+//  Main update
+// ======================================================================
+function update() {
+  // Build y-grid for inflow/outflow curves
+  const { min: yMin, max: yMax } = preset.yRange;
+  const nPts = 260;
+  const fData = [], gData = [], posData = [], negData = [];
+  for (let i = 0; i <= nPts; i++) {
+    const y = yMin + (yMax - yMin) * i / nPts;
+    const fv = preset.f(y, params);
+    const gv = preset.g(y, params);
+    fData.push({ x: y, y: fv });
+    gData.push({ x: y, y: gv });
+    const net = fv - gv;
+    posData.push({ x: y, y: net > 0 ? net : 0 });
+    negData.push({ x: y, y: net < 0 ? net : 0 });
+  }
+
+  // Equilibria
+  const eqsRaw = findEquilibria(params, yMin, yMax, 1200);
+  const eqs = classifyEquilibria(eqsRaw, params, preset.yRange);
+  const stableEqs = eqs.filter(e => e.stable === true);
+  const unstableEqs = eqs.filter(e => e.stable === false);
+
+  // --- I/O plot ---
+  // axis range: slightly beyond [min(f,g), max(f,g)] on y, x = [yMin, yMax]
+  let rMax = -Infinity, rMin = Infinity;
+  for (const p of fData) { if (p.y > rMax) rMax = p.y; if (p.y < rMin) rMin = p.y; }
+  for (const p of gData) { if (p.y > rMax) rMax = p.y; if (p.y < rMin) rMin = p.y; }
+  const rPad = (rMax - rMin) * 0.08 || Math.max(0.1, Math.abs(rMax) * 0.1);
+  const ioYmin = Math.min(0, rMin) - rPad;
+  const ioYmax = rMax + rPad;
+
+  // datasets: 0 posData, 1 negData, 2 zero, 3 f, 4 g, 5 stable, 6 unstable
+  ioChart.data.datasets[0].data = posData;
+  ioChart.data.datasets[1].data = negData;
+  ioChart.data.datasets[2].data = [{ x: yMin, y: 0 }, { x: yMax, y: 0 }];
+  ioChart.data.datasets[3].data = fData;
+  ioChart.data.datasets[4].data = gData;
+  ioChart.data.datasets[5].data = stableEqs.map(e => ({ x: e.y, y: preset.f(e.y, params) }));
+  ioChart.data.datasets[6].data = unstableEqs.map(e => ({ x: e.y, y: preset.f(e.y, params) }));
+  ioChart.options.scales.x.min = yMin;
+  ioChart.options.scales.x.max = yMax;
+  ioChart.options.scales.y.min = ioYmin;
+  ioChart.options.scales.y.max = ioYmax;
+  ioChart.update('none');
+
+  // --- Phase line strip ---
+  renderPhaseLine(eqs);
+
+  // --- Bifurcation diagram ---
+  if (!branchCache) {
+    branchCache = computeBranches(preset, params);
+  }
+  const { stableSegs, unstableSegs } = branchCache;
+  const bifDatasets = [];
+  // Add stable branches
+  stableSegs.forEach((seg, idx) => {
+    if (seg.pts.length < 2) return;
+    bifDatasets.push({
+      label: 'stable ' + idx,
+      data: seg.pts.slice(),
+      borderColor: '#1a7a60',
+      backgroundColor: '#1a7a6000',
+      borderWidth: 2.5,
+      pointRadius: 0,
+      showLine: true,
+      tension: 0,
+    });
+  });
+  unstableSegs.forEach((seg, idx) => {
+    if (seg.pts.length < 2) return;
+    bifDatasets.push({
+      label: 'unstable ' + idx,
+      data: seg.pts.slice(),
+      borderColor: '#c8553a',
+      backgroundColor: '#c8553a00',
+      borderWidth: 2,
+      borderDash: [6, 5],
+      pointRadius: 0,
+      showLine: true,
+      tension: 0,
+    });
+  });
+  // Current parameter vertical line
+  const pVal = params[preset.bifParam];
+  bifDatasets.push({
+    label: 'current-line',
+    data: [{ x: pVal, y: yMin }, { x: pVal, y: yMax }],
+    borderColor: '#5a4a9e88',
+    borderWidth: 1.5,
+    borderDash: [2, 4],
+    pointRadius: 0,
+    showLine: true,
+  });
+  // Current equilibria markers
+  const curStable = stableEqs.map(e => ({ x: pVal, y: e.y }));
+  const curUnstable = unstableEqs.map(e => ({ x: pVal, y: e.y }));
+  bifDatasets.push({
+    label: 'current',
+    data: [...curStable, ...curUnstable],
+    borderColor: '#5a4a9e',
+    backgroundColor: curStable.map(() => '#5a4a9e').concat(curUnstable.map(() => '#faf9f6')),
+    pointRadius: 5.5, pointHoverRadius: 7,
+    borderWidth: 2,
+    showLine: false,
+  });
+  bifChart.data.datasets = bifDatasets;
+  bifChart.options.scales.x.min = preset.bifRange.min;
+  bifChart.options.scales.x.max = preset.bifRange.max;
+  bifChart.options.scales.y.min = yMin;
+  bifChart.options.scales.y.max = yMax;
+  bifChart.update('none');
+
+  // --- Time series ---
+  const nSteps = 500;
+  const sim = simulateRK4(y0, preset.tMax, nSteps, params);
+  const tsData = sim.ys.map((v, i) => ({ x: sim.ts[i], y: v }));
+  // Build datasets: y(t), plus equilibria lines
+  tsChart.data.labels = sim.ts;
+  tsChart.data.datasets = [
+    {
+      label: 'y(t)',
+      data: sim.ys.map((v, i) => ({ x: sim.ts[i], y: v })),
+      borderColor: '#5a4a9e',
+      backgroundColor: '#5a4a9e14',
+      borderWidth: 2,
+      pointRadius: 0,
+      tension: 0,
+      fill: false,
+    },
+  ];
+  for (const e of eqs) {
+    tsChart.data.datasets.push({
+      label: `y* = ${fmt(e.y, 2)}`,
+      data: [{ x: 0, y: e.y }, { x: preset.tMax, y: e.y }],
+      borderColor: e.stable ? '#1a7a60aa' : '#c8553aaa',
+      borderWidth: 1.25,
+      borderDash: e.stable ? [3, 3] : [6, 5],
+      pointRadius: 0,
+      tension: 0,
+      fill: false,
+    });
+  }
+  // Use linear x axis
+  tsChart.options.scales.x.type = 'linear';
+  tsChart.options.scales.x.min = 0;
+  tsChart.options.scales.x.max = preset.tMax;
+  // Y axis: encompass simulation and equilibria
+  let tsYmin = Math.min(...sim.ys), tsYmax = Math.max(...sim.ys);
+  for (const e of eqs) { if (e.y < tsYmin) tsYmin = e.y; if (e.y > tsYmax) tsYmax = e.y; }
+  if (!Number.isFinite(tsYmin) || !Number.isFinite(tsYmax)) { tsYmin = yMin; tsYmax = yMax; }
+  const tsPad = (tsYmax - tsYmin) * 0.12 || 0.5;
+  tsChart.options.scales.y.min = tsYmin - tsPad;
+  tsChart.options.scales.y.max = tsYmax + tsPad;
+  tsChart.update('none');
+
+  // --- Equilibrium readout ---
+  renderEquilibriaStatus(eqs);
+
+  // --- Parameter readouts ---
+  document.getElementById('bifParamVal').textContent = fmtParam(preset.bifParam, pVal);
+  document.getElementById('y0Val').textContent = fmt(y0, 2);
+  renderModelReadout();
+
+  // --- a11y summaries ---
+  updateSummaries(eqs, sim);
+}
+
+function renderEquilibriaStatus(eqs) {
+  const wrap = document.getElementById('equilibriaList');
+  if (eqs.length === 0) {
+    wrap.textContent = 'No equilibria in the displayed y-range at the current parameter.';
+    return;
+  }
+  const parts = eqs.map(e => {
+    const dot = e.stable ? '<span class="eq-dot stable"></span>' : '<span class="eq-dot unstable"></span>';
+    const kind = e.stable === null ? 'marginal' : (e.stable ? 'stable' : 'unstable');
+    return `${dot}y* = ${fmt(e.y, 3)} <span style="color:var(--text3);">(${kind})</span>`;
+  });
+  wrap.innerHTML = parts.join('  ·  ');
+}
+
+function updateSummaries(eqs, sim) {
+  const parts = eqs.map(e => `${fmt(e.y, 2)} (${e.stable ? 'stable' : 'unstable'})`).join(', ');
+  const pVal = params[preset.bifParam];
+  const ioSum = `Inflow and outflow plotted vs y. At ${preset.bifParam} = ${fmt(pVal, 3)} there ${eqs.length === 1 ? 'is' : 'are'} ${eqs.length} equilibri${eqs.length === 1 ? 'um' : 'a'}: ${parts || 'none'}.`;
+  const bifSum = `Bifurcation diagram of y* against ${preset.bifParam}. Solid curves stable, dashed unstable. Current parameter marker at ${fmt(pVal, 3)}.`;
+  const tsSum = `Time series from y(0) = ${fmt(y0, 2)} to t = ${fmt(preset.tMax, 2)}. Final value y(T) ≈ ${fmt(sim.ys[sim.ys.length - 1], 3)}.`;
+  document.getElementById('ioSummary').textContent = ioSum;
+  document.getElementById('bifSummary').textContent = bifSum;
+  document.getElementById('tsSummary').textContent = tsSum;
+}
+
+// ======================================================================
+//  Presets / defaults
+// ======================================================================
+function loadPreset(id) {
+  activePresetId = id;
+  preset = PRESETS[id];
+  params = Object.assign({}, preset.params);
+  y0 = preset.y0Range.default;
+  branchCache = null;
+  stopAutoplay();
+  renderPresetChips();
+  renderBifParamControl();
+  renderSecondaryParams();
+  renderY0Control();
+  document.getElementById('modelNote').innerHTML = preset.note(params);
+  // make bif slider match current value
+  document.getElementById('bifParamSlider').value = params[preset.bifParam];
+  update();
+}
+
+// ======================================================================
+//  Autoplay
+// ======================================================================
+function startAutoplay() {
+  const btn = document.getElementById('autoplayBtn');
+  btn.classList.add('active');
+  btn.setAttribute('aria-pressed', 'true');
+  btn.textContent = 'Stop sweep';
+  const slider = document.getElementById('bifParamSlider');
+  autoplayDir = 1;
+  const period = 12000; // ms for one full sweep in one direction
+  let last = performance.now();
+  const tick = (now) => {
+    if (!autoplayHandle) return;
+    const dt = now - last; last = now;
+    const span = preset.bifRange.max - preset.bifRange.min;
+    let v = parseFloat(slider.value);
+    v += autoplayDir * span * dt / period;
+    if (v >= preset.bifRange.max) { v = preset.bifRange.max; autoplayDir = -1; }
+    else if (v <= preset.bifRange.min) { v = preset.bifRange.min; autoplayDir = 1; }
+    slider.value = v;
+    params[preset.bifParam] = v;
+    update();
+    autoplayHandle = requestAnimationFrame(tick);
+  };
+  autoplayHandle = requestAnimationFrame(tick);
+}
+function stopAutoplay() {
+  if (autoplayHandle) { cancelAnimationFrame(autoplayHandle); autoplayHandle = null; }
+  const btn = document.getElementById('autoplayBtn');
+  btn.classList.remove('active');
+  btn.setAttribute('aria-pressed', 'false');
+  btn.textContent = 'Autoplay sweep';
+}
+
+// ======================================================================
+//  Wire controls
+// ======================================================================
+document.getElementById('bifParamSlider').addEventListener('input', (e) => {
+  const v = parseFloat(e.target.value);
+  params[preset.bifParam] = v;
+  update();
+});
+document.getElementById('y0Slider').addEventListener('input', (e) => {
+  y0 = parseFloat(e.target.value);
+  update();
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  stopAutoplay();
+  loadPreset(activePresetId);
+});
+document.getElementById('autoplayBtn').addEventListener('click', () => {
+  if (autoplayHandle) stopAutoplay();
+  else startAutoplay();
+});
+
+// ======================================================================
+//  Init
+// ======================================================================
+loadPreset('logConst');
+</script>
+</body>
+</html>

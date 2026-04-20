@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slope Fields</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface2: #f3f1ec;
+  --surface3: #ecebe4;
+  --text: #2c2a28;
+  --text2: #5f5c56;
+  --text3: #6a6862;
+  --border: #c9c5bc;
+  --border-strong: #a8a498;
+  --accent: #3a6b5e;
+  --accent-light: #e8f0ed;
+  --danger: #9c3628;
+  --danger-light: #fbeae7;
+  --warning: #7a5a10;
+  --warning-light: #fdf4e1;
+  --success: #3a6b5e;
+  --success-light: #e8f0ed;
+  --purple: #5a4a9e;
+  --purple-light: #eeedf8;
+  --teal: #1a7a60;
+  --coral: #c8553a;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18.5px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.header {
+  padding: 2.25rem 2rem 1.25rem;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+.header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 820px;
+}
+.header em {
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
+.main {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+@media (max-width: 980px) {
+  .panel { position: static; max-height: none; }
+}
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 0.55rem;
+}
+.panel-label em {
+  text-transform: none;
+  font-style: normal;
+  color: var(--text3);
+  font-weight: 400;
+  font-size: 0.75rem;
+  margin-left: 0.35rem;
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chips-column {
+  flex-direction: column;
+  align-items: stretch;
+}
+.chip {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+.chip .chip-sub {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--text3);
+  margin-top: 1px;
+  font-family: var(--mono);
+}
+.chip.active .chip-sub { color: rgba(255,255,255,0.82); }
+
+.preset-group {
+  margin-bottom: 0.75rem;
+}
+.preset-group:last-child { margin-bottom: 0; }
+.preset-group-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-family: var(--mono);
+}
+
+/* Custom f(x,y) input */
+.fxy-wrap {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.7rem 0.85rem;
+}
+.fxy-label {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin-bottom: 0.35rem;
+  display: block;
+}
+.fxy-label em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--text);
+}
+.fxy-input {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+}
+.fxy-input:focus { outline: 2px solid var(--purple); outline-offset: 1px; border-color: var(--purple); }
+.fxy-input.err { border-color: var(--danger); background: var(--danger-light); }
+.fxy-feedback {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  margin-top: 0.4rem;
+  min-height: 1.1em;
+  line-height: 1.4;
+}
+.fxy-feedback.err { color: var(--danger); }
+.fxy-feedback.ok { color: var(--success); }
+
+/* Sliders */
+.slider-block {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.45rem;
+}
+.slider-block:last-child { margin-bottom: 0; }
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.2rem;
+}
+.slider-name {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--text2);
+}
+.slider-val {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--purple);
+}
+.slider-block input[type="range"] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.slider-block input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.slider-block input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+
+.slider-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+
+/* Toggles */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 0;
+  font-size: 0.82rem;
+  color: var(--text2);
+}
+.toggle-row label {
+  cursor: pointer;
+  flex: 1;
+}
+.toggle-row input[type="checkbox"] {
+  width: 32px;
+  height: 18px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 9px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+.toggle-row input[type="checkbox"]:checked {
+  background: var(--accent);
+}
+.toggle-row input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--surface);
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+.toggle-row input[type="checkbox"]:checked::before {
+  transform: translateX(14px);
+}
+
+.btn-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.45rem;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: var(--font);
+  font-size: 0.76rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.btn.primary:hover { background: var(--teal); border-color: var(--teal); color: white; }
+.btn.ghost { background: transparent; color: var(--text2); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Workspace */
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-subtitle {
+  font-size: 0.8rem;
+  color: var(--text3);
+  margin-bottom: 0.9rem;
+}
+
+/* Equation card */
+.eq-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: baseline;
+}
+.eq-expression {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--text);
+  background: var(--surface2);
+  padding: 0.45rem 0.9rem;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+}
+.eq-expression .mono {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.95rem;
+}
+.eq-tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.eq-tag {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text3);
+}
+.eq-tag.autonomous { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+.eq-tag.linear { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+.eq-tag.separable { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
+.eq-tag.nonautonomous { background: var(--surface2); color: var(--text2); border-color: var(--border); }
+
+.eq-meta {
+  margin-top: 0.7rem;
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.55;
+}
+.eq-meta strong { color: var(--text); font-weight: 600; }
+.eq-equilibria {
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface2);
+  border-radius: 5px;
+  border-left: 3px solid var(--purple);
+}
+.eq-equilibria .eqlabel {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  display: block;
+}
+.eq-equilibria .equil-item {
+  display: inline-block;
+  margin-right: 1rem;
+  color: var(--text);
+}
+.eq-equilibria .equil-item.stable { color: var(--success); }
+.eq-equilibria .equil-item.unstable { color: var(--danger); }
+.eq-equilibria .equil-item.semistable { color: var(--warning); }
+.eq-tip {
+  margin-top: 0.55rem;
+  font-size: 0.8rem;
+  color: var(--text2);
+  font-style: italic;
+  line-height: 1.5;
+  font-family: var(--font-serif);
+}
+
+/* Canvas wrapper */
+.canvas-card {
+  padding: 1rem 1rem 1.15rem;
+}
+.canvas-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.canvas-wrap canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  display: block;
+}
+.canvas-readout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text2);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.readout-coords {
+  color: var(--text);
+}
+.readout-coords .label { color: var(--text3); margin-right: 4px; }
+.readout-hint {
+  color: var(--text3);
+  font-size: 0.72rem;
+  font-family: var(--font);
+}
+
+/* Matching game */
+.matching-card { display: none; }
+.matching-card.active { display: block; }
+
+.matching-question {
+  font-size: 0.92rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+.matching-question strong { color: var(--purple); font-weight: 600; }
+.matching-score {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  background: var(--purple-light);
+  color: var(--purple);
+  border: 1px solid var(--purple);
+}
+.matching-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+@media (max-width: 620px) {
+  .matching-options { grid-template-columns: 1fr; }
+}
+.matching-opt {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+}
+.matching-opt:hover {
+  border-color: var(--purple);
+  background: var(--purple-light);
+}
+.matching-opt.correct {
+  border-color: var(--success);
+  background: var(--success-light);
+}
+.matching-opt.incorrect {
+  border-color: var(--danger);
+  background: var(--danger-light);
+}
+.matching-opt-label {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  text-align: center;
+}
+.matching-opt-label .mono {
+  font-family: var(--mono);
+}
+.matching-opt-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.matching-feedback {
+  margin-top: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 5px;
+  font-size: 0.82rem;
+  min-height: 1.1em;
+}
+.matching-feedback.correct {
+  background: var(--success-light);
+  color: var(--success);
+  border-left: 3px solid var(--success);
+}
+.matching-feedback.incorrect {
+  background: var(--danger-light);
+  color: var(--danger);
+  border-left: 3px solid var(--danger);
+}
+.matching-controls {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.matching-controls select {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Notes panel */
+.notes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+@media (max-width: 820px) {
+  .notes-grid { grid-template-columns: 1fr; }
+}
+.note-card {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.85rem 0.95rem;
+  border-top: 3px solid var(--purple);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text2);
+}
+.note-card.stable { border-top-color: var(--teal); }
+.note-card.reading { border-top-color: var(--accent); }
+.note-card.matching { border-top-color: var(--coral); }
+.note-card h3 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-family: var(--font);
+  color: var(--text);
+}
+.note-card p { margin-bottom: 0.45rem; }
+.note-card p:last-child { margin-bottom: 0; }
+.note-card em { color: var(--text); font-family: var(--font-serif); font-style: italic; }
+.note-card code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: var(--surface);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.syntax-hint {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  line-height: 1.5;
+  margin-top: 0.4rem;
+}
+.syntax-hint code {
+  background: var(--surface);
+  padding: 1px 4px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.color-legend {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+  color: var(--text2);
+  margin-top: 0.4rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-swatch {
+  width: 14px;
+  height: 3px;
+  border-radius: 1px;
+}
+.legend-swatch.tick { background: #3d3a35; }
+.legend-swatch.traj { background: var(--purple); }
+.legend-swatch.null { background: var(--accent); }
+.legend-swatch.equil { background: var(--coral); height: 0; border-top: 2px dashed var(--coral); width: 18px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Slope fields</h1>
+  <p>Sketch and interpret slope fields for first-order ODEs <em>dy</em>/<em>dx</em> = <em>f</em>(<em>x</em>, <em>y</em>). Short tick marks show the slope the solution must have at each point, nullclines mark where that slope is zero, and clicking the plot integrates a solution forward and backward from the point you chose.</p>
+</div>
+
+<div class="main">
+  <div class="panel" aria-label="Controls">
+
+    <div class="panel-section">
+      <h2 class="panel-label">Preset equations</h2>
+
+      <div class="preset-group">
+        <div class="preset-group-label">Autonomous&nbsp;&nbsp;dy/dx = f(y)</div>
+        <div class="chips chips-column" id="presetChipsAuto" role="group" aria-label="Autonomous equations"></div>
+      </div>
+
+      <div class="preset-group">
+        <div class="preset-group-label">Non-autonomous&nbsp;&nbsp;dy/dx = f(x, y)</div>
+        <div class="chips chips-column" id="presetChipsNonAuto" role="group" aria-label="Non-autonomous equations"></div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label"><label for="fxyInput">Custom f(x, y)</label></h2>
+      <div class="fxy-wrap">
+        <span class="fxy-label"><em>dy</em>/<em>dx</em> =</span>
+        <input type="text" class="fxy-input" id="fxyInput" placeholder="e.g.  x^2 - y" spellcheck="false" autocomplete="off" aria-describedby="fxyFeedback">
+        <div class="btn-row">
+          <button class="btn primary" id="applyFxyBtn" type="button">Apply</button>
+        </div>
+        <div class="fxy-feedback" id="fxyFeedback" aria-live="polite"></div>
+        <div class="syntax-hint">
+          Use <code>x</code>, <code>y</code>, <code>+ - * / ^</code>, and <code>sin cos tan exp log abs sqrt</code>.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Viewing window</h2>
+      <div class="slider-grid2">
+        <div class="slider-block">
+          <div class="slider-header"><span class="slider-name">x<sub>min</sub></span><span class="slider-val" id="xminVal">-3</span></div>
+          <input type="range" id="xminSlider" min="-10" max="-0.5" step="0.1" value="-3">
+        </div>
+        <div class="slider-block">
+          <div class="slider-header"><span class="slider-name">x<sub>max</sub></span><span class="slider-val" id="xmaxVal">3</span></div>
+          <input type="range" id="xmaxSlider" min="0.5" max="10" step="0.1" value="3">
+        </div>
+        <div class="slider-block">
+          <div class="slider-header"><span class="slider-name">y<sub>min</sub></span><span class="slider-val" id="yminVal">-3</span></div>
+          <input type="range" id="yminSlider" min="-10" max="-0.5" step="0.1" value="-3">
+        </div>
+        <div class="slider-block">
+          <div class="slider-header"><span class="slider-name">y<sub>max</sub></span><span class="slider-val" id="ymaxVal">3</span></div>
+          <input type="range" id="ymaxSlider" min="0.5" max="10" step="0.1" value="3">
+        </div>
+      </div>
+      <div class="slider-block" style="margin-top:0.45rem;">
+        <div class="slider-header"><span class="slider-name">grid density</span><span class="slider-val" id="densityVal">20</span></div>
+        <input type="range" id="densitySlider" min="10" max="32" step="1" value="20">
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Display</h2>
+      <div class="toggle-row">
+        <label for="toggleField">Show slope field</label>
+        <input type="checkbox" id="toggleField" checked>
+      </div>
+      <div class="toggle-row">
+        <label for="toggleNull">Show nullcline (f = 0)</label>
+        <input type="checkbox" id="toggleNull">
+      </div>
+      <div class="toggle-row">
+        <label for="toggleEquil">Show equilibria <em style="font-style:normal;color:var(--text3);font-size:0.72rem;">(autonomous)</em></label>
+        <input type="checkbox" id="toggleEquil" checked>
+      </div>
+      <div class="toggle-row">
+        <label for="toggleColor">Color ticks by slope sign</label>
+        <input type="checkbox" id="toggleColor">
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Actions</h2>
+      <div class="btn-row">
+        <button class="btn" id="clearTrajBtn" type="button">Clear trajectories</button>
+        <button class="btn" id="resetViewBtn" type="button">Reset view</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Matching game</h2>
+      <div class="toggle-row">
+        <label for="toggleMatching">Enable matching mode</label>
+        <input type="checkbox" id="toggleMatching">
+      </div>
+      <div class="syntax-hint" style="margin-top:0.35rem;">
+        Four slope-field thumbnails; choose the one matching the current equation, or switch to the equation-from-field variant.
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace">
+
+    <div class="card" id="equationCard">
+      <div class="card-title">Current equation</div>
+      <div class="eq-display">
+        <div class="eq-expression" id="eqExpression" aria-live="polite">dy/dx = y</div>
+        <div class="eq-tags" id="eqTags"></div>
+      </div>
+      <div class="eq-meta" id="eqMeta"></div>
+      <div class="eq-equilibria" id="eqEquilibria" style="display:none;"></div>
+      <div class="eq-tip" id="eqTip"></div>
+    </div>
+
+    <div class="card canvas-card">
+      <div class="card-title">Slope field</div>
+      <div class="card-subtitle">Short segments show <em>dy</em>/<em>dx</em> = <em>f</em>(<em>x</em>, <em>y</em>) at each grid point. Click anywhere to integrate a trajectory forward and backward from that point.</div>
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="fieldCanvas" role="img" aria-label="Slope field plot"></canvas>
+      </div>
+      <div class="canvas-readout">
+        <div class="readout-coords" id="cursorReadout" aria-live="polite" aria-atomic="true"><span class="label">cursor:</span>move over plot</div>
+        <div class="readout-hint" id="trajCount">0 trajectories</div>
+      </div>
+      <div class="color-legend" aria-hidden="true">
+        <span class="legend-item"><span class="legend-swatch tick"></span>slope tick</span>
+        <span class="legend-item"><span class="legend-swatch traj"></span>trajectory</span>
+        <span class="legend-item"><span class="legend-swatch null"></span>nullcline f = 0</span>
+        <span class="legend-item"><span class="legend-swatch equil"></span>equilibrium (autonomous)</span>
+      </div>
+    </div>
+
+    <div class="card matching-card" id="matchingCard" aria-live="polite">
+      <div class="card-title">
+        Matching game
+        <span class="matching-score" id="matchingScore">0 / 0</span>
+      </div>
+      <div class="card-subtitle" id="matchingSubtitle">Pick the slope field whose equation matches the one shown below.</div>
+      <div class="matching-controls">
+        <select id="matchingModeSel" aria-label="Matching game mode">
+          <option value="field-from-eq">Show equation, pick the field</option>
+          <option value="eq-from-field">Show field, pick the equation</option>
+        </select>
+        <button class="btn" id="newRoundBtn" type="button">New round</button>
+        <button class="btn ghost" id="resetScoreBtn" type="button">Reset score</button>
+      </div>
+      <div class="matching-question" id="matchingQuestion" style="margin-top:0.8rem;"></div>
+      <div class="matching-options" id="matchingOptions"></div>
+      <div class="matching-feedback" id="matchingFeedback" role="status"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Reading a slope field</div>
+      <div class="card-subtitle">A few habits make these plots much easier to interpret quickly.</div>
+      <div class="notes-grid">
+        <div class="note-card reading">
+          <h3>What the ticks mean</h3>
+          <p>Each short segment is drawn at a point <em>(x, y)</em> with slope <em>f(x, y)</em>. If a solution passes through that point, its graph must be tangent to that segment. Reading a slope field is mostly a matter of letting your eye glide along the ticks, following the local slope.</p>
+        </div>
+        <div class="note-card">
+          <h3>Nullclines</h3>
+          <p>The <em>nullcline</em> is the curve in the plane where <code>f(x, y) = 0</code>. Along it, ticks are horizontal — any solution crossing it has a momentary horizontal tangent. For autonomous equations, nullclines are horizontal lines.</p>
+        </div>
+        <div class="note-card stable">
+          <h3>Equilibria (autonomous)</h3>
+          <p>When <em>f</em> depends only on <em>y</em>, horizontal lines <code>y = y*</code> with <em>f(y*) = 0</em> are constant solutions. <strong>Stable</strong> equilibria attract nearby trajectories (<em>f'</em>(<em>y*</em>) &lt; 0); <strong>unstable</strong> ones repel them (<em>f'</em>(<em>y*</em>) &gt; 0). Look at the arrows immediately above and below each candidate line.</p>
+        </div>
+        <div class="note-card matching">
+          <h3>Matching a field to an ODE</h3>
+          <p>Ask a few quick questions. <em>Does the slope change along a horizontal slice (fixed y)?</em> If not, the equation is autonomous. <em>Are ticks symmetric under <code>x → -x</code> or <code>y → -y</code>?</em> That constrains the form of <em>f</em>. <em>Where do ticks become horizontal, vertical, or switch sign?</em> Those are the nullclines — match them to the zero set of your candidate <em>f</em>.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ======================================================================
+//  Safe parser for f(x, y)
+//  Recursive descent. Whitelisted identifiers only. No eval, no Function.
+// ======================================================================
+const FUNCS = {
+  sin: Math.sin, cos: Math.cos, tan: Math.tan,
+  exp: Math.exp, log: Math.log, abs: Math.abs, sqrt: Math.sqrt,
+  asin: Math.asin, acos: Math.acos, atan: Math.atan,
+  sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh,
+};
+const CONSTS = { pi: Math.PI, e: Math.E };
+
+function tokenizeExpr(s) {
+  const tokens = [];
+  let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (c === ' ' || c === '\t' || c === '\n') { i++; continue; }
+    if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(s[i+1] || ''))) {
+      let j = i;
+      while (j < s.length && /[0-9.]/.test(s[j])) j++;
+      // optional e+/-digits
+      if (j < s.length && (s[j] === 'e' || s[j] === 'E')) {
+        let k = j + 1;
+        if (s[k] === '+' || s[k] === '-') k++;
+        if (/[0-9]/.test(s[k] || '')) {
+          while (k < s.length && /[0-9]/.test(s[k])) k++;
+          j = k;
+        }
+      }
+      const num = parseFloat(s.slice(i, j));
+      if (!Number.isFinite(num)) throw new Error(`Bad number near "${s.slice(i, j)}"`);
+      tokens.push({ t: 'NUM', v: num });
+      i = j; continue;
+    }
+    if (/[A-Za-z_]/.test(c)) {
+      let j = i;
+      while (j < s.length && /[A-Za-z_0-9]/.test(s[j])) j++;
+      const name = s.slice(i, j).toLowerCase();
+      tokens.push({ t: 'NAME', v: name });
+      i = j; continue;
+    }
+    if (c === '+' || c === '-' || c === '*' || c === '/' || c === '^' || c === '(' || c === ')' || c === ',') {
+      tokens.push({ t: c });
+      i++; continue;
+    }
+    throw new Error(`Unexpected character "${c}" at position ${i + 1}`);
+  }
+  return tokens;
+}
+
+// AST builders:
+//   { type: 'num', value }
+//   { type: 'var', name: 'x'|'y' }
+//   { type: 'bin', op, left, right }
+//   { type: 'unary', op: '-', child }
+//   { type: 'call', name, args }
+function parseExpression(input) {
+  const toks = tokenizeExpr(input);
+  let pos = 0;
+
+  function peek(k = 0) { return toks[pos + k]; }
+  function eat(t) {
+    const tk = toks[pos];
+    if (!tk || tk.t !== t) throw new Error(`Expected "${t}"`);
+    pos++;
+    return tk;
+  }
+  function match(t) {
+    const tk = toks[pos];
+    if (tk && tk.t === t) { pos++; return true; }
+    return false;
+  }
+
+  //  E  := T (('+' | '-') T)*
+  //  T  := F (('*' | '/') F)*
+  //  F  := U ('^' U)*    // right-assoc handled below
+  //  U  := '-' U | P
+  //  P  := NUM | ident | ident '(' E ')' | '(' E ')'
+  function parseE() {
+    let lhs = parseT();
+    while (pos < toks.length && (peek().t === '+' || peek().t === '-')) {
+      const op = peek().t; pos++;
+      const rhs = parseT();
+      lhs = { type: 'bin', op, left: lhs, right: rhs };
+    }
+    return lhs;
+  }
+  function parseT() {
+    let lhs = parseF();
+    while (pos < toks.length && (peek().t === '*' || peek().t === '/')) {
+      const op = peek().t; pos++;
+      const rhs = parseF();
+      lhs = { type: 'bin', op, left: lhs, right: rhs };
+    }
+    return lhs;
+  }
+  function parseF() {
+    const lhs = parseU();
+    if (pos < toks.length && peek().t === '^') {
+      pos++;
+      // right-associative: x^y^z = x^(y^z)
+      const rhs = parseF();
+      return { type: 'bin', op: '^', left: lhs, right: rhs };
+    }
+    return lhs;
+  }
+  function parseU() {
+    if (pos < toks.length && peek().t === '-') {
+      pos++;
+      const child = parseU();
+      return { type: 'unary', op: '-', child };
+    }
+    if (pos < toks.length && peek().t === '+') { pos++; return parseU(); }
+    return parseP();
+  }
+  function parseP() {
+    if (pos >= toks.length) throw new Error('Unexpected end of expression');
+    const tk = peek();
+    if (tk.t === 'NUM') { pos++; return { type: 'num', value: tk.v }; }
+    if (tk.t === 'NAME') {
+      pos++;
+      if (pos < toks.length && peek().t === '(') {
+        // function call
+        pos++; // consume (
+        const args = [];
+        if (peek() && peek().t !== ')') {
+          args.push(parseE());
+          while (pos < toks.length && peek().t === ',') {
+            pos++;
+            args.push(parseE());
+          }
+        }
+        eat(')');
+        if (!(tk.v in FUNCS)) throw new Error(`Unknown function "${tk.v}"`);
+        if (args.length !== 1) throw new Error(`Function "${tk.v}" takes one argument`);
+        return { type: 'call', name: tk.v, args };
+      }
+      // bare identifier
+      if (tk.v === 'x' || tk.v === 'y') return { type: 'var', name: tk.v };
+      if (tk.v in CONSTS) return { type: 'num', value: CONSTS[tk.v] };
+      throw new Error(`Unknown identifier "${tk.v}"`);
+    }
+    if (tk.t === '(') {
+      pos++;
+      const e = parseE();
+      eat(')');
+      return e;
+    }
+    throw new Error(`Unexpected token "${tk.t}"`);
+  }
+
+  const ast = parseE();
+  if (pos < toks.length) throw new Error(`Unexpected "${toks[pos].t}" at end`);
+  return ast;
+}
+
+function evalAst(ast, x, y) {
+  switch (ast.type) {
+    case 'num': return ast.value;
+    case 'var': return ast.name === 'x' ? x : y;
+    case 'unary': return -evalAst(ast.child, x, y);
+    case 'bin': {
+      const a = evalAst(ast.left, x, y), b = evalAst(ast.right, x, y);
+      switch (ast.op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return a / b;
+        case '^': return Math.pow(a, b);
+      }
+      return NaN;
+    }
+    case 'call': return FUNCS[ast.name](evalAst(ast.args[0], x, y));
+  }
+  return NaN;
+}
+
+function astUsesX(ast) {
+  if (!ast) return false;
+  switch (ast.type) {
+    case 'num': return false;
+    case 'var': return ast.name === 'x';
+    case 'unary': return astUsesX(ast.child);
+    case 'bin': return astUsesX(ast.left) || astUsesX(ast.right);
+    case 'call': return ast.args.some(astUsesX);
+  }
+  return false;
+}
+
+function compileF(expr) {
+  const ast = parseExpression(expr);
+  const isAutonomous = !astUsesX(ast);
+  const f = (x, y) => evalAst(ast, x, y);
+  return { f, ast, isAutonomous, expr };
+}
+
+// ======================================================================
+//  Presets
+// ======================================================================
+const PRESETS = [
+  // Autonomous
+  { id: 'exp-growth', name: 'exponential growth', expr: 'y', pretty: 'y',
+    autonomous: true, tags: ['autonomous', 'linear', 'separable'],
+    window: [-3, 3, -3, 3],
+    description: 'Every solution is an exponential; the origin is the only equilibrium and it is unstable.',
+    tip: 'Slopes are positive above the x-axis and negative below, with magnitude proportional to |y|.' },
+  { id: 'exp-decay', name: 'exponential decay', expr: '-y', pretty: '-y',
+    autonomous: true, tags: ['autonomous', 'linear', 'separable'],
+    window: [-3, 3, -3, 3],
+    description: 'All solutions decay toward zero; the origin is a globally stable equilibrium.',
+    tip: 'Slopes are negative above the x-axis and positive below — all arrows point toward y = 0.' },
+  { id: 'logistic', name: 'logistic', expr: 'y*(1 - y)', pretty: 'y(1 − y)',
+    autonomous: true, tags: ['autonomous', 'separable'],
+    window: [-2, 2, -1, 2],
+    description: 'Classic population model. Two equilibria: y = 0 (unstable) and y = 1 (stable carrying capacity).',
+    tip: 'Trajectories starting between 0 and 1 grow and level off at 1; starting above 1 they decay to 1.' },
+  { id: 'bistable', name: 'bistable', expr: 'y^2 - 1', pretty: 'y² − 1',
+    autonomous: true, tags: ['autonomous', 'separable'],
+    window: [-3, 3, -2.5, 2.5],
+    description: 'Two equilibria: y = 1 is unstable, y = −1 is stable. Solutions above y = 1 blow up in finite time.',
+    tip: 'Sign of the slope flips three times as y goes from −∞ to +∞.' },
+  { id: 'sin', name: 'sin(y)', expr: 'sin(y)', pretty: 'sin(y)',
+    autonomous: true, tags: ['autonomous', 'separable'],
+    window: [-4, 4, -7, 7],
+    description: 'Infinitely many equilibria at y = kπ, alternating stable/unstable.',
+    tip: 'Equilibria at y = 0, ±π, ±2π, … — even multiples of π are unstable, odd multiples are stable.' },
+  // Non-autonomous
+  { id: 'x-minus-y', name: 'x − y', expr: 'x - y', pretty: 'x − y',
+    autonomous: false, tags: ['linear', 'non-autonomous'],
+    window: [-3, 3, -3, 3],
+    description: 'Linear, non-autonomous. The line y = x − 1 is a special solution that all others approach.',
+    tip: 'Along y = x the slope is zero; every other solution is asymptotic to the line y = x − 1.' },
+  { id: 'x-plus-y', name: 'x + y', expr: 'x + y', pretty: 'x + y',
+    autonomous: false, tags: ['linear', 'non-autonomous'],
+    window: [-3, 3, -3, 3],
+    description: 'Linear, non-autonomous. The line y = −x − 1 is a separatrix that repels neighboring trajectories.',
+    tip: 'Nullcline is y = −x; trajectories shoot away from y = −x − 1 exponentially.' },
+  { id: 'x-squared', name: 'x²', expr: 'x^2', pretty: 'x²',
+    autonomous: false, tags: ['separable', 'non-autonomous'],
+    window: [-3, 3, -3, 5],
+    description: 'Slopes depend only on x. Every solution has the form y = x³/3 + C.',
+    tip: 'All ticks on the same vertical line are parallel. Nullcline is the y-axis (x = 0).' },
+  { id: 'x-over-y', name: 'x / y', expr: 'x / y', pretty: 'x / y',
+    autonomous: false, tags: ['separable', 'non-autonomous'],
+    window: [-3, 3, -3, 3],
+    description: 'Trajectories are hyperbolas y² − x² = C. Undefined on y = 0, where the slope is vertical.',
+    tip: 'Notice the singular behavior across y = 0 — slopes blow up as |y| → 0.' },
+  { id: 'x-times-y', name: 'x · y', expr: 'x * y', pretty: 'xy',
+    autonomous: false, tags: ['separable', 'non-autonomous'],
+    window: [-3, 3, -3, 3],
+    description: 'Separable: y(x) = C·exp(x²/2). Nullclines are the two coordinate axes.',
+    tip: 'Ticks are zero on both axes; slopes split into four quadrants of definite sign.' },
+];
+
+function findPreset(id) { return PRESETS.find(p => p.id === id); }
+
+// ======================================================================
+//  State
+// ======================================================================
+const state = {
+  preset: PRESETS[0],          // current preset (or null for custom)
+  compiled: null,              // { f, ast, isAutonomous, expr }
+  window: [-3, 3, -3, 3],      // xmin, xmax, ymin, ymax
+  density: 20,
+  showField: true,
+  showNull: false,
+  showEquil: true,
+  colorBySign: false,
+  trajectories: [],            // array of {points: [[x,y],...], color}
+  matching: { active: false, mode: 'field-from-eq', current: null, score: 0, total: 0, answered: false },
+};
+
+const TRAJ_COLORS = ['#5a4a9e', '#1a7a60', '#c8553a', '#7a5a10'];
+
+// ======================================================================
+//  Equilibria (autonomous)
+// ======================================================================
+function findEquilibriaAutonomous(f, ymin, ymax, n = 800) {
+  // bisect f(y) on a dense y-grid; return roots with derivative sign
+  const ys = [];
+  const vals = [];
+  for (let i = 0; i <= n; i++) {
+    const y = ymin + (ymax - ymin) * i / n;
+    ys.push(y);
+    vals.push(f(0, y));
+  }
+  const roots = [];
+  for (let i = 0; i < n; i++) {
+    const a = ys[i], b = ys[i + 1];
+    const fa = vals[i], fb = vals[i + 1];
+    if (!Number.isFinite(fa) || !Number.isFinite(fb)) continue;
+    if (fa === 0) { roots.push(a); continue; }
+    if (fa * fb < 0) {
+      // bisection
+      let lo = a, hi = b, flo = fa;
+      for (let k = 0; k < 50; k++) {
+        const mid = 0.5 * (lo + hi);
+        const fm = f(0, mid);
+        if (!Number.isFinite(fm)) break;
+        if (flo * fm <= 0) { hi = mid; } else { lo = mid; flo = fm; }
+        if (Math.abs(hi - lo) < 1e-8) break;
+      }
+      roots.push(0.5 * (lo + hi));
+    }
+  }
+  // de-duplicate nearby roots
+  roots.sort((a, b) => a - b);
+  const dedup = [];
+  for (const r of roots) {
+    if (!dedup.length || Math.abs(r - dedup[dedup.length - 1]) > 1e-4) dedup.push(r);
+  }
+  // classify stability via finite difference of f
+  const out = [];
+  for (const r of dedup) {
+    const h = Math.max(1e-4, (ymax - ymin) * 1e-5);
+    const fp = (f(0, r + h) - f(0, r - h)) / (2 * h);
+    let stability = 'semistable';
+    if (fp < -1e-6) stability = 'stable';
+    else if (fp > 1e-6) stability = 'unstable';
+    else {
+      // test second-derivative-ish behavior by probing a bit further
+      const fPlus = f(0, r + 0.05 * (ymax - ymin));
+      const fMinus = f(0, r - 0.05 * (ymax - ymin));
+      if (fPlus < 0 && fMinus > 0) stability = 'stable';
+      else if (fPlus > 0 && fMinus < 0) stability = 'unstable';
+      else stability = 'semistable';
+    }
+    out.push({ y: r, stability, fp });
+  }
+  return out;
+}
+
+// ======================================================================
+//  Canvas: coords, drawing
+// ======================================================================
+const canvas = document.getElementById('fieldCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const wrap = document.getElementById('canvasWrap');
+  const rect = wrap.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function pixelsFor(canvasEl) {
+  const dpr = window.devicePixelRatio || 1;
+  return { w: canvasEl.width / dpr, h: canvasEl.height / dpr };
+}
+
+// world -> pixel on main canvas (uses state.window)
+function worldToPx(x, y, win, px) {
+  const [xmin, xmax, ymin, ymax] = win;
+  const u = (x - xmin) / (xmax - xmin);
+  const v = (y - ymin) / (ymax - ymin);
+  return [u * px.w, (1 - v) * px.h];
+}
+function pxToWorld(px, py, win, dims) {
+  const [xmin, xmax, ymin, ymax] = win;
+  const u = px / dims.w;
+  const v = 1 - py / dims.h;
+  return [xmin + u * (xmax - xmin), ymin + v * (ymax - ymin)];
+}
+
+function formatSlope(s) {
+  if (!Number.isFinite(s)) return '—';
+  if (Math.abs(s) > 999) return s.toExponential(2);
+  return s.toFixed(3);
+}
+
+// Axes + grid lines
+function drawAxes(c, cx, win, dims) {
+  const [xmin, xmax, ymin, ymax] = win;
+  cx.save();
+  cx.strokeStyle = '#dcd8ce';
+  cx.lineWidth = 0.5;
+  // gridlines at integer ticks
+  cx.beginPath();
+  const xspan = xmax - xmin;
+  const yspan = ymax - ymin;
+  const xstep = niceStep(xspan, 8);
+  const ystep = niceStep(yspan, 8);
+  for (let gx = Math.ceil(xmin / xstep) * xstep; gx <= xmax + 1e-9; gx += xstep) {
+    const [px, _] = worldToPx(gx, 0, win, dims);
+    cx.moveTo(px, 0); cx.lineTo(px, dims.h);
+  }
+  for (let gy = Math.ceil(ymin / ystep) * ystep; gy <= ymax + 1e-9; gy += ystep) {
+    const [_, py] = worldToPx(0, gy, win, dims);
+    cx.moveTo(0, py); cx.lineTo(dims.w, py);
+  }
+  cx.stroke();
+  // axes
+  cx.strokeStyle = '#b0aca0';
+  cx.lineWidth = 1;
+  cx.beginPath();
+  if (0 >= ymin && 0 <= ymax) {
+    const [, py0] = worldToPx(0, 0, win, dims);
+    cx.moveTo(0, py0); cx.lineTo(dims.w, py0);
+  }
+  if (0 >= xmin && 0 <= xmax) {
+    const [px0] = worldToPx(0, 0, win, dims);
+    cx.moveTo(px0, 0); cx.lineTo(px0, dims.h);
+  }
+  cx.stroke();
+  // tick labels
+  cx.fillStyle = '#7a776f';
+  cx.font = '10px "JetBrains Mono", monospace';
+  cx.textAlign = 'center';
+  cx.textBaseline = 'top';
+  for (let gx = Math.ceil(xmin / xstep) * xstep; gx <= xmax + 1e-9; gx += xstep) {
+    if (Math.abs(gx) < 1e-9) continue;
+    const [px, py0] = worldToPx(gx, 0, win, dims);
+    const y = (0 >= ymin && 0 <= ymax) ? py0 + 2 : dims.h - 12;
+    cx.fillText(prettyNumber(gx), px, y);
+  }
+  cx.textAlign = 'left';
+  cx.textBaseline = 'middle';
+  for (let gy = Math.ceil(ymin / ystep) * ystep; gy <= ymax + 1e-9; gy += ystep) {
+    if (Math.abs(gy) < 1e-9) continue;
+    const [px0, py] = worldToPx(0, gy, win, dims);
+    const x = (0 >= xmin && 0 <= xmax) ? px0 + 3 : 2;
+    cx.fillText(prettyNumber(gy), x, py);
+  }
+  cx.restore();
+}
+
+function niceStep(span, target) {
+  const raw = span / target;
+  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const m = raw / pow;
+  let step;
+  if (m < 1.5) step = 1;
+  else if (m < 3) step = 2;
+  else if (m < 7) step = 5;
+  else step = 10;
+  return step * pow;
+}
+function prettyNumber(n) {
+  if (Math.abs(n) < 1e-9) return '0';
+  if (Math.abs(n) >= 100) return n.toFixed(0);
+  if (Math.abs(n) >= 10) return n.toFixed(0);
+  if (Math.abs(n) >= 1) return n.toFixed(1).replace(/\.0$/, '');
+  return n.toFixed(2).replace(/\.?0+$/, '');
+}
+
+// The slope field tick marks
+function drawField(c, cx, f, win, density, dims, colorBySign) {
+  const [xmin, xmax, ymin, ymax] = win;
+  const dx = (xmax - xmin) / (density + 1);
+  const dy = (ymax - ymin) / (density + 1);
+  // use pixel tick length ≈ 0.42 of the cell size in pixels
+  const cellPxW = dims.w / (density + 1);
+  const cellPxH = dims.h / (density + 1);
+  const tickPx = 0.42 * Math.min(cellPxW, cellPxH);
+  cx.save();
+  cx.lineCap = 'round';
+  cx.lineWidth = 1.1;
+
+  for (let i = 1; i <= density; i++) {
+    for (let j = 1; j <= density; j++) {
+      const x = xmin + dx * i;
+      const y = ymin + dy * j;
+      let s;
+      try { s = f(x, y); } catch (e) { continue; }
+      if (!Number.isFinite(s)) continue;
+      // angle of tick
+      const theta = Math.atan(s);
+      const cos = Math.cos(theta), sin = Math.sin(theta);
+      const [pxC, pyC] = worldToPx(x, y, win, dims);
+      // Pixels-y is flipped vs world-y
+      const dxP = tickPx * cos;
+      const dyP = -tickPx * sin;
+      if (colorBySign) {
+        cx.strokeStyle = s > 1e-6 ? '#1a7a60' : s < -1e-6 ? '#c8553a' : '#7a5a10';
+      } else {
+        cx.strokeStyle = '#3d3a35';
+      }
+      cx.beginPath();
+      cx.moveTo(pxC - dxP, pyC - dyP);
+      cx.lineTo(pxC + dxP, pyC + dyP);
+      cx.stroke();
+    }
+  }
+  cx.restore();
+}
+
+// Marching squares for f(x,y) = 0
+function drawNullcline(c, cx, f, win, dims) {
+  const [xmin, xmax, ymin, ymax] = win;
+  const N = 80;
+  const gx = new Array(N + 1);
+  const gy = new Array(N + 1);
+  for (let i = 0; i <= N; i++) gx[i] = xmin + (xmax - xmin) * i / N;
+  for (let j = 0; j <= N; j++) gy[j] = ymin + (ymax - ymin) * j / N;
+  // sample grid
+  const vals = new Array(N + 1);
+  for (let i = 0; i <= N; i++) {
+    vals[i] = new Array(N + 1);
+    for (let j = 0; j <= N; j++) {
+      let v;
+      try { v = f(gx[i], gy[j]); } catch (e) { v = NaN; }
+      vals[i][j] = v;
+    }
+  }
+  cx.save();
+  cx.strokeStyle = '#3a6b5e';
+  cx.lineWidth = 1.8;
+  cx.lineCap = 'round';
+  cx.beginPath();
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const v00 = vals[i][j], v10 = vals[i+1][j];
+      const v11 = vals[i+1][j+1], v01 = vals[i][j+1];
+      if (![v00, v10, v11, v01].every(Number.isFinite)) continue;
+      const s00 = v00 >= 0 ? 1 : 0;
+      const s10 = v10 >= 0 ? 1 : 0;
+      const s11 = v11 >= 0 ? 1 : 0;
+      const s01 = v01 >= 0 ? 1 : 0;
+      const code = s00 | (s10 << 1) | (s11 << 2) | (s01 << 3);
+      if (code === 0 || code === 15) continue;
+      // zero crossings along each edge:
+      //   e0: bottom (i,j) — (i+1,j)
+      //   e1: right  (i+1,j) — (i+1,j+1)
+      //   e2: top    (i+1,j+1) — (i,j+1)
+      //   e3: left   (i,j) — (i,j+1)
+      const lerp = (va, vb, xa, ya, xb, yb) => {
+        const t = va / (va - vb);
+        return [xa + t * (xb - xa), ya + t * (yb - ya)];
+      };
+      const pts = [];
+      if ((s00 ^ s10)) pts.push(lerp(v00, v10, gx[i], gy[j], gx[i+1], gy[j]));
+      if ((s10 ^ s11)) pts.push(lerp(v10, v11, gx[i+1], gy[j], gx[i+1], gy[j+1]));
+      if ((s11 ^ s01)) pts.push(lerp(v11, v01, gx[i+1], gy[j+1], gx[i], gy[j+1]));
+      if ((s01 ^ s00)) pts.push(lerp(v01, v00, gx[i], gy[j+1], gx[i], gy[j]));
+      // connect pairs (most cases have 2; 4-edge ambiguity: draw both segments)
+      for (let k = 0; k + 1 < pts.length; k += 2) {
+        const [x1, y1] = pts[k], [x2, y2] = pts[k + 1];
+        const [p1x, p1y] = worldToPx(x1, y1, win, dims);
+        const [p2x, p2y] = worldToPx(x2, y2, win, dims);
+        cx.moveTo(p1x, p1y); cx.lineTo(p2x, p2y);
+      }
+    }
+  }
+  cx.stroke();
+  cx.restore();
+}
+
+function drawEquilibria(c, cx, equilibria, win, dims) {
+  if (!equilibria || !equilibria.length) return;
+  cx.save();
+  cx.lineWidth = 1.8;
+  cx.setLineDash([6, 5]);
+  for (const eq of equilibria) {
+    if (eq.y < win[2] - 1e-9 || eq.y > win[3] + 1e-9) continue;
+    cx.strokeStyle =
+      eq.stability === 'stable' ? '#1a7a60'
+      : eq.stability === 'unstable' ? '#c8553a'
+      : '#7a5a10';
+    const [, py] = worldToPx(0, eq.y, win, dims);
+    cx.beginPath();
+    cx.moveTo(0, py); cx.lineTo(dims.w, py);
+    cx.stroke();
+  }
+  cx.setLineDash([]);
+  cx.restore();
+}
+
+function drawTrajectories(c, cx, trajs, win, dims) {
+  cx.save();
+  cx.lineWidth = 2.0;
+  cx.lineCap = 'round';
+  cx.lineJoin = 'round';
+  for (const tr of trajs) {
+    cx.strokeStyle = tr.color;
+    cx.beginPath();
+    let started = false;
+    for (const [x, y] of tr.points) {
+      if (!Number.isFinite(x) || !Number.isFinite(y)) { started = false; continue; }
+      const [px, py] = worldToPx(x, y, win, dims);
+      if (!started) { cx.moveTo(px, py); started = true; }
+      else cx.lineTo(px, py);
+    }
+    cx.stroke();
+    // endpoints: draw the seed point as a solid dot
+    if (tr.seed) {
+      const [sx, sy] = worldToPx(tr.seed[0], tr.seed[1], win, dims);
+      cx.fillStyle = tr.color;
+      cx.beginPath();
+      cx.arc(sx, sy, 3.2, 0, Math.PI * 2);
+      cx.fill();
+    }
+  }
+  cx.restore();
+}
+
+function drawCrosshair(c, cx, pos, win, dims) {
+  if (!pos) return;
+  const [px, py] = pos;
+  cx.save();
+  cx.strokeStyle = '#5a4a9e';
+  cx.lineWidth = 0.8;
+  cx.setLineDash([3, 3]);
+  cx.beginPath();
+  cx.moveTo(px, 0); cx.lineTo(px, dims.h);
+  cx.moveTo(0, py); cx.lineTo(dims.w, py);
+  cx.stroke();
+  cx.setLineDash([]);
+  cx.restore();
+}
+
+// ======================================================================
+//  RK4 trajectory integration
+// ======================================================================
+function rk4Step(f, x, y, h) {
+  const k1 = f(x, y);
+  const k2 = f(x + h / 2, y + h * k1 / 2);
+  const k3 = f(x + h / 2, y + h * k2 / 2);
+  const k4 = f(x + h, y + h * k3);
+  return y + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+}
+function integrate(f, x0, y0, win, direction = 1) {
+  const [xmin, xmax, ymin, ymax] = win;
+  const xSpan = xmax - xmin;
+  const ySpan = ymax - ymin;
+  // adaptive-ish: step chosen from window size
+  const h = direction * Math.max(0.003, Math.min(xSpan, ySpan) / 400);
+  const maxSteps = 3000;
+  const pts = [[x0, y0]];
+  let x = x0, y = y0;
+  for (let i = 0; i < maxSteps; i++) {
+    // test slope bounds for safety
+    let s;
+    try { s = f(x, y); } catch (e) { break; }
+    if (!Number.isFinite(s)) break;
+    // step shorter when slope large so arc-length is bounded
+    const scale = 1 / Math.max(1, Math.hypot(1, s));
+    const hh = h * scale;
+    const yn = rk4Step(f, x, y, hh);
+    const xn = x + hh;
+    if (!Number.isFinite(yn) || !Number.isFinite(xn)) break;
+    // stop if out of window (with slight margin)
+    if (xn < xmin - 0.05 * xSpan || xn > xmax + 0.05 * xSpan ||
+        yn < ymin - 0.5 * ySpan || yn > ymax + 0.5 * ySpan) {
+      pts.push([xn, yn]);
+      break;
+    }
+    x = xn; y = yn;
+    pts.push([x, y]);
+  }
+  return pts;
+}
+
+// ======================================================================
+//  Main draw
+// ======================================================================
+let cursorPos = null; // canvas pixel coords
+let cursorWorld = null;
+
+function drawAll() {
+  const dims = pixelsFor(canvas);
+  ctx.clearRect(0, 0, dims.w, dims.h);
+  drawAxes(canvas, ctx, state.window, dims);
+  if (!state.compiled) return;
+  if (state.showField) {
+    drawField(canvas, ctx, state.compiled.f, state.window, state.density, dims, state.colorBySign);
+  }
+  if (state.showNull) {
+    drawNullcline(canvas, ctx, state.compiled.f, state.window, dims);
+  }
+  if (state.showEquil && state.compiled.isAutonomous) {
+    drawEquilibria(canvas, ctx, state.equilibria, state.window, dims);
+  }
+  drawTrajectories(canvas, ctx, state.trajectories, state.window, dims);
+  drawCrosshair(canvas, ctx, cursorPos, state.window, dims);
+}
+
+// ======================================================================
+//  Preset rendering
+// ======================================================================
+function renderPresetChips() {
+  const auto = document.getElementById('presetChipsAuto');
+  const nonauto = document.getElementById('presetChipsNonAuto');
+  auto.innerHTML = '';
+  nonauto.innerHTML = '';
+  for (const p of PRESETS) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip' + (state.preset && state.preset.id === p.id ? ' active' : '');
+    btn.innerHTML = `<span>dy/dx = ${p.pretty}</span><span class="chip-sub">${p.tags.join(' · ')}</span>`;
+    btn.setAttribute('aria-pressed', state.preset && state.preset.id === p.id ? 'true' : 'false');
+    btn.addEventListener('click', () => loadPreset(p.id));
+    (p.autonomous ? auto : nonauto).appendChild(btn);
+  }
+}
+
+function updateActiveChip() {
+  document.querySelectorAll('#presetChipsAuto .chip, #presetChipsNonAuto .chip').forEach((b, idx) => {
+    const p = PRESETS[idx];
+    const on = state.preset && state.preset.id === p.id;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+
+// ======================================================================
+//  Equation card
+// ======================================================================
+function renderEquationCard() {
+  const exprEl = document.getElementById('eqExpression');
+  const tagsEl = document.getElementById('eqTags');
+  const metaEl = document.getElementById('eqMeta');
+  const eqEl = document.getElementById('eqEquilibria');
+  const tipEl = document.getElementById('eqTip');
+
+  const pretty = state.preset ? state.preset.pretty : state.compiled ? state.compiled.expr : '';
+  exprEl.innerHTML = `<em>dy</em>/<em>dx</em> = <span class="mono">${escapeHtml(pretty)}</span>`;
+
+  tagsEl.innerHTML = '';
+  const tags = state.preset ? state.preset.tags
+    : [state.compiled && state.compiled.isAutonomous ? 'autonomous' : 'non-autonomous', 'custom'];
+  for (const t of tags) {
+    const sp = document.createElement('span');
+    sp.className = 'eq-tag ' + (t.replace(/[^a-z]/g, ''));
+    sp.textContent = t;
+    tagsEl.appendChild(sp);
+  }
+
+  metaEl.innerHTML = '';
+  if (state.preset && state.preset.description) {
+    metaEl.textContent = state.preset.description;
+  } else if (state.compiled) {
+    metaEl.textContent = state.compiled.isAutonomous
+      ? 'Custom autonomous equation — dy/dx depends only on y.'
+      : 'Custom non-autonomous equation — dy/dx depends on both x and y.';
+  }
+
+  // equilibria panel
+  if (state.compiled && state.compiled.isAutonomous) {
+    const eqs = state.equilibria || [];
+    if (eqs.length === 0) {
+      eqEl.style.display = 'block';
+      eqEl.innerHTML = `<span class="eqlabel">Equilibria</span>No equilibria detected in the visible y-range (${state.window[2].toFixed(2)}, ${state.window[3].toFixed(2)}).`;
+    } else {
+      eqEl.style.display = 'block';
+      let html = `<span class="eqlabel">Equilibria &amp; stability</span>`;
+      for (const eq of eqs) {
+        html += `<span class="equil-item ${eq.stability}">y* = ${eq.y.toFixed(4)} (${eq.stability})</span>`;
+      }
+      eqEl.innerHTML = html;
+    }
+  } else {
+    eqEl.style.display = 'none';
+  }
+
+  tipEl.textContent = state.preset && state.preset.tip
+    ? 'What to look for: ' + state.preset.tip
+    : '';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+// ======================================================================
+//  Apply preset / custom f(x, y)
+// ======================================================================
+function loadPreset(id) {
+  const p = findPreset(id);
+  if (!p) return;
+  state.preset = p;
+  try {
+    state.compiled = compileF(p.expr);
+  } catch (e) {
+    // should never happen for presets
+    state.compiled = null;
+    return;
+  }
+  state.window = p.window.slice();
+  state.trajectories = [];
+  // refresh equilibria
+  refreshEquilibria();
+  // sync slider positions
+  syncWindowSliders();
+  renderPresetChips();
+  document.getElementById('fxyInput').value = '';
+  document.getElementById('fxyInput').classList.remove('err');
+  document.getElementById('fxyFeedback').textContent = '';
+  renderEquationCard();
+  updateTrajCount();
+  drawAll();
+  if (state.matching.active) refreshMatchingRound();
+}
+
+function applyCustom(expr) {
+  const fb = document.getElementById('fxyFeedback');
+  const input = document.getElementById('fxyInput');
+  try {
+    const compiled = compileF(expr);
+    // try a couple of test evaluations
+    const [xmin, xmax, ymin, ymax] = state.window;
+    for (let i = 0; i < 4; i++) {
+      const x = xmin + (xmax - xmin) * Math.random();
+      const y = ymin + (ymax - ymin) * Math.random();
+      const v = compiled.f(x, y);
+      if (!Number.isFinite(v) && i === 0) {
+        // probably a singular point; keep going
+      }
+    }
+    state.compiled = compiled;
+    state.preset = null;
+    state.trajectories = [];
+    refreshEquilibria();
+    input.classList.remove('err');
+    fb.className = 'fxy-feedback ok';
+    fb.textContent = `Parsed. ${compiled.isAutonomous ? 'Autonomous.' : 'Non-autonomous.'}`;
+    updateActiveChip();
+    renderEquationCard();
+    updateTrajCount();
+    drawAll();
+    if (state.matching.active) refreshMatchingRound();
+  } catch (e) {
+    input.classList.add('err');
+    fb.className = 'fxy-feedback err';
+    fb.textContent = e.message;
+  }
+}
+
+function refreshEquilibria() {
+  if (state.compiled && state.compiled.isAutonomous) {
+    try {
+      state.equilibria = findEquilibriaAutonomous(state.compiled.f, state.window[2], state.window[3]);
+    } catch (e) {
+      state.equilibria = [];
+    }
+  } else {
+    state.equilibria = [];
+  }
+}
+
+// ======================================================================
+//  Window sliders
+// ======================================================================
+function syncWindowSliders() {
+  const [xmin, xmax, ymin, ymax] = state.window;
+  document.getElementById('xminSlider').value = xmin;
+  document.getElementById('xmaxSlider').value = xmax;
+  document.getElementById('yminSlider').value = ymin;
+  document.getElementById('ymaxSlider').value = ymax;
+  document.getElementById('xminVal').textContent = prettyNumber(xmin);
+  document.getElementById('xmaxVal').textContent = prettyNumber(xmax);
+  document.getElementById('yminVal').textContent = prettyNumber(ymin);
+  document.getElementById('ymaxVal').textContent = prettyNumber(ymax);
+}
+
+function readWindowSliders() {
+  let xmin = parseFloat(document.getElementById('xminSlider').value);
+  let xmax = parseFloat(document.getElementById('xmaxSlider').value);
+  let ymin = parseFloat(document.getElementById('yminSlider').value);
+  let ymax = parseFloat(document.getElementById('ymaxSlider').value);
+  if (xmax - xmin < 0.5) xmax = xmin + 0.5;
+  if (ymax - ymin < 0.5) ymax = ymin + 0.5;
+  state.window = [xmin, xmax, ymin, ymax];
+  document.getElementById('xminVal').textContent = prettyNumber(xmin);
+  document.getElementById('xmaxVal').textContent = prettyNumber(xmax);
+  document.getElementById('yminVal').textContent = prettyNumber(ymin);
+  document.getElementById('ymaxVal').textContent = prettyNumber(ymax);
+  refreshEquilibria();
+  renderEquationCard();
+  drawAll();
+}
+
+// ======================================================================
+//  Trajectory click
+// ======================================================================
+function addTrajectoryAt(wx, wy) {
+  if (!state.compiled) return;
+  const color = TRAJ_COLORS[state.trajectories.length % TRAJ_COLORS.length];
+  const f = state.compiled.f;
+  const forward = integrate(f, wx, wy, state.window, 1);
+  const backward = integrate(f, wx, wy, state.window, -1);
+  // combine backward (reversed) + forward (skip the duplicate seed)
+  const pts = backward.slice().reverse().concat(forward.slice(1));
+  state.trajectories.push({ points: pts, color, seed: [wx, wy] });
+  updateTrajCount();
+  drawAll();
+}
+
+function updateTrajCount() {
+  const el = document.getElementById('trajCount');
+  const n = state.trajectories.length;
+  el.textContent = n === 1 ? '1 trajectory' : `${n} trajectories`;
+}
+
+// ======================================================================
+//  Cursor readout
+// ======================================================================
+function updateReadout() {
+  const el = document.getElementById('cursorReadout');
+  if (!cursorWorld || !state.compiled) {
+    el.innerHTML = `<span class="label">cursor:</span>move over plot`;
+    return;
+  }
+  const [x, y] = cursorWorld;
+  let s;
+  try { s = state.compiled.f(x, y); } catch (e) { s = NaN; }
+  el.innerHTML =
+    `<span class="label">x =</span>${x.toFixed(3)} ` +
+    `<span class="label">y =</span>${y.toFixed(3)} ` +
+    `<span class="label">slope =</span>${formatSlope(s)}`;
+}
+
+// ======================================================================
+//  Canvas events
+// ======================================================================
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const px = e.clientX - rect.left;
+  const py = e.clientY - rect.top;
+  const dims = { w: rect.width, h: rect.height };
+  cursorPos = [px, py];
+  cursorWorld = pxToWorld(px, py, state.window, dims);
+  updateReadout();
+  drawAll();
+});
+canvas.addEventListener('mouseleave', () => {
+  cursorPos = null;
+  cursorWorld = null;
+  updateReadout();
+  drawAll();
+});
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const px = e.clientX - rect.left;
+  const py = e.clientY - rect.top;
+  const dims = { w: rect.width, h: rect.height };
+  const [wx, wy] = pxToWorld(px, py, state.window, dims);
+  addTrajectoryAt(wx, wy);
+});
+// Allow keyboard: focus-based clicks? Not required.
+
+// ======================================================================
+//  Control wiring
+// ======================================================================
+function wireControls() {
+  // Window sliders (live)
+  ['xminSlider', 'xmaxSlider', 'yminSlider', 'ymaxSlider'].forEach(id => {
+    document.getElementById(id).addEventListener('input', readWindowSliders);
+  });
+  // density
+  document.getElementById('densitySlider').addEventListener('input', () => {
+    state.density = parseInt(document.getElementById('densitySlider').value);
+    document.getElementById('densityVal').textContent = state.density;
+    drawAll();
+  });
+  // toggles
+  document.getElementById('toggleField').addEventListener('change', (e) => {
+    state.showField = e.target.checked; drawAll();
+  });
+  document.getElementById('toggleNull').addEventListener('change', (e) => {
+    state.showNull = e.target.checked; drawAll();
+  });
+  document.getElementById('toggleEquil').addEventListener('change', (e) => {
+    state.showEquil = e.target.checked; drawAll();
+  });
+  document.getElementById('toggleColor').addEventListener('change', (e) => {
+    state.colorBySign = e.target.checked; drawAll();
+  });
+  // buttons
+  document.getElementById('clearTrajBtn').addEventListener('click', () => {
+    state.trajectories = []; updateTrajCount(); drawAll();
+  });
+  document.getElementById('resetViewBtn').addEventListener('click', () => {
+    if (state.preset) {
+      state.window = state.preset.window.slice();
+    } else {
+      state.window = [-3, 3, -3, 3];
+    }
+    syncWindowSliders();
+    refreshEquilibria();
+    renderEquationCard();
+    drawAll();
+  });
+  // Custom f input
+  document.getElementById('applyFxyBtn').addEventListener('click', () => {
+    const v = document.getElementById('fxyInput').value.trim();
+    if (!v) return;
+    applyCustom(v);
+  });
+  document.getElementById('fxyInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const v = document.getElementById('fxyInput').value.trim();
+      if (v) applyCustom(v);
+    }
+  });
+  // Matching game
+  document.getElementById('toggleMatching').addEventListener('change', (e) => {
+    state.matching.active = e.target.checked;
+    document.getElementById('matchingCard').classList.toggle('active', state.matching.active);
+    if (state.matching.active) refreshMatchingRound();
+  });
+  document.getElementById('matchingModeSel').addEventListener('change', (e) => {
+    state.matching.mode = e.target.value;
+    refreshMatchingRound();
+  });
+  document.getElementById('newRoundBtn').addEventListener('click', refreshMatchingRound);
+  document.getElementById('resetScoreBtn').addEventListener('click', () => {
+    state.matching.score = 0;
+    state.matching.total = 0;
+    updateMatchingScore();
+    refreshMatchingRound();
+  });
+}
+
+// ======================================================================
+//  Matching game
+// ======================================================================
+function pickDistinct(n, exclude) {
+  const pool = PRESETS.filter(p => !exclude || p.id !== exclude.id);
+  // shuffle (Fisher–Yates)
+  const arr = pool.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.slice(0, n);
+}
+
+function refreshMatchingRound() {
+  if (!state.matching.active) return;
+  const mode = state.matching.mode;
+  const question = document.getElementById('matchingQuestion');
+  const opts = document.getElementById('matchingOptions');
+  const feedback = document.getElementById('matchingFeedback');
+  opts.innerHTML = '';
+  feedback.textContent = '';
+  feedback.className = 'matching-feedback';
+
+  // Source preset: use the currently-loaded preset if available; otherwise pick random
+  const sourcePreset = state.preset || PRESETS[Math.floor(Math.random() * PRESETS.length)];
+
+  // Build 4 candidates: 3 distractors + correct
+  const distractors = pickDistinct(3, sourcePreset);
+  const candidates = distractors.concat([sourcePreset]);
+  // shuffle placements
+  for (let i = candidates.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+  }
+  state.matching.current = { correct: sourcePreset, candidates };
+  state.matching.answered = false;
+
+  if (mode === 'field-from-eq') {
+    question.innerHTML = `Which slope field matches <strong><em>dy</em>/<em>dx</em> = ${escapeHtml(sourcePreset.pretty)}</strong>?`;
+    // render 4 field thumbnails for each candidate
+    candidates.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'matching-opt';
+      btn.setAttribute('aria-label', `Option ${String.fromCharCode(65 + i)}`);
+      const label = document.createElement('div');
+      label.className = 'matching-opt-label';
+      label.textContent = `(${String.fromCharCode(65 + i)})`;
+      const thumb = document.createElement('canvas');
+      thumb.className = 'matching-opt-thumb';
+      thumb.width = 260; thumb.height = 260;
+      btn.appendChild(label);
+      btn.appendChild(thumb);
+      opts.appendChild(btn);
+      // draw thumbnail
+      requestAnimationFrame(() => {
+        drawSlopeFieldThumb(thumb, compileF(p.expr).f, p.window, 14);
+      });
+      btn.addEventListener('click', () => answerMatching(btn, p));
+    });
+  } else {
+    // eq-from-field: show one field (of the current source preset) and ask for the equation
+    question.innerHTML = `Which equation generated <strong>this slope field</strong>?`;
+    // Create a large thumbnail showing the source preset's field
+    const wrap = document.createElement('div');
+    wrap.style.gridColumn = '1 / -1';
+    wrap.style.textAlign = 'center';
+    const thumb = document.createElement('canvas');
+    thumb.className = 'matching-opt-thumb';
+    thumb.style.maxWidth = '280px';
+    thumb.style.margin = '0 auto';
+    thumb.width = 320; thumb.height = 320;
+    wrap.appendChild(thumb);
+    opts.appendChild(wrap);
+    requestAnimationFrame(() => {
+      drawSlopeFieldThumb(thumb, compileF(sourcePreset.expr).f, sourcePreset.window, 16);
+    });
+    candidates.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'matching-opt';
+      btn.setAttribute('aria-label', `Option ${String.fromCharCode(65 + i)}`);
+      btn.innerHTML = `
+        <div class="matching-opt-label">(${String.fromCharCode(65 + i)}) <span class="mono">dy/dx = ${escapeHtml(p.pretty)}</span></div>
+      `;
+      btn.style.aspectRatio = 'auto';
+      btn.addEventListener('click', () => answerMatching(btn, p));
+      opts.appendChild(btn);
+    });
+  }
+}
+
+function answerMatching(btn, choice) {
+  if (state.matching.answered) return;
+  state.matching.answered = true;
+  state.matching.total += 1;
+  const correct = state.matching.current.correct;
+  const feedback = document.getElementById('matchingFeedback');
+  // mark all buttons
+  document.querySelectorAll('.matching-opt').forEach(b => {
+    const match = b === btn;
+    if (match) {
+      b.classList.add(choice.id === correct.id ? 'correct' : 'incorrect');
+    }
+  });
+  if (choice.id === correct.id) {
+    state.matching.score += 1;
+    feedback.className = 'matching-feedback correct';
+    feedback.textContent = `Correct. dy/dx = ${correct.pretty} — ${correct.tip || correct.description}`;
+  } else {
+    feedback.className = 'matching-feedback incorrect';
+    feedback.textContent = `Not quite. The correct equation is dy/dx = ${correct.pretty}. ${correct.tip || correct.description}`;
+    // Reveal which button was the correct one
+    document.querySelectorAll('.matching-opt').forEach(b => {
+      if (b.textContent.includes(correct.pretty) || b.getAttribute('data-correct') === '1') {
+        // nothing — we'll find it differently for thumbnail mode
+      }
+    });
+    // For either mode, we can scan candidates and mark correct one
+    const opts = document.getElementById('matchingOptions');
+    const buttons = opts.querySelectorAll('.matching-opt');
+    state.matching.current.candidates.forEach((p, idx) => {
+      if (p.id === correct.id && buttons[idx]) {
+        buttons[idx].classList.add('correct');
+      }
+    });
+  }
+  updateMatchingScore();
+}
+
+function updateMatchingScore() {
+  const el = document.getElementById('matchingScore');
+  el.textContent = `${state.matching.score} / ${state.matching.total}`;
+}
+
+// Thumbnail renderer — minimal slope field for small canvas
+function drawSlopeFieldThumb(thumbCanvas, f, win, density) {
+  const cx = thumbCanvas.getContext('2d');
+  const w = thumbCanvas.width, h = thumbCanvas.height;
+  cx.clearRect(0, 0, w, h);
+  // background
+  cx.fillStyle = '#ffffff';
+  cx.fillRect(0, 0, w, h);
+  // faint gridlines / axes
+  const [xmin, xmax, ymin, ymax] = win;
+  cx.strokeStyle = '#e4e0d6';
+  cx.lineWidth = 0.8;
+  cx.beginPath();
+  if (0 >= ymin && 0 <= ymax) {
+    const y0 = (1 - (0 - ymin) / (ymax - ymin)) * h;
+    cx.moveTo(0, y0); cx.lineTo(w, y0);
+  }
+  if (0 >= xmin && 0 <= xmax) {
+    const x0 = ((0 - xmin) / (xmax - xmin)) * w;
+    cx.moveTo(x0, 0); cx.lineTo(x0, h);
+  }
+  cx.stroke();
+  // ticks
+  const dx = (xmax - xmin) / (density + 1);
+  const dy = (ymax - ymin) / (density + 1);
+  const cellPxW = w / (density + 1);
+  const cellPxH = h / (density + 1);
+  const tickPx = 0.42 * Math.min(cellPxW, cellPxH);
+  cx.strokeStyle = '#3d3a35';
+  cx.lineWidth = 0.9;
+  cx.lineCap = 'round';
+  for (let i = 1; i <= density; i++) {
+    for (let j = 1; j <= density; j++) {
+      const x = xmin + dx * i;
+      const y = ymin + dy * j;
+      let s;
+      try { s = f(x, y); } catch (e) { continue; }
+      if (!Number.isFinite(s)) continue;
+      const theta = Math.atan(s);
+      const ccos = Math.cos(theta), ssin = Math.sin(theta);
+      const px = ((x - xmin) / (xmax - xmin)) * w;
+      const py = (1 - (y - ymin) / (ymax - ymin)) * h;
+      const ddx = tickPx * ccos;
+      const ddy = -tickPx * ssin;
+      cx.beginPath();
+      cx.moveTo(px - ddx, py - ddy);
+      cx.lineTo(px + ddx, py + ddy);
+      cx.stroke();
+    }
+  }
+  // frame
+  cx.strokeStyle = '#c9c5bc';
+  cx.lineWidth = 1;
+  cx.strokeRect(0.5, 0.5, w - 1, h - 1);
+}
+
+// ======================================================================
+//  Init
+// ======================================================================
+function init() {
+  wireControls();
+  renderPresetChips();
+  resizeCanvas();
+  loadPreset('exp-growth');
+  state.density = parseInt(document.getElementById('densitySlider').value);
+  state.showField = document.getElementById('toggleField').checked;
+  state.showNull = document.getElementById('toggleNull').checked;
+  state.showEquil = document.getElementById('toggleEquil').checked;
+  state.colorBySign = document.getElementById('toggleColor').checked;
+  drawAll();
+}
+
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  drawAll();
+});
+
+init();
+</script>
+</body>
+</html>

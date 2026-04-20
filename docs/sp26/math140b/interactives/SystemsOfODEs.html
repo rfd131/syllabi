@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Systems of ODEs — Phase Portraits</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface2: #f3f1ec;
+  --surface3: #ecebe4;
+  --text: #2c2a28;
+  --text2: #5f5c56;
+  --text3: #6a6862;
+  --border: #c9c5bc;
+  --border-strong: #a8a498;
+  --accent: #3a6b5e;
+  --accent-light: #e8f0ed;
+  --danger: #9c3628;
+  --danger-light: #fbeae7;
+  --warning: #7a5a10;
+  --warning-light: #fdf4e1;
+  --success: #3a6b5e;
+  --success-light: #e8f0ed;
+  --purple: #5a4a9e;
+  --purple-light: #eeedf8;
+  --teal: #1a7a60;
+  --coral: #c8553a;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18.5px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.header {
+  padding: 2.25rem 2rem 1.25rem;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+.header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 860px;
+}
+.header em { font-family: var(--font-serif); font-style: italic; }
+
+.main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+@media (max-width: 980px) {
+  .panel { position: static; max-height: none; }
+}
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 0.55rem;
+}
+.panel-sublabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text3);
+  margin: 0.6rem 0 0.35rem;
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chip {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+/* Matrix editor (2x2) */
+.matrix-editor-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.matrix-symbol {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text2);
+}
+.matrix-bracket {
+  display: grid;
+  grid-template-columns: 8px 1fr 8px;
+  align-items: stretch;
+}
+.bracket-left, .bracket-right {
+  border: 2px solid var(--text);
+  min-height: 100%;
+}
+.bracket-left { border-right: none; border-radius: 4px 0 0 4px; }
+.bracket-right { border-left: none; border-radius: 0 4px 4px 0; }
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 8px 10px;
+}
+.matrix-input {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  text-align: center;
+  width: 3.6rem;
+  padding: 0.3rem 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+}
+.matrix-input:focus { border-color: var(--purple); }
+.matrix-formula {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  text-align: center;
+  margin-top: 0.4rem;
+}
+
+/* Parameter sliders */
+.param-block {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.5rem;
+}
+.param-block:last-child { margin-bottom: 0; }
+.param-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+.param-name {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.param-name em {
+  font-style: normal;
+  color: var(--text3);
+  font-weight: 400;
+  font-size: 0.72rem;
+  margin-left: 0.3rem;
+}
+.param-val {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--purple);
+}
+.param-row input[type="range"] {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+.param-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.param-row input[type="range"]::-moz-range-thumb {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+
+/* Viewing window */
+.window-grid {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 6px 8px;
+  align-items: center;
+}
+.window-grid label {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--text3);
+}
+.window-grid input {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.25rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  width: 100%;
+  min-width: 0;
+}
+.window-grid input:focus { border-color: var(--purple); outline: 2px solid var(--purple); outline-offset: 1px; }
+
+/* Toggles */
+.toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text2);
+  cursor: pointer;
+  padding: 3px 0;
+  user-select: none;
+}
+.toggle-row input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 3px;
+  background: var(--surface);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.toggle-row input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.toggle-row input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px; top: 1px;
+  width: 4px; height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.toggle-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-left: 2px;
+}
+
+/* Buttons */
+.btn {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.btn.primary:hover { background: var(--teal); border-color: var(--teal); color: white; }
+.btn.ghost { background: transparent; color: var(--text2); }
+.button-row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* Workspace */
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title .counter {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text3);
+  padding: 2px 6px;
+  background: var(--surface2);
+  border-radius: 4px;
+}
+.card-subtitle {
+  font-size: 0.76rem;
+  color: var(--text3);
+  margin-bottom: 0.9rem;
+}
+
+/* Phase portrait area */
+.phase-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 640px;
+  margin: 0 auto;
+  background: #fdfcf8;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: crosshair;
+  touch-action: none;
+}
+.phase-wrap canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 6px;
+}
+.phase-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--text2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.legend-dot.square { border-radius: 2px; }
+.legend-line {
+  width: 18px;
+  height: 2px;
+  display: inline-block;
+}
+
+.portrait-hint {
+  font-size: 0.76rem;
+  color: var(--text3);
+  text-align: center;
+  margin-top: 0.35rem;
+  font-style: italic;
+  font-family: var(--font-serif);
+}
+
+/* Classification card */
+.classify-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 740px) {
+  .classify-grid { grid-template-columns: 1fr; }
+}
+.classify-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.45rem 0.8rem;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: var(--font);
+  border: 1px solid;
+}
+.type-badge.stable { background: var(--success-light); color: var(--success); border-color: var(--success); }
+.type-badge.unstable { background: var(--danger-light); color: var(--danger); border-color: var(--danger); }
+.type-badge.saddle { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
+.type-badge.neutral { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+
+.eigen-list { list-style: none; padding: 0; }
+.eigen-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--surface2);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+}
+.eigen-item:last-child { border-bottom: none; }
+.eigen-symbol { color: var(--text3); min-width: 30px; }
+.eigen-val { color: var(--text); }
+.eigen-mod {
+  margin-left: auto;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.mod-grow { background: var(--danger-light); color: var(--danger); }
+.mod-decay { background: var(--success-light); color: var(--success); }
+.mod-neutral { background: var(--warning-light); color: var(--warning); }
+
+.spectrum-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+}
+
+/* Equilibria list for nonlinear */
+.equilibria-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.equilibrium-card {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.7rem 0.85rem;
+  border-left: 3px solid var(--purple);
+}
+.equilibrium-card.stable { border-left-color: var(--success); }
+.equilibrium-card.unstable { border-left-color: var(--danger); }
+.equilibrium-card.saddle { border-left-color: var(--warning); }
+.equilibrium-card.neutral { border-left-color: var(--purple); }
+.eq-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+.eq-point {
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.eq-type {
+  font-size: 0.72rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.eq-type.stable { background: var(--success-light); color: var(--success); }
+.eq-type.unstable { background: var(--danger-light); color: var(--danger); }
+.eq-type.saddle { background: var(--warning-light); color: var(--warning); }
+.eq-type.neutral { background: var(--purple-light); color: var(--purple); }
+.eq-body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--text2);
+  align-items: baseline;
+}
+.eq-body .lbl { color: var(--text3); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.jacobian-inline {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--text);
+}
+
+.no-equilibria {
+  font-size: 0.78rem;
+  color: var(--text3);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+/* Time series */
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  height: 240px;
+}
+.legend-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text2);
+  flex-wrap: wrap;
+}
+
+/* Notes card */
+.notes-body {
+  font-size: 0.83rem;
+  color: var(--text2);
+  line-height: 1.65;
+}
+.notes-body p { margin-bottom: 0.5rem; }
+.notes-body p:last-child { margin-bottom: 0; }
+.notes-body strong { color: var(--text); font-weight: 600; }
+.notes-body em { font-family: var(--font-serif); font-style: italic; color: var(--text); }
+.notes-body code {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: var(--surface2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+/* Small system display */
+.system-display {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.9;
+  margin-bottom: 0.9rem;
+}
+.system-display .eq-line { display: block; }
+.system-display .sys-lhs { color: var(--purple); }
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Systems of ODEs — phase portraits</h1>
+  <p>Explore two-dimensional autonomous systems <em>x</em>&prime; = <em>F</em>(<em>x</em>,<em>y</em>), <em>y</em>&prime; = <em>G</em>(<em>x</em>,<em>y</em>). For linear systems, eigenvalues of the coefficient matrix classify the portrait (node, saddle, spiral, center) and its stability. For nonlinear systems, equilibria sit at the intersections of the nullclines; the Jacobian at each equilibrium gives a local linearization. Click the phase plane to launch a trajectory.</p>
+</div>
+
+<div class="main">
+  <div class="panel" id="controlPanel">
+    <div class="panel-section">
+      <h2 class="panel-label" id="presetLabel">Preset systems</h2>
+      <div class="panel-sublabel">Linear</div>
+      <div class="chips" id="linearChips" role="group" aria-labelledby="presetLabel"></div>
+      <div class="panel-sublabel">Nonlinear</div>
+      <div class="chips" id="nonlinearChips" role="group"></div>
+    </div>
+
+    <!-- Linear editor (shown when preset is linear) -->
+    <div class="panel-section" id="linearEditor">
+      <h2 class="panel-label" id="linearMatrixLabel">Coefficient matrix A</h2>
+      <div class="matrix-editor-wrap" role="group" aria-labelledby="linearMatrixLabel">
+        <span class="matrix-symbol" aria-hidden="true">A =</span>
+        <div class="matrix-bracket">
+          <div class="bracket-left" aria-hidden="true"></div>
+          <div class="matrix-grid">
+            <input class="matrix-input" id="matA" type="number" step="0.1" value="-1" aria-label="Matrix entry a, row 1 col 1">
+            <input class="matrix-input" id="matB" type="number" step="0.1" value="0"  aria-label="Matrix entry b, row 1 col 2">
+            <input class="matrix-input" id="matC" type="number" step="0.1" value="0"  aria-label="Matrix entry c, row 2 col 1">
+            <input class="matrix-input" id="matD" type="number" step="0.1" value="-2" aria-label="Matrix entry d, row 2 col 2">
+          </div>
+          <div class="bracket-right" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="matrix-formula">x&prime; = a·x + b·y,&nbsp;&nbsp; y&prime; = c·x + d·y</div>
+    </div>
+
+    <!-- Nonlinear parameter sliders (populated dynamically) -->
+    <div class="panel-section" id="nonlinearEditor" style="display:none;">
+      <h2 class="panel-label">Parameters</h2>
+      <div id="paramSliders"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Viewing window</h2>
+      <div class="window-grid">
+        <label for="xMin">x<sub>min</sub></label>
+        <input type="number" id="xMin" step="0.5" value="-3">
+        <label for="xMax">x<sub>max</sub></label>
+        <input type="number" id="xMax" step="0.5" value="3">
+        <label for="yMin">y<sub>min</sub></label>
+        <input type="number" id="yMin" step="0.5" value="-3">
+        <label for="yMax">y<sub>max</sub></label>
+        <input type="number" id="yMax" step="0.5" value="3">
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Display</h2>
+      <div class="toggles">
+        <label class="toggle-row"><input type="checkbox" id="tglField" checked>Vector field<span class="toggle-swatch" style="background:#5a4a9e55"></span></label>
+        <label class="toggle-row"><input type="checkbox" id="tglNull" checked>Nullclines <span class="legend-line" style="background:#5a4a9e;"></span> <em style="font-style:normal;color:var(--text3);font-size:0.72rem;">F=0</em> <span class="legend-line" style="background:#c8553a;"></span> <em style="font-style:normal;color:var(--text3);font-size:0.72rem;">G=0</em></label>
+        <label class="toggle-row"><input type="checkbox" id="tglEq" checked>Equilibria<span class="toggle-swatch" style="background:#2c2a28"></span></label>
+        <label class="toggle-row"><input type="checkbox" id="tglTraj" checked>Trajectories<span class="toggle-swatch" style="background:#1a7a60"></span></label>
+        <label class="toggle-row"><input type="checkbox" id="tglBackward">Integrate backward also</label>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Trajectories</h2>
+      <div class="button-row">
+        <button class="btn" id="clearTrajBtn" type="button">Clear trajectories</button>
+        <button class="btn ghost" id="sampleBtn" type="button">Seed samples</button>
+      </div>
+      <div style="font-size:0.72rem;color:var(--text3);margin-top:0.5rem;line-height:1.5;">
+        Click anywhere on the phase plane to launch a trajectory from that point. Time step <code style="font-family:var(--mono);">dt = 0.02</code>, RK4 integrator, stops on exit or step cap.
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace">
+
+    <div class="card">
+      <div class="card-title">
+        Phase portrait
+        <span class="counter" id="presetName">Stable node</span>
+      </div>
+      <div class="card-subtitle" id="phaseSubtitle">Vector field arrows show direction; colors fade from teal (slow) to coral (fast).</div>
+      <div class="system-display" id="systemDisplay"></div>
+      <div class="phase-wrap">
+        <canvas id="phaseCanvas" role="img" aria-label="Phase portrait"></canvas>
+      </div>
+      <div class="phase-legend">
+        <span class="legend-item"><span class="legend-line" style="background:#5a4a9e;"></span>x-nullcline (F = 0)</span>
+        <span class="legend-item"><span class="legend-line" style="background:#c8553a;"></span>y-nullcline (G = 0)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#2c2a28"></span>equilibrium</span>
+        <span class="legend-item"><span class="legend-line" style="background:#1a7a60;"></span>trajectory</span>
+      </div>
+      <p class="portrait-hint">Click the plane to drop an initial condition.</p>
+    </div>
+
+    <div class="card" id="linearClassifyCard">
+      <div class="card-title">Eigenvalues &amp; classification</div>
+      <div class="card-subtitle">Eigenvalues of A determine the qualitative type of the portrait at the origin.</div>
+      <div class="classify-grid">
+        <div class="classify-left">
+          <ul class="eigen-list" id="eigenList"></ul>
+          <div id="typeBadgeWrap"></div>
+          <div id="traceDet" style="font-family:var(--mono);font-size:0.78rem;color:var(--text2);"></div>
+        </div>
+        <div>
+          <div class="panel-sublabel" style="text-align:center;">Eigenvalues in ℂ</div>
+          <div class="spectrum-wrap"><canvas id="spectrumCanvas" role="img" aria-label="Eigenvalues in complex plane"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="nonlinearClassifyCard" style="display:none;">
+      <div class="card-title">Equilibria &amp; local linearization</div>
+      <div class="card-subtitle">Equilibria are intersections of the nullclines F = 0 and G = 0. The Jacobian at each equilibrium gives the local linear system.</div>
+      <ul class="equilibria-list" id="equilibriaList"></ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        Time series
+        <span class="counter" id="tsCount">no trajectory</span>
+      </div>
+      <div class="card-subtitle">x(t) and y(t) of the most recently launched trajectory.</div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e"></span>x(t)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1a7a60"></span>y(t)</span>
+      </div>
+      <div class="chart-wrap"><canvas id="tsCanvas" role="img" aria-label="Time series of the most recent trajectory"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Notes</div>
+      <div class="notes-body" id="notesBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  Presets
+// ============================================================
+const LINEAR_PRESETS = [
+  { id: 'stableNode', name: 'Stable node', A: [[-1, 0], [0, -2]],
+    window: [-3, 3, -3, 3],
+    note: 'Two distinct <em>negative</em> real eigenvalues. All trajectories approach the origin tangent to the slow eigenvector (λ closer to 0).' },
+  { id: 'stableNode2', name: 'Stable node (coupled)', A: [[-2, 1], [0, -3]],
+    window: [-3, 3, -3, 3],
+    note: 'Upper-triangular, two negative eigenvalues (−2, −3). Not diagonal but still a stable node.' },
+  { id: 'unstableNode', name: 'Unstable node', A: [[1, 0], [0, 2]],
+    window: [-3, 3, -3, 3],
+    note: 'Two distinct <em>positive</em> real eigenvalues. Trajectories blow up along the fast eigenvector.' },
+  { id: 'saddle', name: 'Saddle point', A: [[1, 0], [0, -1]],
+    window: [-3, 3, -3, 3],
+    note: 'Real eigenvalues with <em>opposite signs</em>. The origin has a one-dimensional stable manifold (along the negative eigenvector) and a one-dimensional unstable manifold. Trajectories come in along the stable direction, then leave along the unstable one.' },
+  { id: 'stableSpiral', name: 'Stable spiral', A: [[-0.5, 1], [-1, -0.5]],
+    window: [-3, 3, -3, 3],
+    note: 'Complex eigenvalues with <em>negative real part</em>. Trajectories spiral inward. Real part controls decay rate, imaginary part controls rotation speed.' },
+  { id: 'unstableSpiral', name: 'Unstable spiral', A: [[0.3, 1], [-1, 0.3]],
+    window: [-4, 4, -4, 4],
+    note: 'Complex eigenvalues with <em>positive real part</em>. Trajectories spiral outward.' },
+  { id: 'center', name: 'Center', A: [[0, 1], [-1, 0]],
+    window: [-3, 3, -3, 3],
+    note: 'Pure imaginary eigenvalues ±i. The origin is a <em>center</em> — every nonzero trajectory is a closed orbit. Centers are structurally unstable: any small perturbation of A turns them into spirals.' },
+  { id: 'degenerate', name: 'Degenerate node', A: [[-1, 1], [0, -1]],
+    window: [-3, 3, -3, 3],
+    note: 'Repeated eigenvalue λ = −1 with a single eigenvector. All trajectories approach the origin tangent to that one direction. (Shear form.)' },
+];
+
+const NONLINEAR_PRESETS = [
+  {
+    id: 'lotkaVolterra',
+    name: 'Lotka-Volterra predator-prey',
+    params: [
+      { key: 'alpha', label: 'α', display: 'prey growth',    min: 0.2, max: 2.0, step: 0.05, value: 1.0 },
+      { key: 'beta',  label: 'β', display: 'predation rate', min: 0.2, max: 2.0, step: 0.05, value: 1.0 },
+      { key: 'gamma', label: 'γ', display: 'predator death', min: 0.2, max: 2.0, step: 0.05, value: 1.0 },
+      { key: 'delta', label: 'δ', display: 'conversion',     min: 0.2, max: 2.0, step: 0.05, value: 1.0 },
+    ],
+    F: (x, y, p) => p.alpha * x - p.beta * x * y,
+    G: (x, y, p) => p.delta * x * y - p.gamma * y,
+    window: [0, 4, 0, 3],
+    note: 'Classic predator-prey cycle: <em>x</em> is prey, <em>y</em> is predator. Equilibria at (0,0) (saddle) and at (γ/δ, α/β) (a center in the linearization). Trajectories off the axes are <em>closed periodic orbits</em> — populations cycle forever in this idealized model.',
+  },
+  {
+    id: 'competitiveLV',
+    name: 'Competitive Lotka-Volterra',
+    params: [
+      { key: 'r1',  label: 'r₁',  display: 'growth 1',    min: 0.2, max: 2.0, step: 0.05, value: 1.0 },
+      { key: 'r2',  label: 'r₂',  display: 'growth 2',    min: 0.2, max: 2.0, step: 0.05, value: 1.0 },
+      { key: 'a12', label: 'a₁₂', display: '1 from 2',    min: 0.2, max: 2.0, step: 0.05, value: 0.5 },
+      { key: 'a21', label: 'a₂₁', display: '2 from 1',    min: 0.2, max: 2.0, step: 0.05, value: 0.5 },
+    ],
+    F: (x, y, p) => p.r1 * x * (1 - x - p.a12 * y),
+    G: (x, y, p) => p.r2 * y * (1 - y - p.a21 * x),
+    window: [0, 1.6, 0, 1.6],
+    note: 'Two species competing for a shared resource, each with logistic self-limitation plus interspecific competition. Depending on the <em>a</em>-values, one species drives the other to extinction, they coexist, or the outcome depends on initial conditions (bistable).',
+  },
+  {
+    id: 'vanDerPol',
+    name: 'Van der Pol oscillator',
+    params: [
+      { key: 'mu', label: 'μ', display: 'nonlinearity', min: 0.0, max: 4.0, step: 0.05, value: 1.0 },
+    ],
+    F: (x, y, p) => y,
+    G: (x, y, p) => p.mu * (1 - x * x) * y - x,
+    window: [-3, 3, -4, 4],
+    note: 'Self-sustained oscillator with nonlinear damping: damping is <em>negative</em> for |x|&lt;1 (pumping energy in) and <em>positive</em> outside (dissipating it). All nonzero trajectories converge to a unique <em>stable limit cycle</em> — a hallmark of genuinely nonlinear behavior. The origin is an unstable spiral when 0&lt;μ&lt;2.',
+  },
+  {
+    id: 'pendulum',
+    name: 'Undamped pendulum',
+    params: [
+      { key: 'g', label: 'g/L', display: 'gravity', min: 0.5, max: 4.0, step: 0.1, value: 1.0 },
+    ],
+    F: (x, y, p) => y,
+    G: (x, y, p) => -p.g * Math.sin(x),
+    window: [-7, 7, -4, 4],
+    note: 'Pendulum angle <em>x</em> = θ, angular velocity <em>y</em> = θ&prime;. Equilibria at (<em>n</em>π, 0): centers when <em>n</em> even (hanging down), saddles when <em>n</em> odd (balanced upside down). The separatrices of the saddles split the plane into trapped oscillations (closed orbits) and over-the-top rotations.',
+  },
+  {
+    id: 'dampedPendulum',
+    name: 'Damped pendulum',
+    params: [
+      { key: 'g', label: 'g/L', display: 'gravity', min: 0.5, max: 4.0, step: 0.1, value: 1.0 },
+      { key: 'b', label: 'b',   display: 'damping', min: 0.0, max: 1.5, step: 0.05, value: 0.3 },
+    ],
+    F: (x, y, p) => y,
+    G: (x, y, p) => -p.g * Math.sin(x) - p.b * y,
+    window: [-7, 7, -4, 4],
+    note: 'Add linear damping <em>−b·y</em> and the centers at (2<em>n</em>π, 0) become <em>stable spirals</em> (or stable nodes for large <em>b</em>); the saddles stay saddles. Trajectories spiral into the nearest downward rest state.',
+  },
+  {
+    id: 'fitzhughNagumo',
+    name: 'FitzHugh-Nagumo',
+    params: [
+      { key: 'a', label: 'a', display: 'threshold', min: -0.5, max: 1.0, step: 0.05, value: 0.3 },
+      { key: 'b', label: 'b', display: 'recovery',  min: 0.05, max: 1.5, step: 0.05, value: 0.5 },
+      { key: 'I', label: 'I', display: 'input',     min: 0.0,  max: 1.0, step: 0.02, value: 0.0 },
+    ],
+    F: (x, y, p) => x - x * x * x / 3 - y + p.I,
+    G: (x, y, p) => 0.08 * (x + p.a - p.b * y),
+    window: [-2.5, 2.5, -1.5, 2],
+    note: 'Simplified neuron model: <em>x</em> is membrane voltage, <em>y</em> is a recovery variable. For subthreshold input <em>I</em> a single stable equilibrium sits on the left branch of the cubic x-nullcline; push <em>I</em> past a critical value and a Hopf bifurcation produces periodic spiking (a limit cycle).',
+  },
+];
+
+// ============================================================
+//  State
+// ============================================================
+const state = {
+  mode: 'linear',             // 'linear' | 'nonlinear'
+  activePresetId: 'stableNode',
+  matrix: [[-1, 0], [0, -2]], // for linear
+  params: {},                 // for nonlinear (key -> number)
+  F: null, G: null,           // functions (both modes)
+  window: [-3, 3, -3, 3],     // xmin, xmax, ymin, ymax
+  trajectories: [],           // array of { points: [[x,y],...], color, seed: [x0,y0] }
+  equilibria: [],             // [{ x, y, type, eigens, J }]
+  show: { field: true, nullclines: true, equilibria: true, trajectories: true, backward: false },
+  latestTraj: null,
+};
+
+// Palette for trajectories (cycling)
+const TRAJ_COLORS = ['#1a7a60', '#5a4a9e', '#c8553a', '#7a5a10', '#3a6b5e', '#9c3628', '#1a5a7a'];
+
+// ============================================================
+//  Math utilities
+// ============================================================
+function rk4(F, G, x, y, dt) {
+  const k1x = F(x, y);
+  const k1y = G(x, y);
+  const k2x = F(x + 0.5 * dt * k1x, y + 0.5 * dt * k1y);
+  const k2y = G(x + 0.5 * dt * k1x, y + 0.5 * dt * k1y);
+  const k3x = F(x + 0.5 * dt * k2x, y + 0.5 * dt * k2y);
+  const k3y = G(x + 0.5 * dt * k2x, y + 0.5 * dt * k2y);
+  const k4x = F(x + dt * k3x, y + dt * k3y);
+  const k4y = G(x + dt * k3x, y + dt * k3y);
+  return [
+    x + dt * (k1x + 2 * k2x + 2 * k3x + k4x) / 6,
+    y + dt * (k1y + 2 * k2y + 2 * k3y + k4y) / 6,
+  ];
+}
+
+function integrate(F, G, x0, y0, direction, maxSteps, win) {
+  const pts = [[x0, y0]];
+  const dt = 0.02 * direction;
+  let x = x0, y = y0;
+  const [xmin, xmax, ymin, ymax] = win;
+  const mx = (xmax - xmin) * 0.5;
+  const my = (ymax - ymin) * 0.5;
+  for (let i = 0; i < maxSteps; i++) {
+    const [nx, ny] = rk4(F, G, x, y, dt);
+    if (!Number.isFinite(nx) || !Number.isFinite(ny)) break;
+    // Stop if far outside (a bit beyond the view)
+    if (nx < xmin - mx || nx > xmax + mx || ny < ymin - my || ny > ymax + my) {
+      pts.push([nx, ny]);
+      break;
+    }
+    pts.push([nx, ny]);
+    // Stop if we've essentially stopped (near equilibrium)
+    const speed = Math.hypot(F(nx, ny), G(nx, ny));
+    if (speed < 1e-5) break;
+    x = nx; y = ny;
+  }
+  return pts;
+}
+
+function eigenvalues2x2(A) {
+  const tr = A[0][0] + A[1][1];
+  const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+  const disc = tr * tr - 4 * det;
+  if (disc >= 0) {
+    const s = Math.sqrt(disc);
+    return [{ re: (tr + s) / 2, im: 0 }, { re: (tr - s) / 2, im: 0 }];
+  }
+  const s = Math.sqrt(-disc);
+  return [{ re: tr / 2, im: s / 2 }, { re: tr / 2, im: -s / 2 }];
+}
+
+function classifyLinear(A) {
+  const tr = A[0][0] + A[1][1];
+  const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+  const disc = tr * tr - 4 * det;
+  const TOL = 1e-8;
+
+  // Degenerate cases
+  if (Math.abs(det) < TOL) {
+    return { name: 'Degenerate (det A = 0)', kind: 'neutral',
+             sub: 'Matrix is singular — a whole line of equilibria.' };
+  }
+  if (disc > TOL) {
+    // Real distinct
+    if (det < 0) return { name: 'Saddle point', kind: 'saddle',
+      sub: 'Real eigenvalues of opposite signs.' };
+    if (tr < 0) return { name: 'Stable node', kind: 'stable',
+      sub: 'Two negative real eigenvalues — sink.' };
+    return { name: 'Unstable node', kind: 'unstable',
+      sub: 'Two positive real eigenvalues — source.' };
+  }
+  if (disc < -TOL) {
+    // Complex
+    if (Math.abs(tr) < TOL) return { name: 'Center', kind: 'neutral',
+      sub: 'Pure imaginary eigenvalues — closed orbits.' };
+    if (tr < 0) return { name: 'Stable spiral', kind: 'stable',
+      sub: 'Complex eigenvalues with negative real part.' };
+    return { name: 'Unstable spiral', kind: 'unstable',
+      sub: 'Complex eigenvalues with positive real part.' };
+  }
+  // disc ≈ 0 — repeated eigenvalue
+  if (tr < 0) return { name: 'Degenerate stable node', kind: 'stable',
+    sub: 'Repeated negative eigenvalue.' };
+  if (tr > 0) return { name: 'Degenerate unstable node', kind: 'unstable',
+    sub: 'Repeated positive eigenvalue.' };
+  return { name: 'Degenerate (λ = 0)', kind: 'neutral', sub: 'Repeated zero eigenvalue.' };
+}
+
+function classifyByEigens(eigens) {
+  const TOL = 1e-6;
+  const l1 = eigens[0], l2 = eigens[1];
+  const complex = Math.abs(l1.im) > TOL;
+  if (complex) {
+    if (Math.abs(l1.re) < TOL) return { name: 'center', kind: 'neutral' };
+    if (l1.re < 0) return { name: 'stable spiral', kind: 'stable' };
+    return { name: 'unstable spiral', kind: 'unstable' };
+  }
+  // real
+  if (l1.re * l2.re < -TOL) return { name: 'saddle', kind: 'saddle' };
+  if (l1.re < 0 && l2.re < 0) return { name: 'stable node', kind: 'stable' };
+  if (l1.re > 0 && l2.re > 0) return { name: 'unstable node', kind: 'unstable' };
+  return { name: 'degenerate', kind: 'neutral' };
+}
+
+// Numerical Jacobian via central differences
+function jacobian(F, G, x, y) {
+  const h = 1e-5;
+  const Fx = (F(x + h, y) - F(x - h, y)) / (2 * h);
+  const Fy = (F(x, y + h) - F(x, y - h)) / (2 * h);
+  const Gx = (G(x + h, y) - G(x - h, y)) / (2 * h);
+  const Gy = (G(x, y + h) - G(x, y - h)) / (2 * h);
+  return [[Fx, Fy], [Gx, Gy]];
+}
+
+// Newton's method for system F(x,y)=0, G(x,y)=0 starting from (x0,y0)
+function newton(F, G, x0, y0, maxIters = 40) {
+  let x = x0, y = y0;
+  for (let i = 0; i < maxIters; i++) {
+    const fx = F(x, y), gy = G(x, y);
+    const err = Math.hypot(fx, gy);
+    if (err < 1e-10) return [x, y];
+    const J = jacobian(F, G, x, y);
+    const det = J[0][0] * J[1][1] - J[0][1] * J[1][0];
+    if (Math.abs(det) < 1e-14) return null;
+    const dx = (J[1][1] * fx - J[0][1] * gy) / det;
+    const dy = (-J[1][0] * fx + J[0][0] * gy) / det;
+    x -= dx; y -= dy;
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    if (Math.abs(dx) + Math.abs(dy) < 1e-12) return [x, y];
+  }
+  const finalErr = Math.hypot(F(x, y), G(x, y));
+  if (finalErr < 1e-6) return [x, y];
+  return null;
+}
+
+function findEquilibria(F, G, win) {
+  const [xmin, xmax, ymin, ymax] = win;
+  const results = [];
+  // Expand a little beyond the window so on-boundary equilibria are caught
+  const pad = 0.15;
+  const sx = xmin - pad * (xmax - xmin);
+  const ex = xmax + pad * (xmax - xmin);
+  const sy = ymin - pad * (ymax - ymin);
+  const ey = ymax + pad * (ymax - ymin);
+  const N = 11;
+  for (let i = 0; i <= N; i++) {
+    for (let j = 0; j <= N; j++) {
+      const x0 = sx + (ex - sx) * i / N;
+      const y0 = sy + (ey - sy) * j / N;
+      const r = newton(F, G, x0, y0, 40);
+      if (!r) continue;
+      const [x, y] = r;
+      // must still be close-ish to the search window (prevents wild finds)
+      if (x < xmin - 2 * (xmax - xmin) || x > xmax + 2 * (xmax - xmin)) continue;
+      if (y < ymin - 2 * (ymax - ymin) || y > ymax + 2 * (ymax - ymin)) continue;
+      // dedupe
+      const tol = 0.005 * Math.max(xmax - xmin, ymax - ymin);
+      const dup = results.some(r2 => Math.abs(r2[0] - x) < tol && Math.abs(r2[1] - y) < tol);
+      if (!dup) results.push([x, y]);
+    }
+  }
+  return results;
+}
+
+// ============================================================
+//  Linear state derived from matrix
+// ============================================================
+function setLinearFromMatrix() {
+  const A = state.matrix;
+  state.F = (x, y) => A[0][0] * x + A[0][1] * y;
+  state.G = (x, y) => A[1][0] * x + A[1][1] * y;
+}
+
+// ============================================================
+//  Preset loading
+// ============================================================
+function loadPreset(id) {
+  const lin = LINEAR_PRESETS.find(p => p.id === id);
+  if (lin) {
+    state.mode = 'linear';
+    state.activePresetId = id;
+    state.matrix = lin.A.map(r => r.slice());
+    state.window = lin.window.slice();
+    state.trajectories = [];
+    state.latestTraj = null;
+    setLinearFromMatrix();
+    document.getElementById('linearEditor').style.display = '';
+    document.getElementById('nonlinearEditor').style.display = 'none';
+    document.getElementById('linearClassifyCard').style.display = '';
+    document.getElementById('nonlinearClassifyCard').style.display = 'none';
+    document.getElementById('matA').value = lin.A[0][0];
+    document.getElementById('matB').value = lin.A[0][1];
+    document.getElementById('matC').value = lin.A[1][0];
+    document.getElementById('matD').value = lin.A[1][1];
+    applyWindowToInputs();
+    document.getElementById('presetName').textContent = lin.name;
+    setNotes(lin.note);
+    updateActiveChips();
+    recomputeEverything();
+    return;
+  }
+  const nl = NONLINEAR_PRESETS.find(p => p.id === id);
+  if (nl) {
+    state.mode = 'nonlinear';
+    state.activePresetId = id;
+    state.params = {};
+    for (const pr of nl.params) state.params[pr.key] = pr.value;
+    state.F = (x, y) => nl.F(x, y, state.params);
+    state.G = (x, y) => nl.G(x, y, state.params);
+    state.window = nl.window.slice();
+    state.trajectories = [];
+    state.latestTraj = null;
+    document.getElementById('linearEditor').style.display = 'none';
+    document.getElementById('nonlinearEditor').style.display = '';
+    document.getElementById('linearClassifyCard').style.display = 'none';
+    document.getElementById('nonlinearClassifyCard').style.display = '';
+    buildParamSliders(nl);
+    applyWindowToInputs();
+    document.getElementById('presetName').textContent = nl.name;
+    setNotes(nl.note);
+    updateActiveChips();
+    recomputeEverything();
+  }
+}
+
+function buildParamSliders(preset) {
+  const wrap = document.getElementById('paramSliders');
+  wrap.innerHTML = '';
+  for (const pr of preset.params) {
+    const blk = document.createElement('div');
+    blk.className = 'param-block';
+    const v = state.params[pr.key];
+    blk.innerHTML = `
+      <div class="param-header">
+        <span class="param-name">${pr.label} <em>${pr.display}</em></span>
+        <span class="param-val" id="pv_${pr.key}">${formatNum(v)}</span>
+      </div>
+      <div class="param-row">
+        <input type="range" min="${pr.min}" max="${pr.max}" step="${pr.step}" value="${v}" id="ps_${pr.key}" aria-label="${pr.label} (${pr.display})">
+      </div>`;
+    wrap.appendChild(blk);
+    const slider = blk.querySelector('input');
+    const valEl = blk.querySelector(`#pv_${pr.key}`);
+    slider.addEventListener('input', () => {
+      const val = parseFloat(slider.value);
+      state.params[pr.key] = val;
+      valEl.textContent = formatNum(val);
+      state.F = (x, y) => preset.F(x, y, state.params);
+      state.G = (x, y) => preset.G(x, y, state.params);
+      state.trajectories = [];
+      state.latestTraj = null;
+      recomputeEverything();
+    });
+  }
+}
+
+function formatNum(v) {
+  if (Math.abs(v) >= 10) return v.toFixed(1);
+  return v.toFixed(2);
+}
+
+function updateActiveChips() {
+  document.querySelectorAll('#linearChips .chip, #nonlinearChips .chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.preset === state.activePresetId);
+  });
+}
+
+function applyWindowToInputs() {
+  document.getElementById('xMin').value = state.window[0];
+  document.getElementById('xMax').value = state.window[1];
+  document.getElementById('yMin').value = state.window[2];
+  document.getElementById('yMax').value = state.window[3];
+}
+
+function setNotes(html) {
+  document.getElementById('notesBody').innerHTML = `<p>${html}</p>`;
+}
+
+// ============================================================
+//  Recompute (equilibria, classification) and redraw
+// ============================================================
+function recomputeEverything() {
+  if (state.mode === 'linear') {
+    // Linear: always exactly one equilibrium at origin (when A invertible)
+    const A = state.matrix;
+    const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+    if (Math.abs(det) > 1e-10) {
+      state.equilibria = [{ x: 0, y: 0, eigens: eigenvalues2x2(A), J: A,
+        cls: classifyByEigens(eigenvalues2x2(A)) }];
+    } else {
+      state.equilibria = []; // singular — suppress point marker
+    }
+    renderLinearClassification();
+  } else {
+    // Nonlinear: find equilibria numerically; classify each
+    const eqPts = findEquilibria(state.F, state.G, state.window);
+    state.equilibria = eqPts.map(([x, y]) => {
+      const J = jacobian(state.F, state.G, x, y);
+      const eigens = eigenvalues2x2(J);
+      return { x, y, eigens, J, cls: classifyByEigens(eigens) };
+    });
+    renderNonlinearClassification();
+  }
+  updateSystemDisplay();
+  drawPhasePortrait();
+  drawSpectrum();
+}
+
+function updateSystemDisplay() {
+  const el = document.getElementById('systemDisplay');
+  if (state.mode === 'linear') {
+    const A = state.matrix;
+    el.innerHTML = `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = ${term(A[0][0])}x ${termSigned(A[0][1])}y</span>` +
+                   `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = ${term(A[1][0])}x ${termSigned(A[1][1])}y</span>`;
+  } else {
+    const p = NONLINEAR_PRESETS.find(q => q.id === state.activePresetId);
+    el.innerHTML = nonlinearEquationLabel(p);
+  }
+}
+
+function nonlinearEquationLabel(p) {
+  const pr = state.params;
+  const fmt = v => formatNum(v);
+  if (p.id === 'lotkaVolterra') {
+    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = ${fmt(pr.alpha)}x − ${fmt(pr.beta)}·xy</span>` +
+           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = ${fmt(pr.delta)}·xy − ${fmt(pr.gamma)}y</span>`;
+  }
+  if (p.id === 'competitiveLV') {
+    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = ${fmt(pr.r1)}·x(1 − x − ${fmt(pr.a12)}y)</span>` +
+           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = ${fmt(pr.r2)}·y(1 − y − ${fmt(pr.a21)}x)</span>`;
+  }
+  if (p.id === 'vanDerPol') {
+    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = y</span>` +
+           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = ${fmt(pr.mu)}(1 − x²)y − x</span>`;
+  }
+  if (p.id === 'pendulum') {
+    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = y</span>` +
+           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = −${fmt(pr.g)}·sin(x)</span>`;
+  }
+  if (p.id === 'dampedPendulum') {
+    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = y</span>` +
+           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = −${fmt(pr.g)}·sin(x) − ${fmt(pr.b)}y</span>`;
+  }
+  if (p.id === 'fitzhughNagumo') {
+    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = x − x³/3 − y + ${fmt(pr.I)}</span>` +
+           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = 0.08·(x + ${fmt(pr.a)} − ${fmt(pr.b)}y)</span>`;
+  }
+  return '';
+}
+
+function term(c) {
+  const s = formatNum(c);
+  return s;
+}
+function termSigned(c) {
+  if (c >= 0) return `+ ${formatNum(c)}·`;
+  return `− ${formatNum(-c)}·`;
+}
+
+// ============================================================
+//  Render: linear classification card
+// ============================================================
+function renderLinearClassification() {
+  const A = state.matrix;
+  const eigens = eigenvalues2x2(A);
+  const cls = classifyLinear(A);
+  const tr = A[0][0] + A[1][1];
+  const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+  const disc = tr * tr - 4 * det;
+
+  // Eigen list
+  const list = document.getElementById('eigenList');
+  list.innerHTML = '';
+  const isComplex = Math.abs(eigens[0].im) > 1e-8;
+  if (isComplex) {
+    for (let i = 0; i < 2; i++) {
+      const e = eigens[i];
+      const mod = Math.hypot(e.re, e.im);
+      const sign = e.im >= 0 ? '+' : '−';
+      const li = document.createElement('li');
+      li.className = 'eigen-item';
+      li.innerHTML = `<span class="eigen-symbol">λ${i === 0 ? '₁' : '₂'}</span>` +
+                     `<span class="eigen-val">${e.re.toFixed(3)} ${sign} ${Math.abs(e.im).toFixed(3)}i</span>` +
+                     `${modBadge(mod)}`;
+      list.appendChild(li);
+    }
+  } else {
+    // Real — show both, even if equal
+    const sameSign = Math.abs(eigens[0].re - eigens[1].re) < 1e-8;
+    if (sameSign) {
+      const li = document.createElement('li');
+      li.className = 'eigen-item';
+      li.innerHTML = `<span class="eigen-symbol">λ₁,₂</span>` +
+                     `<span class="eigen-val">${eigens[0].re.toFixed(4)}</span>` +
+                     `${modBadge(Math.abs(eigens[0].re))}`;
+      list.appendChild(li);
+    } else {
+      for (let i = 0; i < 2; i++) {
+        const e = eigens[i];
+        const li = document.createElement('li');
+        li.className = 'eigen-item';
+        li.innerHTML = `<span class="eigen-symbol">λ${i === 0 ? '₁' : '₂'}</span>` +
+                       `<span class="eigen-val">${e.re.toFixed(4)}</span>` +
+                       `${modBadge(Math.abs(e.re))}`;
+        list.appendChild(li);
+      }
+    }
+  }
+
+  // Type badge
+  const wrap = document.getElementById('typeBadgeWrap');
+  wrap.innerHTML = `<div class="type-badge ${cls.kind}">${cls.name}</div>` +
+                   `<div style="font-size:0.76rem;color:var(--text2);margin-top:0.35rem;line-height:1.5;">${cls.sub}</div>`;
+
+  // Trace / det / disc
+  document.getElementById('traceDet').innerHTML =
+    `tr(A) = ${tr.toFixed(3)} &nbsp;·&nbsp; det(A) = ${det.toFixed(3)} &nbsp;·&nbsp; Δ = tr² − 4·det = ${disc.toFixed(3)}`;
+}
+
+function modBadge(mod) {
+  const v = mod.toFixed(3);
+  if (mod < 1e-6) return `<span class="eigen-mod mod-neutral">Re ≈ 0</span>`;
+  return '';
+}
+
+// ============================================================
+//  Render: nonlinear classification card
+// ============================================================
+function renderNonlinearClassification() {
+  const wrap = document.getElementById('equilibriaList');
+  wrap.innerHTML = '';
+  if (state.equilibria.length === 0) {
+    const p = document.createElement('p');
+    p.className = 'no-equilibria';
+    p.textContent = 'No equilibria found in this window.';
+    wrap.appendChild(p);
+    return;
+  }
+  for (const eq of state.equilibria) {
+    const card = document.createElement('li');
+    card.className = `equilibrium-card ${eq.cls.kind}`;
+    const isComplex = Math.abs(eq.eigens[0].im) > 1e-8;
+    let eigStr;
+    if (isComplex) {
+      const e = eq.eigens[0];
+      eigStr = `${e.re.toFixed(3)} ± ${Math.abs(e.im).toFixed(3)}i`;
+    } else {
+      eigStr = `${eq.eigens[0].re.toFixed(3)},  ${eq.eigens[1].re.toFixed(3)}`;
+    }
+    const J = eq.J;
+    card.innerHTML = `
+      <div class="eq-header">
+        <span class="eq-point">(${formatPt(eq.x)}, ${formatPt(eq.y)})</span>
+        <span class="eq-type ${eq.cls.kind}">${eq.cls.name}</span>
+      </div>
+      <div class="eq-body">
+        <span class="lbl">J</span>
+        <span class="jacobian-inline">[[${J[0][0].toFixed(3)}, ${J[0][1].toFixed(3)}], [${J[1][0].toFixed(3)}, ${J[1][1].toFixed(3)}]]</span>
+        <span class="lbl">λ</span>
+        <span>${eigStr}</span>
+      </div>`;
+    wrap.appendChild(card);
+  }
+}
+
+function formatPt(v) {
+  if (Math.abs(v) < 1e-5) return '0';
+  return v.toFixed(3);
+}
+
+// ============================================================
+//  Phase portrait canvas
+// ============================================================
+const phaseCanvas = document.getElementById('phaseCanvas');
+const phaseCtx = phaseCanvas.getContext('2d');
+
+function resizeCanvas() {
+  const rect = phaseCanvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  phaseCanvas.width = Math.max(1, Math.round(rect.width * dpr));
+  phaseCanvas.height = Math.max(1, Math.round(rect.height * dpr));
+  phaseCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function worldToPx(x, y, rect) {
+  const [xmin, xmax, ymin, ymax] = state.window;
+  const px = (x - xmin) / (xmax - xmin) * rect.width;
+  const py = rect.height - (y - ymin) / (ymax - ymin) * rect.height;
+  return [px, py];
+}
+
+function pxToWorld(px, py, rect) {
+  const [xmin, xmax, ymin, ymax] = state.window;
+  const x = xmin + (px / rect.width) * (xmax - xmin);
+  const y = ymin + (1 - py / rect.height) * (ymax - ymin);
+  return [x, y];
+}
+
+function drawPhasePortrait() {
+  resizeCanvas();
+  const rect = phaseCanvas.getBoundingClientRect();
+  const ctx = phaseCtx;
+  ctx.clearRect(0, 0, rect.width, rect.height);
+  ctx.save();
+
+  // Background grid
+  drawGrid(ctx, rect);
+
+  // Vector field
+  if (state.show.field) drawVectorField(ctx, rect);
+
+  // Nullclines
+  if (state.show.nullclines) drawNullclines(ctx, rect);
+
+  // Trajectories
+  if (state.show.trajectories) drawTrajectories(ctx, rect);
+
+  // Equilibria
+  if (state.show.equilibria) drawEquilibria(ctx, rect);
+
+  // Axes labels
+  drawAxisLabels(ctx, rect);
+
+  ctx.restore();
+}
+
+function drawGrid(ctx, rect) {
+  const [xmin, xmax, ymin, ymax] = state.window;
+  ctx.strokeStyle = '#ecebe4';
+  ctx.lineWidth = 1;
+
+  // nice tick steps
+  const xStep = niceTick(xmax - xmin);
+  const yStep = niceTick(ymax - ymin);
+
+  for (let xv = Math.ceil(xmin / xStep) * xStep; xv <= xmax + 1e-9; xv += xStep) {
+    const [px] = worldToPx(xv, ymin, rect);
+    ctx.beginPath();
+    ctx.moveTo(px, 0);
+    ctx.lineTo(px, rect.height);
+    ctx.stroke();
+  }
+  for (let yv = Math.ceil(ymin / yStep) * yStep; yv <= ymax + 1e-9; yv += yStep) {
+    const [, py] = worldToPx(xmin, yv, rect);
+    ctx.beginPath();
+    ctx.moveTo(0, py);
+    ctx.lineTo(rect.width, py);
+    ctx.stroke();
+  }
+
+  // axes (if in view)
+  ctx.strokeStyle = '#a8a498';
+  ctx.lineWidth = 1.2;
+  if (ymin <= 0 && ymax >= 0) {
+    const [, p0] = worldToPx(xmin, 0, rect);
+    ctx.beginPath(); ctx.moveTo(0, p0); ctx.lineTo(rect.width, p0); ctx.stroke();
+  }
+  if (xmin <= 0 && xmax >= 0) {
+    const [p0] = worldToPx(0, ymin, rect);
+    ctx.beginPath(); ctx.moveTo(p0, 0); ctx.lineTo(p0, rect.height); ctx.stroke();
+  }
+}
+
+function niceTick(span) {
+  const rough = span / 8;
+  const exp = Math.floor(Math.log10(rough));
+  const base = rough / Math.pow(10, exp);
+  let nice;
+  if (base < 1.5) nice = 1;
+  else if (base < 3) nice = 2;
+  else if (base < 7) nice = 5;
+  else nice = 10;
+  return nice * Math.pow(10, exp);
+}
+
+function drawAxisLabels(ctx, rect) {
+  ctx.fillStyle = '#6a6862';
+  ctx.font = `11px 'JetBrains Mono', monospace`;
+  const [xmin, xmax, ymin, ymax] = state.window;
+  const xStep = niceTick(xmax - xmin);
+  const yStep = niceTick(ymax - ymin);
+  // baseline for labels: bottom edge, slight offset from axis
+  for (let xv = Math.ceil(xmin / xStep) * xStep; xv <= xmax + 1e-9; xv += xStep) {
+    if (Math.abs(xv) < 1e-9 && ymin <= 0 && ymax >= 0) continue;
+    const [px] = worldToPx(xv, 0, rect);
+    ctx.fillText(formatTick(xv), px + 3, rect.height - 4);
+  }
+  for (let yv = Math.ceil(ymin / yStep) * yStep; yv <= ymax + 1e-9; yv += yStep) {
+    if (Math.abs(yv) < 1e-9 && xmin <= 0 && xmax >= 0) continue;
+    const [, py] = worldToPx(0, yv, rect);
+    ctx.fillText(formatTick(yv), 4, py - 3);
+  }
+}
+function formatTick(v) {
+  if (Math.abs(v) < 1e-9) return '0';
+  if (Math.abs(v) >= 100) return v.toFixed(0);
+  if (Math.abs(v) >= 10) return v.toFixed(1);
+  return v.toFixed(2).replace(/\.?0+$/, '');
+}
+
+function drawVectorField(ctx, rect) {
+  const N = 22;
+  const [xmin, xmax, ymin, ymax] = state.window;
+  // Compute magnitudes first for normalization
+  const maxMag = sampleMaxMagnitude(N);
+  const cellW = rect.width / N;
+  const cellH = rect.height / N;
+  const arrowLen = Math.min(cellW, cellH) * 0.7;
+
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      const x = xmin + (i + 0.5) * (xmax - xmin) / N;
+      const y = ymin + (j + 0.5) * (ymax - ymin) / N;
+      const fx = state.F(x, y);
+      const fy = state.G(x, y);
+      const mag = Math.hypot(fx, fy);
+      if (!Number.isFinite(mag) || mag < 1e-10) continue;
+      const frac = Math.min(1, mag / (maxMag + 1e-10));
+      // Normalize direction
+      const ux = fx / mag;
+      const uy = fy / mag;
+      // Canvas y flips — multiply uy by -1
+      const [px, py] = worldToPx(x, y, rect);
+      const tipX = px + ux * arrowLen * 0.5;
+      const tipY = py - uy * arrowLen * 0.5;
+      const tailX = px - ux * arrowLen * 0.5;
+      const tailY = py + uy * arrowLen * 0.5;
+
+      // Color: interpolate between teal (slow) and coral (fast)
+      const col = interpColor('#1a7a60', '#c8553a', frac);
+      ctx.strokeStyle = col;
+      ctx.fillStyle = col;
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(tipX, tipY);
+      ctx.stroke();
+      // arrowhead
+      const headLen = arrowLen * 0.3;
+      const angle = Math.atan2(tipY - tailY, tipX - tailX);
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(tipX - headLen * Math.cos(angle - 0.45), tipY - headLen * Math.sin(angle - 0.45));
+      ctx.lineTo(tipX - headLen * Math.cos(angle + 0.45), tipY - headLen * Math.sin(angle + 0.45));
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+}
+
+function sampleMaxMagnitude(N) {
+  const [xmin, xmax, ymin, ymax] = state.window;
+  let maxM = 0;
+  const sampleN = Math.min(N, 14);
+  const mags = [];
+  for (let i = 0; i < sampleN; i++) {
+    for (let j = 0; j < sampleN; j++) {
+      const x = xmin + (i + 0.5) * (xmax - xmin) / sampleN;
+      const y = ymin + (j + 0.5) * (ymax - ymin) / sampleN;
+      const m = Math.hypot(state.F(x, y), state.G(x, y));
+      if (Number.isFinite(m)) mags.push(m);
+    }
+  }
+  if (mags.length === 0) return 1;
+  mags.sort((a, b) => a - b);
+  // Use 90th percentile so a few outlier-big vectors don't wash out the field
+  const p = mags[Math.min(mags.length - 1, Math.floor(mags.length * 0.9))];
+  return Math.max(p, 1e-10);
+}
+
+function interpColor(c1, c2, t) {
+  const p1 = hexToRgb(c1), p2 = hexToRgb(c2);
+  const r = Math.round(p1[0] + (p2[0] - p1[0]) * t);
+  const g = Math.round(p1[1] + (p2[1] - p1[1]) * t);
+  const b = Math.round(p1[2] + (p2[2] - p1[2]) * t);
+  // alpha scales mildly so slow regions fade
+  const a = 0.45 + 0.45 * t;
+  return `rgba(${r},${g},${b},${a.toFixed(2)})`;
+}
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+
+function drawNullclines(ctx, rect) {
+  // March a grid and draw line segments where F or G changes sign
+  drawZeroContour(ctx, rect, state.F, '#5a4a9e', 1.5);
+  drawZeroContour(ctx, rect, state.G, '#c8553a', 1.5);
+}
+
+function drawZeroContour(ctx, rect, fn, color, width) {
+  const N = 130;
+  const [xmin, xmax, ymin, ymax] = state.window;
+  const dx = (xmax - xmin) / N;
+  const dy = (ymax - ymin) / N;
+  // sample grid values
+  const vals = new Float64Array((N + 1) * (N + 1));
+  for (let j = 0; j <= N; j++) {
+    for (let i = 0; i <= N; i++) {
+      const x = xmin + i * dx;
+      const y = ymin + j * dy;
+      vals[j * (N + 1) + i] = fn(x, y);
+    }
+  }
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.beginPath();
+  // For each cell, marching-squares zero contour (with linear interp)
+  for (let j = 0; j < N; j++) {
+    for (let i = 0; i < N; i++) {
+      const v00 = vals[j * (N + 1) + i];
+      const v10 = vals[j * (N + 1) + (i + 1)];
+      const v01 = vals[(j + 1) * (N + 1) + i];
+      const v11 = vals[(j + 1) * (N + 1) + (i + 1)];
+      if (!Number.isFinite(v00) || !Number.isFinite(v10) ||
+          !Number.isFinite(v01) || !Number.isFinite(v11)) continue;
+      const code = (v00 > 0 ? 1 : 0) | (v10 > 0 ? 2 : 0) | (v11 > 0 ? 4 : 0) | (v01 > 0 ? 8 : 0);
+      if (code === 0 || code === 15) continue;
+      const x0 = xmin + i * dx, x1 = xmin + (i + 1) * dx;
+      const y0 = ymin + j * dy, y1 = ymin + (j + 1) * dy;
+      const edges = [];
+      const add = (ax, ay, bx, by, va, vb) => {
+        const t = va / (va - vb);
+        edges.push([ax + t * (bx - ax), ay + t * (by - ay)]);
+      };
+      // bottom edge (v00-v10)
+      if ((v00 > 0) !== (v10 > 0)) add(x0, y0, x1, y0, v00, v10);
+      // right edge (v10-v11)
+      if ((v10 > 0) !== (v11 > 0)) add(x1, y0, x1, y1, v10, v11);
+      // top edge (v01-v11)
+      if ((v01 > 0) !== (v11 > 0)) add(x0, y1, x1, y1, v01, v11);
+      // left edge (v00-v01)
+      if ((v00 > 0) !== (v01 > 0)) add(x0, y0, x0, y1, v00, v01);
+      if (edges.length >= 2) {
+        const [p1, p2] = [edges[0], edges[1]];
+        const [px1, py1] = worldToPx(p1[0], p1[1], rect);
+        const [px2, py2] = worldToPx(p2[0], p2[1], rect);
+        ctx.moveTo(px1, py1);
+        ctx.lineTo(px2, py2);
+        if (edges.length === 4) {
+          // ambiguous saddle — draw second segment too
+          const [px3, py3] = worldToPx(edges[2][0], edges[2][1], rect);
+          const [px4, py4] = worldToPx(edges[3][0], edges[3][1], rect);
+          ctx.moveTo(px3, py3);
+          ctx.lineTo(px4, py4);
+        }
+      }
+    }
+  }
+  ctx.stroke();
+}
+
+function drawTrajectories(ctx, rect) {
+  for (const t of state.trajectories) {
+    if (t.points.length < 2) continue;
+    ctx.strokeStyle = t.color;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    let started = false;
+    for (const [x, y] of t.points) {
+      if (!Number.isFinite(x) || !Number.isFinite(y)) { started = false; continue; }
+      const [px, py] = worldToPx(x, y, rect);
+      if (!started) { ctx.moveTo(px, py); started = true; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    // draw seed point
+    const [sx, sy] = worldToPx(t.seed[0], t.seed[1], rect);
+    ctx.fillStyle = t.color;
+    ctx.beginPath();
+    ctx.arc(sx, sy, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawEquilibria(ctx, rect) {
+  for (const eq of state.equilibria) {
+    const [px, py] = worldToPx(eq.x, eq.y, rect);
+    const kind = eq.cls ? eq.cls.kind : 'neutral';
+    let fill;
+    if (kind === 'stable') fill = '#1a7a60';
+    else if (kind === 'unstable') fill = '#9c3628';
+    else if (kind === 'saddle') fill = '#7a5a10';
+    else fill = '#5a4a9e';
+    // outer ring
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#2c2a28';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(px, py, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // inner filled dot
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.arc(px, py, 3.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+// ============================================================
+//  Trajectory launching
+// ============================================================
+function launchTrajectory(x0, y0) {
+  if (!Number.isFinite(x0) || !Number.isFinite(y0)) return;
+  const forward = integrate(state.F, state.G, x0, y0, +1, 4000, state.window);
+  let allPts = forward;
+  if (state.show.backward) {
+    const backward = integrate(state.F, state.G, x0, y0, -1, 4000, state.window);
+    backward.reverse();
+    // Merge: backward ends at (x0,y0); forward starts at (x0,y0)
+    allPts = backward.concat(forward.slice(1));
+  }
+  const color = TRAJ_COLORS[state.trajectories.length % TRAJ_COLORS.length];
+  const traj = { points: allPts, seed: [x0, y0], color };
+  state.trajectories.push(traj);
+  state.latestTraj = traj;
+  drawPhasePortrait();
+  updateTimeSeries();
+}
+
+phaseCanvas.addEventListener('click', (e) => {
+  const rect = phaseCanvas.getBoundingClientRect();
+  const px = e.clientX - rect.left;
+  const py = e.clientY - rect.top;
+  const [x, y] = pxToWorld(px, py, rect);
+  launchTrajectory(x, y);
+});
+
+// ============================================================
+//  Spectrum chart (eigenvalues in complex plane) — linear only
+// ============================================================
+const spectrumCanvas = document.getElementById('spectrumCanvas');
+const specCtx = spectrumCanvas.getContext('2d');
+
+function drawSpectrum() {
+  if (state.mode !== 'linear') return;
+  const rect = spectrumCanvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  spectrumCanvas.width = Math.max(1, Math.round(rect.width * dpr));
+  spectrumCanvas.height = Math.max(1, Math.round(rect.height * dpr));
+  specCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  specCtx.clearRect(0, 0, rect.width, rect.height);
+
+  const eigens = eigenvalues2x2(state.matrix);
+  const maxAbs = Math.max(1.2, ...eigens.map(e => Math.max(Math.abs(e.re), Math.abs(e.im))) ) * 1.25;
+  const xmin = -maxAbs, xmax = maxAbs, ymin = -maxAbs, ymax = maxAbs;
+  const toPx = (x, y) => [
+    (x - xmin) / (xmax - xmin) * rect.width,
+    rect.height - (y - ymin) / (ymax - ymin) * rect.height
+  ];
+
+  // Grid and axes
+  specCtx.strokeStyle = '#ecebe4';
+  specCtx.lineWidth = 1;
+  const step = niceTick(xmax - xmin);
+  for (let v = Math.ceil(xmin / step) * step; v <= xmax; v += step) {
+    const [px] = toPx(v, 0);
+    specCtx.beginPath(); specCtx.moveTo(px, 0); specCtx.lineTo(px, rect.height); specCtx.stroke();
+    const [, py] = toPx(0, v);
+    specCtx.beginPath(); specCtx.moveTo(0, py); specCtx.lineTo(rect.width, py); specCtx.stroke();
+  }
+
+  // Axes
+  specCtx.strokeStyle = '#a8a498';
+  specCtx.lineWidth = 1.2;
+  const [, py0] = toPx(0, 0);
+  specCtx.beginPath(); specCtx.moveTo(0, py0); specCtx.lineTo(rect.width, py0); specCtx.stroke();
+  const [px0] = toPx(0, 0);
+  specCtx.beginPath(); specCtx.moveTo(px0, 0); specCtx.lineTo(px0, rect.height); specCtx.stroke();
+
+  // Imaginary axis highlight (dashed at Re=0) — indicates stability boundary
+  specCtx.strokeStyle = '#a67a1e';
+  specCtx.lineWidth = 1.2;
+  specCtx.setLineDash([4, 4]);
+  specCtx.beginPath();
+  specCtx.moveTo(px0, 0); specCtx.lineTo(px0, rect.height);
+  specCtx.stroke();
+  specCtx.setLineDash([]);
+
+  // Axis labels
+  specCtx.fillStyle = '#6a6862';
+  specCtx.font = `10px 'JetBrains Mono', monospace`;
+  specCtx.fillText('Re', rect.width - 20, py0 - 4);
+  specCtx.fillText('Im', px0 + 4, 10);
+
+  // Shade stable half-plane subtly (Re < 0)
+  specCtx.fillStyle = 'rgba(26, 122, 96, 0.05)';
+  specCtx.fillRect(0, 0, px0, rect.height);
+
+  // Plot eigenvalues
+  for (const e of eigens) {
+    const [px, py] = toPx(e.re, e.im);
+    specCtx.fillStyle = '#ffffff';
+    specCtx.strokeStyle = '#5a4a9e';
+    specCtx.lineWidth = 2;
+    specCtx.beginPath();
+    specCtx.arc(px, py, 6, 0, Math.PI * 2);
+    specCtx.fill();
+    specCtx.stroke();
+    specCtx.fillStyle = '#5a4a9e';
+    specCtx.beginPath();
+    specCtx.arc(px, py, 3, 0, Math.PI * 2);
+    specCtx.fill();
+  }
+}
+
+// ============================================================
+//  Time series chart (Chart.js)
+// ============================================================
+const tsChart = new Chart(document.getElementById('tsCanvas'), {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [
+      { label: 'x(t)', data: [], borderColor: '#5a4a9e',
+        backgroundColor: '#5a4a9e14', borderWidth: 2, pointRadius: 0, tension: 0, fill: false },
+      { label: 'y(t)', data: [], borderColor: '#1a7a60',
+        backgroundColor: '#1a7a6014', borderWidth: 2, pointRadius: 0, borderDash: [6, 4], tension: 0, fill: false },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    animation: { duration: 120 },
+    plugins: { legend: { display: false },
+      tooltip: { mode: 'index', intersect: false } },
+    interaction: { mode: 'index', intersect: false },
+    scales: {
+      x: { title: { display: true, text: 't', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { maxTicksLimit: 10, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#b8b4ab66' } },
+      y: { title: { display: true, text: 'value', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#b8b4ab88' } },
+    },
+  },
+});
+
+function updateTimeSeries() {
+  const counter = document.getElementById('tsCount');
+  if (!state.latestTraj) {
+    tsChart.data.labels = [];
+    tsChart.data.datasets[0].data = [];
+    tsChart.data.datasets[1].data = [];
+    tsChart.update('none');
+    counter.textContent = 'no trajectory';
+    return;
+  }
+  const pts = state.latestTraj.points;
+  const dt = 0.02;
+  // Show the forward portion (ignore negative-time if backward was included)
+  const seed = state.latestTraj.seed;
+  // find index closest to seed
+  let seedIdx = 0;
+  let bestDist = Infinity;
+  for (let i = 0; i < pts.length; i++) {
+    const d = Math.hypot(pts[i][0] - seed[0], pts[i][1] - seed[1]);
+    if (d < bestDist) { bestDist = d; seedIdx = i; }
+  }
+  const forwardPts = pts.slice(seedIdx);
+  const step = Math.max(1, Math.floor(forwardPts.length / 400));
+  const labels = [];
+  const xs = [];
+  const ys = [];
+  for (let i = 0; i < forwardPts.length; i += step) {
+    labels.push((i * dt).toFixed(2));
+    xs.push(forwardPts[i][0]);
+    ys.push(forwardPts[i][1]);
+  }
+  tsChart.data.labels = labels;
+  tsChart.data.datasets[0].data = xs;
+  tsChart.data.datasets[1].data = ys;
+  tsChart.update('none');
+  counter.textContent = `${forwardPts.length} steps · t ∈ [0, ${(forwardPts.length * dt).toFixed(2)}]`;
+}
+
+// ============================================================
+//  UI wiring
+// ============================================================
+function buildPresetChips() {
+  const lin = document.getElementById('linearChips');
+  const nl = document.getElementById('nonlinearChips');
+  lin.innerHTML = '';
+  nl.innerHTML = '';
+  for (const p of LINEAR_PRESETS) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip';
+    btn.dataset.preset = p.id;
+    btn.textContent = p.name;
+    btn.addEventListener('click', () => loadPreset(p.id));
+    lin.appendChild(btn);
+  }
+  for (const p of NONLINEAR_PRESETS) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip';
+    btn.dataset.preset = p.id;
+    btn.textContent = p.name;
+    btn.addEventListener('click', () => loadPreset(p.id));
+    nl.appendChild(btn);
+  }
+}
+
+// Matrix entry handlers
+for (const id of ['matA', 'matB', 'matC', 'matD']) {
+  document.getElementById(id).addEventListener('input', () => {
+    if (state.mode !== 'linear') return;
+    const a = parseFloat(document.getElementById('matA').value) || 0;
+    const b = parseFloat(document.getElementById('matB').value) || 0;
+    const c = parseFloat(document.getElementById('matC').value) || 0;
+    const d = parseFloat(document.getElementById('matD').value) || 0;
+    state.matrix = [[a, b], [c, d]];
+    setLinearFromMatrix();
+    state.trajectories = [];
+    state.latestTraj = null;
+    updateTimeSeries();
+    recomputeEverything();
+  });
+}
+
+// Window entry handlers
+for (const id of ['xMin', 'xMax', 'yMin', 'yMax']) {
+  document.getElementById(id).addEventListener('change', () => {
+    const xmin = parseFloat(document.getElementById('xMin').value);
+    const xmax = parseFloat(document.getElementById('xMax').value);
+    const ymin = parseFloat(document.getElementById('yMin').value);
+    const ymax = parseFloat(document.getElementById('yMax').value);
+    if (!Number.isFinite(xmin) || !Number.isFinite(xmax) || !Number.isFinite(ymin) || !Number.isFinite(ymax)) return;
+    if (xmax - xmin < 0.1 || ymax - ymin < 0.1) return;
+    state.window = [xmin, xmax, ymin, ymax];
+    recomputeEverything();
+  });
+}
+
+// Toggles
+document.getElementById('tglField').addEventListener('change', (e) => {
+  state.show.field = e.target.checked; drawPhasePortrait();
+});
+document.getElementById('tglNull').addEventListener('change', (e) => {
+  state.show.nullclines = e.target.checked; drawPhasePortrait();
+});
+document.getElementById('tglEq').addEventListener('change', (e) => {
+  state.show.equilibria = e.target.checked; drawPhasePortrait();
+});
+document.getElementById('tglTraj').addEventListener('change', (e) => {
+  state.show.trajectories = e.target.checked; drawPhasePortrait();
+});
+document.getElementById('tglBackward').addEventListener('change', (e) => {
+  state.show.backward = e.target.checked;
+});
+
+document.getElementById('clearTrajBtn').addEventListener('click', () => {
+  state.trajectories = [];
+  state.latestTraj = null;
+  drawPhasePortrait();
+  updateTimeSeries();
+});
+document.getElementById('sampleBtn').addEventListener('click', () => {
+  // Drop a ring of seeds to illustrate the flow
+  const [xmin, xmax, ymin, ymax] = state.window;
+  const cx = (xmin + xmax) / 2;
+  const cy = (ymin + ymax) / 2;
+  const rx = (xmax - xmin) * 0.35;
+  const ry = (ymax - ymin) * 0.35;
+  const K = 8;
+  for (let k = 0; k < K; k++) {
+    const t = 2 * Math.PI * k / K;
+    const x0 = cx + rx * Math.cos(t);
+    const y0 = cy + ry * Math.sin(t);
+    launchTrajectory(x0, y0);
+  }
+});
+
+window.addEventListener('resize', () => {
+  drawPhasePortrait();
+  drawSpectrum();
+});
+
+// ============================================================
+//  Init
+// ============================================================
+function init() {
+  buildPresetChips();
+  loadPreset('stableNode');
+}
+init();
+</script>
+</body>
+</html>

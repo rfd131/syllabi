@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaussian Elimination Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface2: #f3f1ec;
+  --surface3: #ecebe4;
+  --text: #2c2a28;
+  --text2: #5f5c56;
+  --text3: #6a6862;
+  --border: #c9c5bc;
+  --border-strong: #a8a498;
+  --accent: #3a6b5e;
+  --accent-light: #e8f0ed;
+  --danger: #9c3628;
+  --danger-light: #fbeae7;
+  --warning: #7a5a10;
+  --warning-light: #fdf4e1;
+  --success: #3a6b5e;
+  --success-light: #e8f0ed;
+  --purple: #5a4a9e;
+  --purple-light: #eeedf8;
+  --teal: #1a7a60;
+  --coral: #c8553a;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18.5px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.header {
+  padding: 2.25rem 2rem 1.25rem;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+.header h1 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+.header p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  max-width: 820px;
+}
+
+.main {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 980px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  position: sticky;
+  top: 1rem;
+}
+@media (max-width: 980px) {
+  .panel { position: static; }
+}
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  margin-bottom: 0.55rem;
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chip {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.chip.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+.chip .chip-sub {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--text3);
+  margin-top: 1px;
+  font-family: var(--mono);
+}
+.chip.active .chip-sub { color: rgba(255,255,255,0.82); }
+
+/* Row operation input */
+.op-input-wrap {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.7rem 0.85rem;
+}
+.op-input {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+}
+.op-input:focus { outline: 2px solid var(--purple); outline-offset: 1px; border-color: var(--purple); }
+.op-input.err { border-color: var(--danger); background: var(--danger-light); }
+
+.op-buttons-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.55rem;
+}
+.btn {
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.btn.primary:hover { background: var(--teal); border-color: var(--teal); color: white; }
+.btn.ghost { background: transparent; color: var(--text2); }
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.op-templates {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 0.55rem;
+}
+.op-template {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s;
+}
+.op-template:hover { border-color: var(--purple); color: var(--purple); border-style: solid; }
+.op-template-label {
+  display: block;
+  font-family: var(--font);
+  font-size: 0.64rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 1px;
+}
+
+.feedback {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  margin-top: 0.55rem;
+  min-height: 1.2em;
+  line-height: 1.45;
+}
+.feedback.err { color: var(--danger); }
+.feedback.ok { color: var(--success); }
+
+.hint-box {
+  font-size: 0.72rem;
+  color: var(--text3);
+  font-family: var(--mono);
+  line-height: 1.5;
+  background: var(--surface2);
+  padding: 0.55rem 0.7rem;
+  border-radius: 5px;
+  margin-top: 0.55rem;
+}
+.hint-box strong { color: var(--text2); font-weight: 600; }
+
+.status-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.badge {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text3);
+}
+.badge.on-ref { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
+.badge.on-rref { background: var(--success-light); color: var(--success); border-color: var(--success); }
+.badge.incons { background: var(--danger-light); color: var(--danger); border-color: var(--danger); }
+
+/* Workspace */
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+.card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-title .counter {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text3);
+  padding: 2px 6px;
+  background: var(--surface2);
+  border-radius: 4px;
+}
+.card-subtitle {
+  font-size: 0.76rem;
+  color: var(--text3);
+  margin-bottom: 0.9rem;
+}
+
+/* System of equations */
+.system-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4rem;
+  align-items: center;
+}
+@media (max-width: 740px) {
+  .system-grid { grid-template-columns: 1fr; }
+}
+
+.eq-list {
+  font-family: var(--mono);
+  font-size: 0.94rem;
+  line-height: 1.9;
+  color: var(--text);
+  padding: 0.3rem 0;
+}
+.eq-list .eq {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+.eq-list .eq .eq-tag {
+  font-size: 0.7rem;
+  color: var(--text3);
+  min-width: 2.4em;
+}
+.eq-term { display: inline-block; }
+.eq-term.neg { color: var(--coral); }
+.eq-term.zero { color: var(--text3); opacity: 0.5; }
+.eq-op { color: var(--text3); margin: 0 4px; }
+.eq-eq { margin: 0 10px; color: var(--text3); }
+.eq-rhs { color: var(--purple); }
+.eq-rhs.inconsistent { color: var(--danger); font-weight: 600; }
+
+/* Augmented matrix */
+.matrix-display {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.matrix-bracket {
+  display: grid;
+  grid-template-columns: 10px 1fr 10px;
+  align-items: stretch;
+}
+.bracket-left, .bracket-right {
+  border: 2.5px solid var(--text);
+  min-height: 100%;
+}
+.bracket-left { border-right: none; border-radius: 4px 0 0 4px; }
+.bracket-right { border-left: none; border-radius: 0 4px 4px 0; }
+.matrix-grid {
+  display: grid;
+  padding: 10px 14px;
+  column-gap: 14px;
+  row-gap: 6px;
+  position: relative;
+}
+.matrix-cell {
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  text-align: center;
+  min-width: 2.6rem;
+  padding: 0.15rem 0.25rem;
+  color: var(--text);
+  transition: background 0.35s, color 0.35s;
+  border-radius: 3px;
+}
+.matrix-cell.neg { color: var(--coral); }
+.matrix-cell.zero { color: var(--text3); opacity: 0.45; }
+.matrix-cell.changed {
+  background: var(--warning-light);
+  color: var(--warning);
+}
+.matrix-cell.pivot {
+  background: var(--purple-light);
+  color: var(--purple);
+  font-weight: 600;
+}
+.matrix-cell.rhs-col {
+  padding-left: 0.5rem;
+}
+.matrix-divider {
+  position: absolute;
+  top: 6px; bottom: 6px;
+  width: 1.5px;
+  background: var(--border-strong);
+}
+
+/* Row labels on matrix */
+.matrix-row-labels {
+  display: grid;
+  align-items: stretch;
+  padding: 10px 0;
+  row-gap: 6px;
+}
+.matrix-row-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  padding-right: 6px;
+  min-height: 1.2rem;
+}
+
+/* History */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+.history-item {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr auto;
+  gap: 10px;
+  align-items: start;
+  padding: 0.55rem 0.75rem;
+  background: var(--surface2);
+  border-radius: 5px;
+  font-size: 0.82rem;
+  border-left: 3px solid var(--border);
+}
+.history-item.latest { border-left-color: var(--purple); background: var(--purple-light); }
+.history-step {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+  font-weight: 500;
+}
+.history-op {
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  color: var(--text);
+}
+.history-note {
+  font-size: 0.74rem;
+  color: var(--text3);
+  margin-top: 2px;
+  font-family: var(--font);
+  line-height: 1.45;
+}
+.history-empty {
+  font-size: 0.78rem;
+  color: var(--text3);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+/* Notes / correspondence */
+.notes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.9rem;
+}
+@media (max-width: 820px) {
+  .notes-grid { grid-template-columns: 1fr; }
+}
+.note-card {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.85rem 0.95rem;
+  border-top: 3px solid var(--purple);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+.note-card.swap { border-top-color: var(--teal); }
+.note-card.scale { border-top-color: var(--warning); }
+.note-card.replace { border-top-color: var(--purple); }
+.note-card h3 {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  font-family: var(--font);
+  color: var(--text);
+}
+.note-card .note-op {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  background: var(--surface);
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  display: inline-block;
+  margin-bottom: 0.45rem;
+  color: var(--text2);
+}
+.note-card p { color: var(--text2); margin-bottom: 0.45rem; }
+.note-card p:last-child { margin-bottom: 0; }
+.note-card em { color: var(--text); font-style: italic; }
+.note-card .example {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  background: var(--surface);
+  border-radius: 4px;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  white-space: pre;
+}
+
+/* Syntax legend */
+.syntax-legend {
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.8rem 0.95rem;
+  font-size: 0.78rem;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.syntax-legend h3 {
+  font-size: 0.74rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  font-family: var(--font);
+  color: var(--text);
+}
+.syntax-legend code {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  background: var(--surface);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.syntax-legend ul { list-style: none; padding-left: 0; }
+.syntax-legend li { padding: 2px 0; }
+.syntax-legend .hint { color: var(--text3); font-size: 0.72rem; }
+
+/* Solution display */
+.solution-block {
+  margin-top: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--success-light);
+  border-radius: 5px;
+  font-size: 0.85rem;
+  color: var(--success);
+  border-left: 3px solid var(--success);
+  font-family: var(--mono);
+  line-height: 1.75;
+}
+.solution-block.warn {
+  background: var(--warning-light);
+  color: var(--warning);
+  border-left-color: var(--warning);
+}
+.solution-block.none {
+  background: var(--danger-light);
+  color: var(--danger);
+  border-left-color: var(--danger);
+}
+.solution-block strong {
+  font-family: var(--font);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Gaussian elimination explorer</h1>
+  <p>Pick a linear system, then reduce its augmented matrix by typing elementary row operations. Each row operation corresponds to a legal manipulation of the underlying equations — the solution set is always preserved. Watch the equations, the matrix, and the operation history stay in sync.</p>
+</div>
+
+<div class="main">
+  <div class="panel">
+    <div class="panel-section">
+      <h2 class="panel-label">Example systems</h2>
+      <div class="chips" id="presetChips"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label"><label for="opInput">Row operation</label></h2>
+      <div class="op-input-wrap">
+        <input type="text" class="op-input" id="opInput" placeholder="e.g.  R2 -> R2 - 3*R1" spellcheck="false" autocomplete="off">
+        <div class="op-buttons-row">
+          <button class="btn primary" id="applyBtn" type="button">Apply</button>
+          <button class="btn" id="undoBtn" type="button">Undo</button>
+          <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </div>
+
+      <div class="op-templates">
+        <button class="op-template" type="button" data-template="R1 <-> R2">
+          <span class="op-template-label">Swap</span>R1 &lt;-&gt; R2
+        </button>
+        <button class="op-template" type="button" data-template="R1 -> (1/2)*R1">
+          <span class="op-template-label">Scale</span>R1 -&gt; (1/2)*R1
+        </button>
+        <button class="op-template" type="button" data-template="R2 -> R2 - 2*R1">
+          <span class="op-template-label">Replace</span>R2 -&gt; R2 - 2*R1
+        </button>
+      </div>
+
+      <div class="hint-box">
+        <strong>Syntax.</strong> Rows are <code>R1</code>, <code>R2</code>, …. Numbers can be integers or fractions like <code>3/4</code> or <code>-1/2</code>. Arrow <code>-&gt;</code> assigns; <code>&lt;-&gt;</code> swaps.
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Status</h2>
+      <div class="status-badges" id="statusBadges"></div>
+    </div>
+  </div>
+
+  <div class="workspace">
+
+    <div class="card">
+      <div class="card-title">
+        Linear system &amp; augmented matrix
+        <span class="counter" id="sizeBadge">—</span>
+      </div>
+      <div class="card-subtitle" id="systemCaption">Equations on the left; augmented matrix on the right. Coefficients stay in columns; the vertical bar separates coefficients from the right-hand side.</div>
+      <div class="system-grid">
+        <div class="eq-list" id="eqList" aria-live="polite"></div>
+        <div class="matrix-display" id="matrixDisplay" aria-live="polite"></div>
+      </div>
+      <div id="solutionBlock"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        Operation history
+        <span class="counter" id="historyCount">0 steps</span>
+      </div>
+      <div class="card-subtitle">Each step records the row operation you applied and what it means for the system.</div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Row operation ↔ equation correspondence</div>
+      <div class="card-subtitle">The three elementary row operations each map to a manipulation of the underlying equations that preserves the solution set.</div>
+
+      <div class="notes-grid">
+        <div class="note-card swap">
+          <h3>Row swap</h3>
+          <span class="note-op">R<sub>i</sub> &lt;-&gt; R<sub>j</sub></span>
+          <p><em>Reordering two equations.</em> Equation <em>i</em> and equation <em>j</em> trade places.</p>
+          <p>The set of equations is unchanged — only their order changes — so the solution set is identical.</p>
+          <div class="example">before:  x + 2y = 5
+         3x + y = 5
+after:   3x + y = 5
+         x + 2y = 5</div>
+        </div>
+
+        <div class="note-card scale">
+          <h3>Row scaling</h3>
+          <span class="note-op">R<sub>i</sub> -&gt; c · R<sub>i</sub>  (c ≠ 0)</span>
+          <p><em>Multiplying an equation by a nonzero constant.</em> Both sides of equation <em>i</em> are scaled.</p>
+          <p>An equation and any nonzero multiple of it have the exact same solutions, so the solution set is preserved. <strong>c = 0 is not allowed</strong> — it would erase the equation.</p>
+          <div class="example">before:  2x + 4y = 6
+after (× ½):  x + 2y = 3</div>
+        </div>
+
+        <div class="note-card replace">
+          <h3>Row replacement</h3>
+          <span class="note-op">R<sub>i</sub> -&gt; R<sub>i</sub> + c · R<sub>j</sub></span>
+          <p><em>Adding a multiple of one equation to another.</em> Replace equation <em>i</em> with equation <em>i</em> plus <em>c</em> times equation <em>j</em>.</p>
+          <p>If both original equations hold, any linear combination of them also holds — so the new equation is implied by the originals, and the solution set does not change. This is the workhorse of Gaussian elimination: it introduces zeros below pivots.</p>
+          <div class="example">R1:  x + 2y = 5
+R2:  3x + y = 5
+R2 -> R2 - 3·R1:
+     0x - 5y = -10</div>
+        </div>
+      </div>
+
+      <div class="syntax-legend" style="margin-top: 1rem;">
+        <h3>Accepted input forms</h3>
+        <ul>
+          <li><code>R1 &lt;-&gt; R2</code> — swap two rows</li>
+          <li><code>R1 -&gt; 3*R1</code>, <code>R2 -&gt; (1/2)R2</code>, <code>R3 -&gt; -R3</code> — scale</li>
+          <li><code>R2 -&gt; R2 - 3*R1</code>, <code>R3 -&gt; R3 + (2/5)*R1</code> — replacement</li>
+          <li><code>R2 - 3*R1 -&gt; R2</code> — textbook-style form (expression on the left) is also accepted</li>
+        </ul>
+        <p class="hint" style="margin-top: 0.35rem;">The <code>*</code> between a number and a row is optional. Rows are case-insensitive: <code>r1</code>, <code>R1</code>, <code>Row 1</code> all work.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======================================================================
+//  Fraction (exact rational arithmetic)
+// ======================================================================
+function gcd(a, b) {
+  a = Math.abs(a); b = Math.abs(b);
+  while (b) { [a, b] = [b, a % b]; }
+  return a || 1;
+}
+class Frac {
+  constructor(n, d = 1) {
+    if (d === 0) throw new Error('Zero denominator');
+    if (!Number.isFinite(n) || !Number.isFinite(d)) throw new Error('Non-finite fraction');
+    if (d < 0) { n = -n; d = -d; }
+    const g = gcd(Math.round(n), Math.round(d));
+    this.n = Math.round(n) / g;
+    this.d = Math.round(d) / g;
+  }
+  static from(x) {
+    if (x instanceof Frac) return x;
+    if (Number.isInteger(x)) return new Frac(x, 1);
+    // limited float->fraction (used only when presets supply decimals)
+    const s = 1e6;
+    return new Frac(Math.round(x * s), s);
+  }
+  add(o) { o = Frac.from(o); return new Frac(this.n * o.d + o.n * this.d, this.d * o.d); }
+  sub(o) { o = Frac.from(o); return new Frac(this.n * o.d - o.n * this.d, this.d * o.d); }
+  mul(o) { o = Frac.from(o); return new Frac(this.n * o.n, this.d * o.d); }
+  div(o) { o = Frac.from(o); if (o.n === 0) throw new Error('Divide by zero'); return new Frac(this.n * o.d, this.d * o.n); }
+  neg() { return new Frac(-this.n, this.d); }
+  isZero() { return this.n === 0; }
+  isOne() { return this.n === 1 && this.d === 1; }
+  isNeg() { return this.n < 0; }
+  eq(o) { o = Frac.from(o); return this.n * o.d === o.n * this.d; }
+  toString() {
+    if (this.d === 1) return String(this.n);
+    return this.n + '/' + this.d;
+  }
+  // for display in a matrix cell
+  toCell() {
+    if (this.d === 1) return String(this.n);
+    return this.n + '/' + this.d;
+  }
+  // for display as a coefficient in an equation (handles ±1 specially)
+  toCoef(isFirst) {
+    // returns {sign: '+'|'-', body: string} ; isFirst suppresses leading '+'
+    let n = this.n, d = this.d;
+    const sign = n < 0 ? '-' : '+';
+    const mag_n = Math.abs(n);
+    let body;
+    if (d === 1) {
+      body = mag_n === 1 ? '' : String(mag_n);
+    } else {
+      body = mag_n + '/' + d;
+    }
+    return { sign, body, hidden: false };
+  }
+}
+const F = (n, d = 1) => new Frac(n, d);
+const ZERO = F(0), ONE = F(1), NEG_ONE = F(-1);
+
+// ======================================================================
+//  Presets
+// ======================================================================
+const PRESETS = [
+  {
+    id: 'simple2',
+    name: '2×2  unique solution',
+    sub: 'nice integers',
+    vars: ['x', 'y'],
+    matrix: [
+      [F(1), F(2), F(5)],
+      [F(3), F(1), F(5)],
+    ],
+  },
+  {
+    id: 'frac2',
+    name: '2×2  fractions appear',
+    sub: 'pivots become rationals',
+    vars: ['x', 'y'],
+    matrix: [
+      [F(2), F(3), F(8)],
+      [F(4), F(-1), F(2)],
+    ],
+  },
+  {
+    id: 'classic3',
+    name: '3×3  unique solution',
+    sub: 'back-substitution practice',
+    vars: ['x', 'y', 'z'],
+    matrix: [
+      [F(1),  F(1),  F(1),  F(6)],
+      [F(2), F(-1),  F(3),  F(9)],
+      [F(1),  F(2), F(-1), F(2)],
+    ],
+  },
+  {
+    id: 'singular3',
+    name: '3×3  infinite solutions',
+    sub: 'rank-deficient — free variable',
+    vars: ['x', 'y', 'z'],
+    matrix: [
+      [F(1),  F(2),  F(1),  F(4)],
+      [F(2),  F(4),  F(3),  F(9)],
+      [F(3),  F(6),  F(4),  F(13)],
+    ],
+  },
+  {
+    id: 'incons3',
+    name: '3×3  no solution',
+    sub: 'inconsistent system',
+    vars: ['x', 'y', 'z'],
+    matrix: [
+      [F(1),  F(1),  F(1),  F(3)],
+      [F(2),  F(2),  F(2),  F(5)],
+      [F(1), F(-1),  F(2),  F(1)],
+    ],
+  },
+  {
+    id: 'wide34',
+    name: '3×4  underdetermined',
+    sub: '4 unknowns, 3 equations',
+    vars: ['x1', 'x2', 'x3', 'x4'],
+    matrix: [
+      [F(1),  F(2),  F(0), F(-1), F(3)],
+      [F(2),  F(3),  F(1), F(1),  F(8)],
+      [F(0),  F(1), F(-1), F(2),  F(1)],
+    ],
+  },
+  {
+    id: 'square4',
+    name: '4×4  unique solution',
+    sub: 'bigger system',
+    vars: ['x1', 'x2', 'x3', 'x4'],
+    matrix: [
+      [F(1), F(1), F(1), F(1), F(10)],
+      [F(2), F(1), F(0), F(1), F(8)],
+      [F(0), F(1), F(2), F(0), F(7)],
+      [F(1), F(0), F(1), F(2), F(10)],
+    ],
+  },
+];
+
+// ======================================================================
+//  State
+// ======================================================================
+let activePresetId = PRESETS[0].id;
+let matrix = null;          // array of array of Frac; last column is RHS
+let vars = null;            // variable names
+let history = [];           // {op, note, snapshot: deep copy before}
+let lastChanged = null;     // set of row indices changed in the most recent op (for highlight)
+
+// ======================================================================
+//  Parser
+// ======================================================================
+// Tokens we understand:
+//   R<n>, Row <n>, r<n> — row reference (1-indexed)
+//   numbers, fractions (a/b), leading signs
+//   *, (, ), +, -
+//   ->, <->
+//
+// We accept two arrow forms:
+//   TARGET -> EXPR
+//   EXPR -> TARGET
+//   TARGET <-> TARGET
+// where TARGET is a single row reference Rk and EXPR is a linear combination of rows.
+//
+// After parsing, we classify the operation as:
+//   swap(i,j) | scale(i, c) | replace(i, j, c)   //  R_i := R_i + c * R_j
+// and reject anything that isn't an elementary row operation.
+
+function tokenize(input) {
+  const s = input.trim();
+  const tokens = [];
+  let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (c === ' ' || c === '\t') { i++; continue; }
+    if (s.startsWith('<->', i)) { tokens.push({ t: 'SWAP' }); i += 3; continue; }
+    if (s.startsWith('->', i))  { tokens.push({ t: 'ARROW' }); i += 2; continue; }
+    if (c === '+') { tokens.push({ t: 'PLUS' }); i++; continue; }
+    if (c === '-') { tokens.push({ t: 'MINUS' }); i++; continue; }
+    if (c === '*' || c === '·' || c === '×') { tokens.push({ t: 'MUL' }); i++; continue; }
+    if (c === '(') { tokens.push({ t: 'LPAREN' }); i++; continue; }
+    if (c === ')') { tokens.push({ t: 'RPAREN' }); i++; continue; }
+    if (c === '/') { tokens.push({ t: 'SLASH' }); i++; continue; }
+    // row reference: "R<digits>" or "Row <digits>" or "row <digits>"
+    if (c === 'R' || c === 'r') {
+      let j = i + 1;
+      if (s.substr(i, 3).toLowerCase() === 'row') {
+        j = i + 3;
+        while (j < s.length && s[j] === ' ') j++;
+      }
+      const start = j;
+      while (j < s.length && /[0-9]/.test(s[j])) j++;
+      if (j > start) {
+        tokens.push({ t: 'ROW', n: parseInt(s.slice(start, j), 10) });
+        i = j;
+        continue;
+      }
+      throw new Error(`Expected a row number after "${s[i]}" at position ${i + 1}`);
+    }
+    // digit
+    if (/[0-9]/.test(c)) {
+      let j = i;
+      while (j < s.length && /[0-9]/.test(s[j])) j++;
+      tokens.push({ t: 'INT', n: parseInt(s.slice(i, j), 10) });
+      i = j;
+      continue;
+    }
+    throw new Error(`Unexpected character "${c}" at position ${i + 1}`);
+  }
+  return tokens;
+}
+
+// Parse a number: INT or INT / INT; optional leading sign is already consumed by caller as PLUS/MINUS
+function parseNumber(toks, idx) {
+  if (idx >= toks.length || toks[idx].t !== 'INT') return null;
+  const n = toks[idx].n;
+  if (idx + 2 < toks.length && toks[idx + 1].t === 'SLASH' && toks[idx + 2].t === 'INT') {
+    const d = toks[idx + 2].n;
+    if (d === 0) throw new Error('Divide by zero in coefficient');
+    return { val: new Frac(n, d), consumed: 3 };
+  }
+  return { val: new Frac(n, 1), consumed: 1 };
+}
+
+// Parse a "factor": either a number, (expr_of_numbers), or a ROW, with optional leading sign.
+// A term is [sign] [coef] [*] [coef] [*] ROW  — simplified: we allow
+//   ROW                          → 1 * ROW
+//   NUMBER * ROW                 → NUMBER * ROW
+//   NUMBER ROW                   → NUMBER * ROW  (implicit *)
+//   ( NUMBER / NUMBER ) ROW      → fraction * ROW
+//   NUMBER                       → constant term (flagged as error: no bare constants in row ops)
+// Multiple coefficient-like things multiplied together are allowed as a courtesy:
+//   2 * (1/3) * R1  → (2/3)*R1
+
+function parseCoef(toks, idx) {
+  // read one coefficient: a number, or (a/b), optionally preceded by a MINUS/PLUS
+  // returns {val: Frac, consumed: number} or null if no coefficient starts here
+  let sign = 1, consumed = 0;
+  if (idx < toks.length && (toks[idx].t === 'PLUS' || toks[idx].t === 'MINUS')) {
+    if (toks[idx].t === 'MINUS') sign = -sign;
+    idx++; consumed++;
+  }
+  if (idx < toks.length && toks[idx].t === 'LPAREN') {
+    // ( [sign] int [/ int] [sign int [/ int]]...)  — allow simple parenthesized numeric
+    // we'll parse a signed fraction, then require RPAREN
+    let inner = parseSignedFraction(toks, idx + 1);
+    if (!inner) return null;
+    const after = idx + 1 + inner.consumed;
+    if (after >= toks.length || toks[after].t !== 'RPAREN') return null;
+    consumed += 1 + inner.consumed + 1; // LPAREN + inner + RPAREN
+    return { val: sign === 1 ? inner.val : inner.val.neg(), consumed };
+  }
+  const num = parseSignedFraction(toks, idx);
+  if (num) {
+    consumed += num.consumed;
+    return { val: sign === 1 ? num.val : num.val.neg(), consumed };
+  }
+  return null;
+}
+
+function parseSignedFraction(toks, idx) {
+  let sign = 1, consumed = 0;
+  if (idx < toks.length && (toks[idx].t === 'PLUS' || toks[idx].t === 'MINUS')) {
+    if (toks[idx].t === 'MINUS') sign = -sign;
+    idx++; consumed++;
+  }
+  const num = parseNumber(toks, idx);
+  if (!num) return null;
+  const val = sign === 1 ? num.val : num.val.neg();
+  return { val, consumed: consumed + num.consumed };
+}
+
+// Parse a single term: optional sign + (optional coefficient) + ROW, or just ROW, or optional sign + ROW
+// Returns {rowIdx, coef: Frac, consumed}
+function parseTerm(toks, idx, isFirst) {
+  const start = idx;
+  let sign = 1;
+  // leading sign (mandatory unless first term)
+  if (idx < toks.length && toks[idx].t === 'PLUS') { idx++; }
+  else if (idx < toks.length && toks[idx].t === 'MINUS') { sign = -1; idx++; }
+  else if (!isFirst) {
+    return null; // non-first term must start with + or -
+  }
+  // accumulate coefficient(s): e.g., "2 * 3 * R1" or "(1/2) R1"
+  let coef = new Frac(sign, 1);
+  let sawCoef = false;
+  // loop: read coef, optional MUL, ...
+  while (idx < toks.length) {
+    // try a coefficient (without consuming a sign — signs are handled at term boundaries)
+    if (toks[idx].t === 'ROW') break;
+    // parenthesized
+    if (toks[idx].t === 'LPAREN') {
+      const inner = parseSignedFraction(toks, idx + 1);
+      if (!inner) throw new Error('Expected a number inside parentheses');
+      const after = idx + 1 + inner.consumed;
+      if (after >= toks.length || toks[after].t !== 'RPAREN') throw new Error('Missing closing parenthesis');
+      coef = coef.mul(inner.val);
+      idx = after + 1;
+      sawCoef = true;
+    } else if (toks[idx].t === 'INT') {
+      const num = parseNumber(toks, idx);
+      coef = coef.mul(num.val);
+      idx += num.consumed;
+      sawCoef = true;
+    } else if (toks[idx].t === 'MUL') {
+      idx++;
+    } else {
+      throw new Error(`Unexpected token in coefficient`);
+    }
+  }
+  if (idx >= toks.length || toks[idx].t !== 'ROW') {
+    if (!sawCoef && idx === start) return null;
+    throw new Error('Expected a row reference like "R1" in the expression');
+  }
+  const rowIdx = toks[idx].n - 1;
+  idx++;
+  return { rowIdx, coef, consumed: idx - start };
+}
+
+// Parse an expression: sum of terms
+function parseExpr(toks, idx) {
+  const terms = []; // [{rowIdx, coef}]
+  let first = true;
+  while (idx < toks.length) {
+    const t = parseTerm(toks, idx, first);
+    if (!t) break;
+    terms.push({ rowIdx: t.rowIdx, coef: t.coef });
+    idx += t.consumed;
+    first = false;
+  }
+  if (terms.length === 0) throw new Error('Expression must contain at least one row term');
+  return { terms, consumed: idx };
+}
+
+// Combine terms referencing the same row
+function combineTerms(terms) {
+  const m = new Map();
+  for (const t of terms) {
+    if (m.has(t.rowIdx)) m.set(t.rowIdx, m.get(t.rowIdx).add(t.coef));
+    else m.set(t.rowIdx, t.coef);
+  }
+  // drop zero-coefficient terms
+  const out = [];
+  for (const [rowIdx, coef] of m.entries()) {
+    if (!coef.isZero()) out.push({ rowIdx, coef });
+  }
+  return out;
+}
+
+// Top-level parse: produce an elementary row operation
+function parseRowOp(input, numRows) {
+  if (!input || !input.trim()) throw new Error('Type a row operation.');
+  const toks = tokenize(input);
+
+  // Find SWAP or ARROW
+  const swapIdx = toks.findIndex(t => t.t === 'SWAP');
+  const arrowIdx = toks.findIndex(t => t.t === 'ARROW');
+
+  if (swapIdx >= 0) {
+    const left = toks.slice(0, swapIdx);
+    const right = toks.slice(swapIdx + 1);
+    if (left.length !== 1 || right.length !== 1 || left[0].t !== 'ROW' || right[0].t !== 'ROW') {
+      throw new Error('Swap form: "Ri <-> Rj"');
+    }
+    const i = left[0].n - 1, j = right[0].n - 1;
+    if (i === j) throw new Error('Cannot swap a row with itself.');
+    checkRow(i, numRows); checkRow(j, numRows);
+    return { type: 'swap', i, j };
+  }
+  if (arrowIdx < 0) throw new Error('Use  ->  for assignment or  <->  for swap.');
+
+  let lhs = toks.slice(0, arrowIdx);
+  let rhs = toks.slice(arrowIdx + 1);
+
+  // Determine which side is the bare row (target). If both are bare rows, prefer LHS as target (textbook style "R1 -> R2" is just a replace R1 := R2 which isn't elementary — reject below).
+  const lhsIsRow = lhs.length === 1 && lhs[0].t === 'ROW';
+  const rhsIsRow = rhs.length === 1 && rhs[0].t === 'ROW';
+
+  let targetTok, exprToks;
+  if (lhsIsRow && !rhsIsRow) { targetTok = lhs[0]; exprToks = rhs; }
+  else if (rhsIsRow && !lhsIsRow) { targetTok = rhs[0]; exprToks = lhs; }
+  else if (lhsIsRow && rhsIsRow) {
+    // Both single rows — treat as "R_i -> R_j" (assign j to i); only valid when i === j (trivial)
+    throw new Error('Assigning one row to another is not an elementary operation. Use a scale or replacement.');
+  } else {
+    throw new Error('One side of -> must be a single row, e.g. R1 or R2.');
+  }
+
+  const targetIdx = targetTok.n - 1;
+  checkRow(targetIdx, numRows);
+
+  const parsed = parseExpr(exprToks, 0);
+  if (parsed.consumed !== exprToks.length) {
+    throw new Error('Could not parse the entire expression.');
+  }
+  const terms = combineTerms(parsed.terms);
+  for (const t of terms) checkRow(t.rowIdx, numRows);
+
+  if (terms.length === 0) {
+    throw new Error('The expression simplifies to zero. That would erase the row, which is not an elementary operation.');
+  }
+
+  // Classify.
+  //  scale:   single term, rowIdx === targetIdx, coef != 0
+  //  replace: two terms; target row with coef 1, other row with nonzero coef, other row != target
+  if (terms.length === 1) {
+    const t = terms[0];
+    if (t.rowIdx !== targetIdx) {
+      throw new Error(`For an elementary operation, the expression on a scale must involve R${targetIdx + 1}.`);
+    }
+    if (t.coef.isZero()) throw new Error('Scale coefficient cannot be zero.');
+    return { type: 'scale', i: targetIdx, c: t.coef };
+  }
+  if (terms.length === 2) {
+    const selfTerm = terms.find(t => t.rowIdx === targetIdx);
+    const otherTerm = terms.find(t => t.rowIdx !== targetIdx);
+    if (!selfTerm || !otherTerm) {
+      throw new Error(`Replacement must update R${targetIdx + 1} using R${targetIdx + 1} plus a multiple of another row.`);
+    }
+    if (!selfTerm.coef.isOne()) {
+      throw new Error(`For an elementary replacement R${targetIdx + 1} must have coefficient 1 (got ${selfTerm.coef.toString()}). To scale AND replace in one step, do two operations.`);
+    }
+    if (otherTerm.coef.isZero()) throw new Error('The multiplier of the other row cannot be zero.');
+    return { type: 'replace', i: targetIdx, j: otherTerm.rowIdx, c: otherTerm.coef };
+  }
+  throw new Error('That expression touches more than two rows. Elementary row operations combine at most two rows at a time.');
+}
+
+function checkRow(idx, numRows) {
+  if (idx < 0 || idx >= numRows) {
+    throw new Error(`Row R${idx + 1} doesn't exist (this system has ${numRows} rows).`);
+  }
+}
+
+// ======================================================================
+//  Apply operation
+// ======================================================================
+function cloneMatrix(M) {
+  return M.map(r => r.map(x => new Frac(x.n, x.d)));
+}
+function rowsEqual(a, b) {
+  if (a.length !== b.length) return false;
+  for (let k = 0; k < a.length; k++) if (!a[k].eq(b[k])) return false;
+  return true;
+}
+function applyOp(M, op) {
+  const out = cloneMatrix(M);
+  const changedRows = new Set();
+  if (op.type === 'swap') {
+    const tmp = out[op.i]; out[op.i] = out[op.j]; out[op.j] = tmp;
+    changedRows.add(op.i); changedRows.add(op.j);
+  } else if (op.type === 'scale') {
+    out[op.i] = out[op.i].map(x => x.mul(op.c));
+    changedRows.add(op.i);
+  } else if (op.type === 'replace') {
+    const src = M[op.j];
+    out[op.i] = out[op.i].map((x, k) => x.add(src[k].mul(op.c)));
+    changedRows.add(op.i);
+  }
+  return { matrix: out, changedRows };
+}
+
+// Human-readable description of the op and its equation-level meaning
+function describeOp(op) {
+  if (op.type === 'swap') {
+    return {
+      symbol: `R${op.i + 1} <-> R${op.j + 1}`,
+      note: `Reorder equations ${op.i + 1} and ${op.j + 1}. The system is unchanged; the equations just trade places.`,
+    };
+  }
+  if (op.type === 'scale') {
+    const c = op.c.toString();
+    return {
+      symbol: `R${op.i + 1} -> ${formatCoef(op.c)}R${op.i + 1}`,
+      note: `Multiply both sides of equation ${op.i + 1} by ${c}. Equation ${op.i + 1} is replaced by an equivalent scaled copy.`,
+    };
+  }
+  if (op.type === 'replace') {
+    const c = op.c;
+    const signStr = c.isNeg() ? '-' : '+';
+    const mag = c.isNeg() ? c.neg() : c;
+    const magStr = mag.isOne() ? '' : formatCoef(mag);
+    const verb = c.isNeg() ? 'Subtract' : 'Add';
+    const mulStr = mag.isOne() ? '' : ` ${mag.toString()} times`;
+    return {
+      symbol: `R${op.i + 1} -> R${op.i + 1} ${signStr} ${magStr}R${op.j + 1}`,
+      note: `${verb}${mulStr} equation ${op.j + 1} ${c.isNeg() ? 'from' : 'to'} equation ${op.i + 1}. The new equation is implied by the originals, so the solution set is preserved.`,
+    };
+  }
+}
+function formatCoef(c) {
+  if (c.isOne()) return '';
+  if (c.eq(NEG_ONE)) return '-';
+  if (c.d === 1) return c.n + '*';
+  return '(' + c.toString() + ')*';
+}
+
+// ======================================================================
+//  REF / RREF / consistency
+// ======================================================================
+function leadingColumn(row) {
+  for (let k = 0; k < row.length - 1; k++) if (!row[k].isZero()) return k;
+  return -1; // all-zero in coefficient part
+}
+function isZeroRow(row) {
+  for (let k = 0; k < row.length; k++) if (!row[k].isZero()) return false;
+  return true;
+}
+function isCoefZero(row) {
+  // coefficient part only (excludes RHS)
+  for (let k = 0; k < row.length - 1; k++) if (!row[k].isZero()) return false;
+  return true;
+}
+function isREF(M) {
+  let lastLead = -1;
+  let seenAllZero = false;
+  for (let i = 0; i < M.length; i++) {
+    const row = M[i];
+    if (isCoefZero(row)) { seenAllZero = true; continue; }
+    if (seenAllZero) return false; // nonzero after all-zero
+    const lead = leadingColumn(row);
+    if (lead <= lastLead) return false;
+    lastLead = lead;
+  }
+  return true;
+}
+function isRREF(M) {
+  if (!isREF(M)) return false;
+  for (let i = 0; i < M.length; i++) {
+    const row = M[i];
+    if (isCoefZero(row)) continue;
+    const lead = leadingColumn(row);
+    if (!row[lead].isOne()) return false;
+    for (let k = 0; k < M.length; k++) {
+      if (k === i) continue;
+      if (!M[k][lead].isZero()) return false;
+    }
+  }
+  return true;
+}
+function findInconsistentRow(M) {
+  // coef all zero AND rhs nonzero
+  for (let i = 0; i < M.length; i++) {
+    if (isCoefZero(M[i]) && !M[i][M[i].length - 1].isZero()) return i;
+  }
+  return -1;
+}
+function pivotColumns(M) {
+  const cols = [];
+  let lastLead = -1;
+  for (let i = 0; i < M.length; i++) {
+    if (isCoefZero(M[i])) continue;
+    const lead = leadingColumn(M[i]);
+    if (lead > lastLead) { cols.push({ row: i, col: lead }); lastLead = lead; }
+  }
+  return cols;
+}
+
+// Extract unique solution if RREF and consistent and no free variables
+function extractSolution(M, vars) {
+  const rows = M.length;
+  const cols = M[0].length - 1; // number of variables
+  const inc = findInconsistentRow(M);
+  if (inc >= 0) return { kind: 'none', badRow: inc + 1 };
+  if (!isRREF(M)) return { kind: 'inprogress' };
+  const pivots = pivotColumns(M);
+  const pivotCols = new Set(pivots.map(p => p.col));
+  const free = [];
+  for (let c = 0; c < cols; c++) if (!pivotCols.has(c)) free.push(c);
+  if (free.length === 0 && pivots.length === cols) {
+    // unique: read off from the identity-like rows
+    const sol = new Array(cols);
+    for (const p of pivots) sol[p.col] = M[p.row][cols];
+    return { kind: 'unique', values: sol };
+  }
+  return { kind: 'infinite', free, pivots, cols };
+}
+
+// ======================================================================
+//  Rendering
+// ======================================================================
+function renderPresets() {
+  const wrap = document.getElementById('presetChips');
+  wrap.innerHTML = '';
+  for (const p of PRESETS) {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (p.id === activePresetId ? ' active' : '');
+    btn.type = 'button';
+    btn.innerHTML = `${p.name}<span class="chip-sub">${p.sub}</span>`;
+    btn.addEventListener('click', () => {
+      loadPreset(p.id);
+    });
+    wrap.appendChild(btn);
+  }
+}
+
+function renderEquations() {
+  const wrap = document.getElementById('eqList');
+  wrap.innerHTML = '';
+  const nCols = matrix[0].length;
+  const nVars = nCols - 1;
+  const inc = findInconsistentRow(matrix);
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    const line = document.createElement('div');
+    line.className = 'eq';
+    const tag = document.createElement('span');
+    tag.className = 'eq-tag';
+    tag.textContent = `(${i + 1})`;
+    line.appendChild(tag);
+
+    // build LHS
+    let firstNonzero = true;
+    let anyTerm = false;
+    for (let k = 0; k < nVars; k++) {
+      const c = row[k];
+      if (c.isZero()) continue;
+      anyTerm = true;
+      const coef = c.toCoef(firstNonzero);
+      const span = document.createElement('span');
+      span.className = 'eq-term' + (c.isNeg() ? ' neg' : '');
+      const needsParen = c.d !== 1; // wrap fractions so "1/2y" reads as "(1/2)y"
+      const body = needsParen ? '(' + coef.body + ')' : coef.body;
+      let text = '';
+      if (firstNonzero) {
+        if (c.isNeg()) text += '−';
+        text += body + vars[k];
+      } else {
+        const opSpan = document.createElement('span');
+        opSpan.className = 'eq-op';
+        opSpan.textContent = c.isNeg() ? '−' : '+';
+        line.appendChild(opSpan);
+        text = body + vars[k];
+      }
+      span.textContent = text;
+      line.appendChild(span);
+      firstNonzero = false;
+    }
+    if (!anyTerm) {
+      const z = document.createElement('span');
+      z.className = 'eq-term zero';
+      z.textContent = '0';
+      line.appendChild(z);
+    }
+    const eqSym = document.createElement('span');
+    eqSym.className = 'eq-eq';
+    eqSym.textContent = '=';
+    line.appendChild(eqSym);
+
+    const rhsSpan = document.createElement('span');
+    rhsSpan.className = 'eq-rhs';
+    if (i === inc) rhsSpan.classList.add('inconsistent');
+    rhsSpan.textContent = row[nCols - 1].toString();
+    line.appendChild(rhsSpan);
+
+    wrap.appendChild(line);
+  }
+}
+
+function renderMatrix() {
+  const wrap = document.getElementById('matrixDisplay');
+  wrap.innerHTML = '';
+
+  // row labels (R1, R2, ...)
+  const labelCol = document.createElement('div');
+  labelCol.className = 'matrix-row-labels';
+  labelCol.style.gridTemplateRows = `repeat(${matrix.length}, auto)`;
+  for (let i = 0; i < matrix.length; i++) {
+    const l = document.createElement('div');
+    l.className = 'matrix-row-label';
+    l.textContent = `R${i + 1}`;
+    labelCol.appendChild(l);
+  }
+  wrap.appendChild(labelCol);
+
+  const nCols = matrix[0].length;
+  const nVars = nCols - 1;
+
+  const bracket = document.createElement('div');
+  bracket.className = 'matrix-bracket';
+
+  const bl = document.createElement('div');
+  bl.className = 'bracket-left';
+  bl.setAttribute('aria-hidden', 'true');
+  bracket.appendChild(bl);
+
+  const grid = document.createElement('div');
+  grid.className = 'matrix-grid';
+  grid.style.gridTemplateColumns = `repeat(${nVars}, auto) auto`;
+
+  const pivots = pivotColumns(matrix);
+  const pivotKey = new Set(pivots.map(p => p.row + ',' + p.col));
+
+  for (let i = 0; i < matrix.length; i++) {
+    const row = matrix[i];
+    for (let k = 0; k < nCols; k++) {
+      const cell = document.createElement('div');
+      cell.className = 'matrix-cell';
+      if (row[k].isZero()) cell.classList.add('zero');
+      else if (row[k].isNeg()) cell.classList.add('neg');
+      if (k === nCols - 1) cell.classList.add('rhs-col');
+      if (pivotKey.has(i + ',' + k)) cell.classList.add('pivot');
+      if (lastChanged && lastChanged.has(i)) cell.classList.add('changed');
+      cell.textContent = row[k].toCell();
+      grid.appendChild(cell);
+    }
+  }
+  // divider between coefficients and RHS
+  const divider = document.createElement('div');
+  divider.className = 'matrix-divider';
+  // Place the divider relative to matrix-grid. We use JS after mount.
+  grid.appendChild(divider);
+
+  bracket.appendChild(grid);
+
+  const br = document.createElement('div');
+  br.className = 'bracket-right';
+  br.setAttribute('aria-hidden', 'true');
+  bracket.appendChild(br);
+
+  wrap.appendChild(bracket);
+
+  // Position the divider between coefficient columns and RHS column.
+  requestAnimationFrame(() => positionDivider(grid, nVars));
+}
+function positionDivider(grid, nVars) {
+  const cells = grid.querySelectorAll('.matrix-cell');
+  if (cells.length === 0) return;
+  // find first RHS cell (index nVars in first row)
+  const rhsCell = cells[nVars];
+  if (!rhsCell) return;
+  const gridRect = grid.getBoundingClientRect();
+  const rhsRect = rhsCell.getBoundingClientRect();
+  const divider = grid.querySelector('.matrix-divider');
+  if (!divider) return;
+  const left = rhsRect.left - gridRect.left - 7; // place midway in the column gap
+  divider.style.left = left + 'px';
+}
+
+function renderStatus() {
+  const wrap = document.getElementById('statusBadges');
+  wrap.innerHTML = '';
+  const inc = findInconsistentRow(matrix);
+  const ref = isREF(matrix);
+  const rref = isRREF(matrix);
+  const size = document.getElementById('sizeBadge');
+  size.textContent = `${matrix.length} × ${matrix[0].length - 1}`;
+
+  const b = (label, cls) => {
+    const el = document.createElement('span');
+    el.className = 'badge ' + cls;
+    el.textContent = label;
+    wrap.appendChild(el);
+  };
+  if (inc >= 0) { b('inconsistent (0 = c)', 'incons'); }
+  if (rref) b('reduced row echelon form', 'on-rref');
+  else if (ref) b('row echelon form', 'on-ref');
+  else b('not in echelon form', '');
+}
+
+function renderHistory() {
+  const wrap = document.getElementById('historyList');
+  wrap.innerHTML = '';
+  const count = document.getElementById('historyCount');
+  count.textContent = `${history.length} step${history.length === 1 ? '' : 's'}`;
+  if (history.length === 0) {
+    const p = document.createElement('p');
+    p.className = 'history-empty';
+    p.textContent = 'No operations yet. Type a row operation above or click one of the templates.';
+    wrap.appendChild(p);
+    return;
+  }
+  history.forEach((h, idx) => {
+    const item = document.createElement('div');
+    item.className = 'history-item' + (idx === history.length - 1 ? ' latest' : '');
+    const step = document.createElement('div');
+    step.className = 'history-step';
+    step.textContent = `#${idx + 1}`;
+    const body = document.createElement('div');
+    const opLine = document.createElement('div');
+    opLine.className = 'history-op';
+    opLine.textContent = h.symbol;
+    const note = document.createElement('div');
+    note.className = 'history-note';
+    note.textContent = h.note;
+    body.appendChild(opLine);
+    body.appendChild(note);
+    item.appendChild(step);
+    item.appendChild(body);
+    wrap.appendChild(item);
+  });
+  // scroll to bottom of list
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function renderSolution() {
+  const wrap = document.getElementById('solutionBlock');
+  wrap.innerHTML = '';
+  const sol = extractSolution(matrix, vars);
+  if (sol.kind === 'none') {
+    const box = document.createElement('div');
+    box.className = 'solution-block none';
+    box.innerHTML = `<strong>No solution</strong>Row ${sol.badRow} reads "0 = ${matrix[sol.badRow - 1][matrix[0].length - 1].toString()}" — the system is inconsistent.`;
+    wrap.appendChild(box);
+  } else if (sol.kind === 'unique') {
+    const box = document.createElement('div');
+    box.className = 'solution-block';
+    let s = '<strong>Unique solution</strong>';
+    for (let k = 0; k < vars.length; k++) {
+      s += `${vars[k]} = ${sol.values[k].toString()}` + (k < vars.length - 1 ? '<br>' : '');
+    }
+    box.innerHTML = s;
+    wrap.appendChild(box);
+  } else if (sol.kind === 'infinite') {
+    const freeNames = sol.free.map(c => vars[c]).join(', ');
+    const box = document.createElement('div');
+    box.className = 'solution-block warn';
+    box.innerHTML = `<strong>Infinitely many solutions</strong>Free variable${sol.free.length === 1 ? '' : 's'}: ${freeNames}. The pivot variables are determined in terms of the free ones.`;
+    wrap.appendChild(box);
+  }
+  // kind === 'inprogress' → render nothing
+}
+
+function renderAll() {
+  renderEquations();
+  renderMatrix();
+  renderStatus();
+  renderHistory();
+  renderSolution();
+}
+
+// ======================================================================
+//  Controller
+// ======================================================================
+function loadPreset(id) {
+  const p = PRESETS.find(x => x.id === id);
+  if (!p) return;
+  activePresetId = id;
+  matrix = p.matrix.map(r => r.map(x => new Frac(x.n, x.d)));
+  vars = p.vars.slice();
+  history = [];
+  lastChanged = null;
+  renderPresets();
+  renderAll();
+  setFeedback('', null);
+  document.getElementById('opInput').value = '';
+  document.getElementById('opInput').classList.remove('err');
+}
+
+function setFeedback(msg, kind) {
+  const el = document.getElementById('feedback');
+  el.className = 'feedback' + (kind ? ' ' + kind : '');
+  el.textContent = msg;
+}
+
+function doApply() {
+  const input = document.getElementById('opInput');
+  const text = input.value;
+  let op;
+  try {
+    op = parseRowOp(text, matrix.length);
+  } catch (e) {
+    input.classList.add('err');
+    setFeedback(e.message, 'err');
+    return;
+  }
+  input.classList.remove('err');
+  const snapshot = cloneMatrix(matrix);
+  const { matrix: next, changedRows } = applyOp(matrix, op);
+  // detect no-op: if matrix unchanged, still accept (e.g., scale by 1 or add 0-row), but warn
+  const same = next.every((r, i) => rowsEqual(r, snapshot[i]));
+  const desc = describeOp(op);
+  matrix = next;
+  lastChanged = changedRows;
+  history.push({ op, snapshot, symbol: desc.symbol, note: desc.note });
+  renderAll();
+  setFeedback(same ? 'Applied — but the matrix is unchanged.' : 'Applied.', 'ok');
+  input.value = '';
+}
+
+function doUndo() {
+  if (history.length === 0) return;
+  const last = history.pop();
+  matrix = last.snapshot;
+  lastChanged = null;
+  renderAll();
+  setFeedback('Undid: ' + last.symbol, 'ok');
+}
+function doReset() {
+  loadPreset(activePresetId);
+  setFeedback('Reset to original system.', 'ok');
+}
+
+// ======================================================================
+//  Events
+// ======================================================================
+document.getElementById('applyBtn').addEventListener('click', doApply);
+document.getElementById('undoBtn').addEventListener('click', doUndo);
+document.getElementById('resetBtn').addEventListener('click', doReset);
+document.getElementById('opInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); doApply(); }
+});
+document.querySelectorAll('.op-template').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tpl = btn.getAttribute('data-template');
+    const input = document.getElementById('opInput');
+    input.value = tpl;
+    input.focus();
+    input.setSelectionRange(tpl.length, tpl.length);
+  });
+});
+
+window.addEventListener('resize', () => {
+  const grid = document.querySelector('.matrix-grid');
+  if (grid && matrix) positionDivider(grid, matrix[0].length - 1);
+});
+
+// ======================================================================
+//  Init
+// ======================================================================
+renderPresets();
+loadPreset(PRESETS[0].id);
+</script>
+</body>
+</html>

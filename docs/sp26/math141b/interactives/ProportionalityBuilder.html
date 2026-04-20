@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proportionality Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf9f6; --surface: #ffffff; --surface2: #f3f1ec; --surface3: #ecebe4;
+  --text: #2c2a28; --text2: #5f5c56; --text3: #6a6862;
+  --border: #c9c5bc; --border-strong: #a8a498;
+  --accent: #3a6b5e; --accent-light: #e8f0ed;
+  --danger: #9c3628; --danger-light: #fbeae7;
+  --warning: #7a5a10; --warning-light: #fdf4e1;
+  --success: #3a6b5e; --success-light: #e8f0ed;
+  --purple: #5a4a9e; --purple-light: #eeedf8;
+  --teal: #1a7a60; --coral: #c8553a; --blue: #3a5a8a;
+  --radius: 8px;
+  --font: 'Source Sans 3', -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18.5px; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.55; min-height: 100vh; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; } }
+.sr-only { position: absolute!important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-radius: 4px; }
+
+.header { padding: 2.25rem 2rem 1.25rem; max-width: 1240px; margin: 0 auto; }
+.header h1 { font-family: var(--font-serif); font-size: 1.75rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+.header p { color: var(--text2); font-size: 0.95rem; max-width: 900px; }
+.header em { font-family: var(--font-serif); font-style: italic; }
+
+.main { max-width: 1240px; margin: 0 auto; padding: 0 2rem 3rem; display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start; }
+@media (max-width: 980px) { .main { grid-template-columns: 1fr; } }
+
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; position: sticky; top: 1rem; }
+@media (max-width: 980px) { .panel { position: static; } }
+.panel-section { margin-bottom: 1.15rem; }
+.panel-section:last-child { margin-bottom: 0; }
+.panel-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.55rem; }
+
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font-family: var(--font); font-size: 0.72rem; padding: 0.4rem 0.7rem; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text2); cursor: pointer; transition: all 0.15s; text-align: left; }
+.chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.chip.active { border-color: var(--accent); background: var(--accent); color: white; }
+.chip .chip-sub { display: block; font-size: 0.62rem; color: var(--text3); margin-top: 1px; font-family: var(--mono); }
+.chip.active .chip-sub { color: rgba(255,255,255,0.82); }
+
+.small-input { width: 6.5rem; font-family: var(--mono); font-size: 0.82rem; padding: 0.35rem 0.55rem; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text); }
+.small-input:focus { outline: 2px solid var(--purple); outline-offset: 1px; border-color: var(--purple); }
+.small-input.ok { border-color: var(--success); background: var(--success-light); }
+.small-input.err { border-color: var(--danger); background: var(--danger-light); }
+
+.param-block { background: var(--surface2); border-radius: 6px; padding: 0.7rem 0.85rem; margin-bottom: 0.55rem; }
+.param-block:last-child { margin-bottom: 0; }
+.param-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.3rem; gap: 0.5rem; }
+.param-name { font-family: var(--mono); font-size: 0.82rem; font-weight: 500; color: var(--text); }
+.param-val { font-family: var(--mono); font-size: 0.82rem; font-weight: 500; color: var(--purple); }
+.param-row input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; appearance: none; background: var(--border); border-radius: 2px; outline: none; }
+.param-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--purple); cursor: pointer; border: 2px solid var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.param-row input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--purple); cursor: pointer; border: 2px solid var(--surface); }
+.param-hint { font-family: var(--mono); font-size: 0.72rem; color: var(--text3); margin-top: 0.3rem; }
+
+.btn { font-family: var(--font); font-size: 0.78rem; font-weight: 500; padding: 0.42rem 0.8rem; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text); cursor: pointer; transition: all 0.15s; }
+.btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn.ghost { background: transparent; color: var(--text2); }
+
+.workspace { display: flex; flex-direction: column; gap: 1.25rem; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem 1.25rem; }
+.card-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.15rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.card-title .counter { font-family: var(--mono); font-size: 0.72rem; font-weight: 400; color: var(--text3); padding: 2px 6px; background: var(--surface2); border-radius: 4px; }
+.card-subtitle { font-size: 0.76rem; color: var(--text3); margin-bottom: 0.9rem; }
+
+.plot-wrap { position: relative; width: 100%; height: 400px; }
+@media (max-width: 700px) { .plot-wrap { height: 320px; } }
+.plot-wrap canvas { display: block; width: 100%; height: 100%; }
+
+.data-line { font-family: var(--mono); font-size: 0.86rem; background: var(--surface2); padding: 0.55rem 0.7rem; border-radius: 5px; border-left: 3px solid var(--teal); color: var(--text); }
+.data-line strong { color: var(--teal); font-weight: 600; }
+
+.steps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 820px) { .steps-grid { grid-template-columns: 1fr; } }
+
+.step-card { background: var(--surface2); border-radius: 6px; padding: 0.9rem 1rem; border-top: 3px solid var(--purple); }
+.step-card.done { border-top-color: var(--success); }
+.step-card.wrong { border-top-color: var(--danger); }
+.step-card h3 { font-size: 0.78rem; font-weight: 600; margin-bottom: 0.4rem; font-family: var(--font); color: var(--text); display: flex; align-items: center; gap: 6px; }
+.step-card h3 .step-num { font-family: var(--mono); font-size: 0.7rem; color: var(--text3); background: var(--surface); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); }
+.step-card .step-body { font-size: 0.84rem; color: var(--text2); line-height: 1.55; }
+.step-card .step-body em { font-family: var(--font-serif); font-style: italic; color: var(--text); }
+.step-card .step-body code { font-family: var(--mono); font-size: 0.78rem; background: var(--surface); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); color: var(--text); }
+.step-feedback { font-size: 0.78rem; margin-top: 0.5rem; font-family: var(--mono); color: var(--text3); min-height: 1.2em; }
+.step-feedback.ok { color: var(--success); }
+.step-feedback.err { color: var(--danger); }
+
+.mc-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.55rem; }
+.mc-btn { font-family: var(--mono); font-size: 0.78rem; padding: 0.4rem 0.65rem; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text); cursor: pointer; transition: all 0.15s; }
+.mc-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.mc-btn.selected.ok { border-color: var(--success); background: var(--success-light); color: var(--success); }
+.mc-btn.selected.err { border-color: var(--danger); background: var(--danger-light); color: var(--danger); }
+.mc-btn.reveal-ok { box-shadow: inset 0 0 0 2px var(--success); }
+
+.eq-line { font-family: var(--mono); font-size: 1rem; letter-spacing: 0.01em; padding: 0.55rem 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 0.4rem; }
+.eq-line .slot { display: inline-block; min-width: 3.5rem; padding: 2px 6px; border-radius: 4px; border: 1px dashed var(--border-strong); color: var(--text3); text-align: center; }
+.eq-line .slot.filled { border-style: solid; background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+.eq-line .sup { font-size: 0.75em; vertical-align: super; }
+
+.readout { font-family: var(--mono); font-size: 0.82rem; color: var(--text); line-height: 1.55; }
+.readout .dim { color: var(--text3); }
+.readout .em { color: var(--purple); font-weight: 500; }
+
+.legend-row { display: flex; gap: 14px; margin-bottom: 0.55rem; font-size: 0.72rem; color: var(--text2); flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-swatch { width: 20px; height: 2.5px; display: inline-block; border-radius: 2px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+.notes-card { background: var(--surface2); border-radius: 6px; padding: 0.9rem 1rem; border-top: 3px solid var(--teal); font-size: 0.82rem; line-height: 1.6; color: var(--text2); }
+.notes-card h3 { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text); }
+.notes-card code { font-family: var(--mono); font-size: 0.76rem; background: var(--surface); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); color: var(--text); }
+.notes-card em { font-family: var(--font-serif); font-style: italic; color: var(--text); }
+
+.prediction-row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; }
+.prediction-row > * { flex: 1 1 160px; }
+.prediction-result { font-family: var(--mono); font-size: 1rem; color: var(--text); background: var(--purple-light); border: 1px solid var(--purple); border-radius: 5px; padding: 0.55rem 0.7rem; }
+.prediction-result .big { font-size: 1.25rem; font-weight: 600; color: var(--purple); }
+
+.reveal-link { font-family: var(--mono); font-size: 0.72rem; color: var(--text3); cursor: pointer; background: none; border: none; padding: 0; text-decoration: underline; }
+.reveal-link:hover { color: var(--purple); }
+
+.summary { font-family: var(--mono); font-size: 0.84rem; padding: 0.6rem 0.75rem; border-radius: 5px; background: var(--accent-light); border-left: 3px solid var(--accent); color: var(--text); margin-top: 0.6rem; display: none; }
+.summary.show { display: block; }
+.summary .lbl { color: var(--text3); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Proportionality Builder</h1>
+  <p>Translate a verbal description of a <em>proportional</em> relationship into an equation. The shape is always the same: one quantity equals a constant times a power of the other. Your job is to find the constant <em>k</em>, figure out its units from the units on either side of the equation, and use the model to predict.</p>
+</div>
+
+<div class="main">
+  <div class="panel">
+    <div class="panel-section">
+      <h2 class="panel-label" id="scenLabel">Scenario</h2>
+      <div class="chips" id="scenChips" role="group" aria-labelledby="scenLabel"></div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label"><label for="predictSlider">Try a prediction</label></h2>
+      <div class="param-block">
+        <div class="param-header">
+          <span class="param-name" id="predictName">input</span>
+          <input type="number" class="small-input" id="predictInput" step="0.1">
+        </div>
+        <div class="param-row"><input type="range" id="predictSlider" aria-label="Input for prediction"></div>
+        <div class="param-hint" id="predictHint"></div>
+      </div>
+      <div class="prediction-result" id="predictResult">output = —</div>
+    </div>
+
+    <div class="panel-section">
+      <h2 class="panel-label">Actions</h2>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button class="btn" id="resetBtn" type="button">Reset answers</button>
+        <button class="btn ghost" id="revealBtn" type="button">Reveal all</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="workspace">
+
+    <div class="card">
+      <div class="card-title">Scenario <span class="counter" id="scenBadge">—</span></div>
+      <div class="card-subtitle" id="scenSub">—</div>
+      <p class="data-line" id="scenBlurb">—</p>
+      <div style="margin-top:0.7rem;" class="data-line" id="scenData">—</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Build the model</div>
+      <div class="card-subtitle">Identify the variables, write the proportionality equation, and find the constant from the data point.</div>
+
+      <div class="steps-grid">
+        <div class="step-card" id="step1">
+          <h3><span class="step-num">1</span> Which is the independent variable?</h3>
+          <div class="step-body">
+            Read the description carefully. Which quantity is the <em>input</em> (the thing you choose or measure first), and which is the <em>output</em> (the thing that depends on it)?
+            <div class="mc-row" id="indepChoices"></div>
+            <div class="step-feedback" id="indepFb"></div>
+          </div>
+        </div>
+
+        <div class="step-card" id="step2">
+          <h3><span class="step-num">2</span> The equation</h3>
+          <div class="step-body">
+            The relationship is <em>proportional</em>: output = k · (input)<sup class="sup" id="exp2"></sup>. Fill in symbols and enter a value for <em>k</em> that matches the data point.
+            <div class="eq-line" id="eqLine">
+              <span class="slot" id="slotDep">?</span>
+              <span>=</span>
+              <input type="number" class="small-input" id="kInput" placeholder="k" step="any">
+              <span>·</span>
+              <span class="slot" id="slotIndep">?</span>
+              <span class="sup" id="slotExp"></span>
+            </div>
+            <div class="step-feedback" id="kFb">Enter k so that the equation hits the data point.</div>
+          </div>
+        </div>
+
+        <div class="step-card" id="step3">
+          <h3><span class="step-num">3</span> Units of <em>k</em></h3>
+          <div class="step-body">
+            For the equation to be dimensionally consistent, the units on both sides must match.  Which choice gives the right units for <em>k</em>?
+            <div class="mc-row" id="unitChoices"></div>
+            <div class="step-feedback" id="unitFb"></div>
+          </div>
+        </div>
+
+        <div class="step-card" id="step4">
+          <h3><span class="step-num">4</span> Use the model</h3>
+          <div class="step-body">
+            Once you have <em>k</em> and its units, the model is complete. The <em>Try a prediction</em> slider in the left panel feeds the input into your equation and reports the predicted output. Drag it to the value below and read off the answer.
+            <div class="readout" id="predictPrompt" style="margin-top:0.5rem;">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary" id="summaryLine">
+        <span class="lbl">Final model:</span> <span id="summaryEq">—</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Graph of the model</div>
+      <div class="card-subtitle">The curve is the equation you built. The green dot is the given data point — your <em>k</em> is right when the curve hits it. The purple dot is your current prediction input.</div>
+      <div class="legend-row" id="legendRow"></div>
+      <div class="plot-wrap"><canvas id="plotCanvas" role="img" aria-label="Proportional model graph"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">The big idea</div>
+      <div class="card-subtitle">Why this pattern appears all over science.</div>
+      <div class="notes-card" id="notes">—</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// Superscript helper
+function sup(exp) {
+  if (exp === 1) return '';
+  if (Math.abs(exp - Math.round(exp)) < 1e-9) return String(Math.round(exp));
+  // show as fraction when simple
+  const simpleFracs = [
+    [0.5, '1/2'], [1/3, '1/3'], [2/3, '2/3'], [0.25, '1/4'], [0.75, '3/4'], [1.5, '3/2'], [2.5, '5/2'],
+  ];
+  for (const [v,s] of simpleFracs) if (Math.abs(exp - v) < 1e-9) return s;
+  return exp.toFixed(3);
+}
+
+const SCEN = {
+  co2_gas: {
+    id: 'co2_gas',
+    name: 'CO₂ from gasoline', sub: 'C = k·G',
+    blurb: 'Burning gasoline releases CO<sub>2</sub>. From chemistry, the amount of CO<sub>2</sub> released is <em>proportional</em> to the amount of gasoline burned.',
+    A: { sym: 'C', name: 'CO₂ released (lb)', units: 'lb',  role: 'dep',   axis: 'y' },
+    B: { sym: 'G', name: 'gasoline burned (gal)', units: 'gal', role: 'indep', axis: 'x' },
+    p: 1, kTrue: 20, kUnits: 'lb/gal',
+    unitOpts: ['lb/gal','gal/lb','lb·gal','lb','gal','dimensionless'],
+    unitAns: 0,
+    data: { x: 1, y: 20, text: 'Burning <strong>1 gal</strong> of gasoline releases <strong>20 lb</strong> of CO<sub>2</sub>.' },
+    plot: { xDom: [0, 10], yDom: [0, 220] },
+    predict: { at: 12, note: 'How many pounds of CO<sub>2</sub> are released by burning 12 gal of gas?' },
+    notes: `
+      <h3>Why it\'s proportional</h3>
+      <p>Each gallon of gasoline contains about the same mass of carbon. Burning one gallon produces a fixed mass of CO<sub>2</sub> (≈ 20 lb, with the extra mass coming from oxygen pulled from the air). Doubling the gas doubles the CO<sub>2</sub> — that\'s proportionality.</p>
+      <p>The chemical shorthand: <code>C<sub>8</sub>H<sub>18</sub> + O<sub>2</sub> → 8 CO<sub>2</sub> + 9 H<sub>2</sub>O</code>.</p>`,
+  },
+  kleiber: {
+    id: 'kleiber',
+    name: 'Kleiber\'s Law', sub: 'C = k·w^(3/4)',
+    blurb: 'For a mammal, the resting metabolic rate is proportional to the <em>3/4 power</em> of body mass. (Not proportional to the mass itself — large animals are more metabolically efficient per kilogram than small ones.)',
+    A: { sym: 'C', name: 'metabolic rate (kcal/day)', units: 'kcal/day', role: 'dep', axis: 'y' },
+    B: { sym: 'w', name: 'body mass (kg)', units: 'kg', role: 'indep', axis: 'x' },
+    p: 0.75, kTrue: 70, kUnits: 'kcal / (day · kg^(3/4))',
+    unitOpts: ['kcal / (day · kg^(3/4))', 'kcal · kg^(3/4) / day', 'kg^(3/4) / day', 'kcal/day', 'kg / (day · kcal)'],
+    unitAns: 0,
+    data: { x: 70, y: Math.round(70 * Math.pow(70, 0.75)), text: 'A human of mass <strong>70 kg</strong> has resting metabolism ≈ <strong>1695 kcal/day</strong>.' },
+    plot: { xDom: [0, 600], yDom: [0, 8000] },
+    predict: { at: 350, note: 'Predicted resting metabolic rate for a 350 kg polar bear?' },
+    notes: `
+      <h3>Why 3/4, not 1?</h3>
+      <p>If metabolism were proportional to mass, an elephant would eat thousands of times what a mouse eats per kg of body weight. Kleiber\'s measurements across species show a 3/4 exponent: a 1000 kg cow has only ~180× the metabolic rate of a 1 kg rabbit. The standard explanation involves how resource-delivery networks scale with body size (West–Brown–Enquist theory).</p>`,
+  },
+  mercury: {
+    id: 'mercury',
+    name: 'Mercury: mass ∝ volume', sub: 'M = k·V',
+    blurb: 'Liquid mercury has a fixed density at room temperature, so mass is directly proportional to volume.',
+    A: { sym: 'M', name: 'mass (g)', units: 'g', role: 'dep', axis: 'y' },
+    B: { sym: 'V', name: 'volume (cm³)', units: 'cm³', role: 'indep', axis: 'x' },
+    p: 1, kTrue: 13.58, kUnits: 'g/cm³',
+    unitOpts: ['g/cm³', 'cm³/g', 'g·cm³', 'g', 'cm³', 'dimensionless'],
+    unitAns: 0,
+    data: { x: 1, y: 13.58, text: '1 cm³ of mercury has mass <strong>13.58 g</strong>. (The density of mercury.)' },
+    plot: { xDom: [0, 20], yDom: [0, 300] },
+    predict: { at: 10, note: 'Mass of a 10 cm³ droplet of mercury?' },
+    notes: `
+      <h3>Density as a proportionality constant</h3>
+      <p>Density is nothing mysterious — it\'s the constant of proportionality between mass and volume. The units <code>g/cm³</code> come out automatically from requiring both sides of <code>M = k·V</code> to have units of grams.</p>
+      <p>If you then compose with <code>V = (4/3)π r³</code> (volume of a sphere), you get <code>M ≈ 56.9 · r³</code> — mass as a power function of the radius, with a new (composite) proportionality constant.</p>`,
+  },
+  water: {
+    id: 'water',
+    name: 'Household water use', sub: 'W = k·n',
+    blurb: 'Daily household water use is proportional to the number of residents in the household.',
+    A: { sym: 'W', name: 'daily water use (L)', units: 'L', role: 'dep', axis: 'y' },
+    B: { sym: 'n', name: 'residents (people)', units: 'person', role: 'indep', axis: 'x' },
+    p: 1, kTrue: 150, kUnits: 'L/person',
+    unitOpts: ['L/person', 'person/L', 'L·person', 'L', 'person', 'day'],
+    unitAns: 0,
+    data: { x: 4, y: 600, text: 'A household of <strong>4</strong> residents uses <strong>600 L/day</strong>.' },
+    plot: { xDom: [0, 8], yDom: [0, 1200] },
+    predict: { at: 7, note: 'Predicted daily water use for a household of 7?' },
+    notes: `
+      <h3>Per-person quantities</h3>
+      <p>Any quantity "per person," "per gallon," or "per unit" is showing up as a proportionality constant. Reading a ratio off a problem is often the same as reading off <em>k</em>.</p>`,
+  },
+  sphere: {
+    id: 'sphere',
+    name: 'Surface area ∝ V^(2/3)', sub: 'A = k·V^(2/3)',
+    blurb: 'For any family of similarly shaped bodies (e.g. spheres, or cubes, or cats), surface area is proportional to the 2/3 power of volume. Surface scales slower than volume as size grows — which is why large animals have trouble cooling off.',
+    A: { sym: 'A', name: 'surface area (cm²)', units: 'cm²', role: 'dep', axis: 'y' },
+    B: { sym: 'V', name: 'volume (cm³)', units: 'cm³', role: 'indep', axis: 'x' },
+    p: 2/3, kTrue: 4.836, kUnits: 'dimensionless',
+    unitOpts: ['dimensionless', 'cm^(2/3)', 'cm^(3/2)', 'cm²/cm³', '1/cm'],
+    unitAns: 0,
+    data: { x: 1, y: 4.836, text: 'A sphere of volume <strong>1 cm³</strong> has surface area ≈ <strong>4.84 cm²</strong>.' },
+    plot: { xDom: [0, 30], yDom: [0, 50] },
+    predict: { at: 27, note: 'Surface area of a sphere with V = 27 cm³?' },
+    notes: `
+      <h3>The surface-to-volume ratio</h3>
+      <p>Volume scales like length³, surface area like length². Eliminating length gives A ∝ V<sup>2/3</sup>. Because V<sup>2/3</sup> has units (cm³)<sup>2/3</sup> = cm², and A itself has units cm², the constant <em>k</em> turns out to be <em>dimensionless</em> — it\'s a pure shape factor (different for spheres, cubes, cats).</p>
+      <p>For a perfect sphere, <code>k = (36π)<sup>1/3</sup> ≈ 4.836</code>. Small animals (big k/V ratio) cool fast; large animals (small k/V ratio) overheat easily. Hence elephants have thin skin and big ears.</p>`,
+  },
+};
+const SCEN_ORDER = ['co2_gas','kleiber','mercury','water','sphere'];
+
+const state = {
+  id: 'co2_gas',
+  indepAns: null, // 'A' or 'B' (the student's choice)
+  kGuess: '',
+  unitAns: null, // index or null
+  predict: 0,
+  revealed: false,
+};
+
+function S() { return SCEN[state.id]; }
+
+// =====================================================================
+//  Element refs
+// =====================================================================
+const $ = id => document.getElementById(id);
+const scenChips = $('scenChips');
+const scenBadge = $('scenBadge');
+const scenSub = $('scenSub');
+const scenBlurb = $('scenBlurb');
+const scenData = $('scenData');
+const indepChoices = $('indepChoices');
+const indepFb = $('indepFb');
+const step1 = $('step1'), step2 = $('step2'), step3 = $('step3'), step4 = $('step4');
+const exp2 = $('exp2');
+const slotDep = $('slotDep');
+const slotIndep = $('slotIndep');
+const slotExp = $('slotExp');
+const kInput = $('kInput');
+const kFb = $('kFb');
+const unitChoices = $('unitChoices');
+const unitFb = $('unitFb');
+const predictPrompt = $('predictPrompt');
+const predictSlider = $('predictSlider');
+const predictInput = $('predictInput');
+const predictName = $('predictName');
+const predictHint = $('predictHint');
+const predictResult = $('predictResult');
+const legendRow = $('legendRow');
+const plotCanvas = $('plotCanvas');
+const notes = $('notes');
+const summaryLine = $('summaryLine');
+const summaryEq = $('summaryEq');
+const resetBtn = $('resetBtn');
+const revealBtn = $('revealBtn');
+
+// =====================================================================
+//  Chips
+// =====================================================================
+function renderChips() {
+  scenChips.innerHTML = '';
+  SCEN_ORDER.forEach(id => {
+    const s = SCEN[id];
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'chip' + (state.id === id ? ' active' : '');
+    btn.innerHTML = `${s.name}<span class="chip-sub">${s.sub}</span>`;
+    btn.addEventListener('click', () => selectScenario(id));
+    scenChips.appendChild(btn);
+  });
+}
+function selectScenario(id) {
+  state.id = id;
+  state.indepAns = null;
+  state.kGuess = '';
+  state.unitAns = null;
+  state.revealed = false;
+  const s = S();
+  state.predict = s.predict.at;
+  kInput.value = '';
+  kInput.classList.remove('ok','err');
+  // Slider setup
+  predictSlider.min = s.plot.xDom[0];
+  predictSlider.max = s.plot.xDom[1];
+  predictSlider.step = (s.plot.xDom[1] - s.plot.xDom[0]) / 400;
+  predictSlider.value = state.predict;
+  predictInput.value = state.predict;
+  predictInput.step = Math.max(0.01, (s.plot.xDom[1]-s.plot.xDom[0])/200);
+  predictName.textContent = s.B.sym + ' (input)';
+  predictHint.textContent = `${s.B.name}, range ${s.plot.xDom[0]}–${s.plot.xDom[1]}`;
+  scenBadge.textContent = s.name;
+  scenSub.textContent = s.sub;
+  scenBlurb.innerHTML = s.blurb;
+  scenData.innerHTML = '<span style="color:var(--teal)">Data point:</span> ' + s.data.text;
+  notes.innerHTML = s.notes;
+  // build indep buttons
+  indepChoices.innerHTML = '';
+  [{key:'A', o:s.A}, {key:'B', o:s.B}].forEach(({key,o}) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mc-btn';
+    b.textContent = `${o.sym} — ${o.name}`;
+    b.dataset.key = key;
+    b.addEventListener('click', () => { state.indepAns = key; state.revealed = false; render(); });
+    indepChoices.appendChild(b);
+  });
+  // unit buttons
+  unitChoices.innerHTML = '';
+  s.unitOpts.forEach((u, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mc-btn';
+    b.textContent = u;
+    b.dataset.i = i;
+    b.addEventListener('click', () => { state.unitAns = i; state.revealed = false; render(); });
+    unitChoices.appendChild(b);
+  });
+  // equation template (exp2 and slotExp are already styled as superscripts — just put the text)
+  exp2.textContent = s.p !== 1 ? sup(s.p) : '';
+  slotExp.textContent = s.p !== 1 ? sup(s.p) : '';
+  // predict prompt
+  predictPrompt.innerHTML = s.predict.note;
+  renderChips();
+  render();
+}
+
+// =====================================================================
+//  Rendering per state
+// =====================================================================
+function indepCorrect() { return S().B.role === 'indep' ? 'B' : 'A'; }
+function model(x) { const s = S(); return s.kTrue * Math.pow(x, s.p); }
+function modelFromGuess(x) {
+  const k = parseFloat(state.kGuess);
+  if (!Number.isFinite(k)) return NaN;
+  return k * Math.pow(x, S().p);
+}
+
+function kIsCorrect() {
+  const k = parseFloat(state.kGuess);
+  if (!Number.isFinite(k)) return false;
+  const s = S();
+  return Math.abs(k - s.kTrue) / Math.max(0.5, Math.abs(s.kTrue)) < 0.02;
+}
+function unitIsCorrect() { return state.unitAns === S().unitAns; }
+function indepIsCorrect() { return state.indepAns === indepCorrect(); }
+
+function render() {
+  const s = S();
+  // Step 1 feedback
+  indepChoices.querySelectorAll('.mc-btn').forEach(b => {
+    b.classList.remove('selected','ok','err','reveal-ok');
+    if (state.indepAns === b.dataset.key) {
+      b.classList.add('selected', state.indepAns === indepCorrect() ? 'ok' : 'err');
+    }
+    if (state.revealed && b.dataset.key === indepCorrect()) b.classList.add('reveal-ok');
+  });
+  if (state.indepAns === null) { indepFb.textContent = ''; indepFb.className = 'step-feedback'; step1.classList.remove('done','wrong'); }
+  else if (indepIsCorrect()) {
+    const indepObj = s[indepCorrect()]; const depObj = s[indepCorrect()==='A'?'B':'A'];
+    indepFb.className = 'step-feedback ok';
+    indepFb.innerHTML = `✓ <b>${indepObj.sym}</b> is the input. So <b>${depObj.sym}</b> is a function of <b>${indepObj.sym}</b>.`;
+    step1.classList.add('done'); step1.classList.remove('wrong');
+  } else {
+    const depObj = s[state.indepAns==='A'?'A':'B'];
+    indepFb.className = 'step-feedback err';
+    indepFb.innerHTML = `Check the description again — which quantity is determined by the other?`;
+    step1.classList.add('wrong'); step1.classList.remove('done');
+  }
+
+  // Step 2: symbols in the equation
+  const correctIndepKey = indepCorrect();
+  const effIndep = state.indepAns === correctIndepKey ? correctIndepKey : (state.indepAns || correctIndepKey);
+  // Use student's choice if they made one, else correct (so the equation always populates usefully)
+  const chosenIndep = state.indepAns || correctIndepKey;
+  const chosenDep = chosenIndep === 'A' ? 'B' : 'A';
+  slotDep.textContent = s[chosenDep].sym;
+  slotDep.classList.toggle('filled', state.indepAns !== null);
+  slotIndep.textContent = s[chosenIndep].sym;
+  slotIndep.classList.toggle('filled', state.indepAns !== null);
+
+  // k input feedback
+  if (state.kGuess === '' || state.kGuess == null) {
+    kFb.className = 'step-feedback'; kFb.textContent = 'Enter k so that the equation hits the data point.';
+    kInput.classList.remove('ok','err');
+    step2.classList.remove('done','wrong');
+  } else {
+    const k = parseFloat(state.kGuess);
+    if (!Number.isFinite(k)) {
+      kFb.className = 'step-feedback err'; kFb.textContent = 'Not a number.';
+      kInput.classList.remove('ok'); kInput.classList.add('err');
+      step2.classList.remove('done'); step2.classList.add('wrong');
+    } else if (kIsCorrect()) {
+      kFb.className = 'step-feedback ok';
+      kFb.innerHTML = `✓ Check: ${s.kTrue} · ${s.data.x}<sup>${sup(s.p)}</sup> = <b>${fmt(s.kTrue * Math.pow(s.data.x, s.p))}</b>, which matches the data.`;
+      kInput.classList.add('ok'); kInput.classList.remove('err');
+      step2.classList.add('done'); step2.classList.remove('wrong');
+    } else {
+      const pred = k * Math.pow(s.data.x, s.p);
+      kFb.className = 'step-feedback err';
+      kFb.innerHTML = `With k = ${fmt(k)}, equation gives ${fmt(pred)} at ${s.B.sym} = ${s.data.x}, but the data says ${fmt(s.data.y)}. Try another value.`;
+      kInput.classList.add('err'); kInput.classList.remove('ok');
+      step2.classList.add('wrong'); step2.classList.remove('done');
+    }
+  }
+
+  // Step 3: units
+  unitChoices.querySelectorAll('.mc-btn').forEach(b => {
+    b.classList.remove('selected','ok','err','reveal-ok');
+    if (state.unitAns === parseInt(b.dataset.i)) {
+      b.classList.add('selected', unitIsCorrect() ? 'ok' : 'err');
+    }
+    if (state.revealed && parseInt(b.dataset.i) === s.unitAns) b.classList.add('reveal-ok');
+  });
+  if (state.unitAns === null) { unitFb.className = 'step-feedback'; unitFb.innerHTML = `Hint: <code>${s.A.units}</code> = (units of k) · (<code>${s.B.units}</code>)<sup>${sup(s.p)}</sup>. Solve for units of k.`; step3.classList.remove('done','wrong'); }
+  else if (unitIsCorrect()) {
+    unitFb.className = 'step-feedback ok';
+    unitFb.innerHTML = `✓ Units match: <code>${s.A.units}</code> = <code>${s.kUnits}</code> · (<code>${s.B.units}</code>)<sup>${sup(s.p)}</sup>.`;
+    step3.classList.add('done'); step3.classList.remove('wrong');
+  } else {
+    unitFb.className = 'step-feedback err';
+    unitFb.innerHTML = `Those units don\'t balance the equation. Look at what needs to multiply (<code>${s.B.units}</code>)<sup>${sup(s.p)}</sup> to give <code>${s.A.units}</code>.`;
+    step3.classList.remove('done'); step3.classList.add('wrong');
+  }
+
+  // Step 4: summary
+  const allDone = indepIsCorrect() && kIsCorrect() && unitIsCorrect();
+  step4.classList.toggle('done', allDone);
+  if (allDone) {
+    summaryLine.classList.add('show');
+    summaryEq.innerHTML = `<strong>${s.A.sym}</strong> = <strong>${fmt(s.kTrue)}</strong> · ${s.B.sym}<sup>${sup(s.p)}</sup> &nbsp;&nbsp; <span style="color:var(--text3)">(units of k: ${s.kUnits})</span>`;
+  } else {
+    summaryLine.classList.remove('show');
+  }
+
+  // Prediction readout (uses student's k if finite, else true k)
+  const predVal = Number.isFinite(parseFloat(state.kGuess)) ? modelFromGuess(state.predict) : model(state.predict);
+  predictResult.innerHTML = `${s.A.sym} = <span class="big">${fmt(predVal)}</span> ${s.A.units}<br><span style="color:var(--text3);font-size:0.76rem;">with ${s.B.sym} = ${fmt(state.predict)} ${s.B.units}</span>`;
+
+  // legend
+  legendRow.innerHTML = `
+    <span class="legend-item"><span class="legend-swatch" style="background:var(--accent)"></span>${s.A.sym} = k·${s.B.sym}${s.p!==1?'^'+sup(s.p):''} (using your k)</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>data point (${s.data.x}, ${fmt(s.data.y)})</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span>prediction</span>
+  `;
+
+  drawPlot();
+}
+
+function fmt(v, prec=3) {
+  if (!Number.isFinite(v)) return '—';
+  const a = Math.abs(v);
+  if (a === 0) return '0';
+  if (a >= 1e5 || a < 1e-3) return v.toExponential(2);
+  return Number(v.toPrecision(prec+1)).toString();
+}
+
+// =====================================================================
+//  Plot
+// =====================================================================
+const ctx = plotCanvas.getContext('2d');
+let DPR = 1, W = 0, H = 0;
+const PAD_L = 68, PAD_R = 20, PAD_T = 12, PAD_B = 48;
+function resizeCanvas() {
+  const r = plotCanvas.parentElement.getBoundingClientRect();
+  DPR = Math.max(1, window.devicePixelRatio || 1);
+  W = Math.floor(r.width); H = Math.floor(r.height);
+  plotCanvas.width = Math.floor(W * DPR); plotCanvas.height = Math.floor(H * DPR);
+  plotCanvas.style.width = W+'px'; plotCanvas.style.height = H+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener('resize', () => { resizeCanvas(); drawPlot(); });
+function sxOf(x, xd) { return PAD_L + (x - xd[0])/(xd[1]-xd[0]) * (W - PAD_L - PAD_R); }
+function syOf(y, yd) { return (H - PAD_B) - (y - yd[0])/(yd[1]-yd[0]) * (H - PAD_T - PAD_B); }
+function niceStep(range, target) {
+  const raw = range/target; const mag = Math.pow(10, Math.floor(Math.log10(raw))); const rel = raw / mag;
+  let step; if (rel < 1.5) step = 1; else if (rel < 3) step = 2; else if (rel < 7) step = 5; else step = 10;
+  return step * mag;
+}
+function fmtTick(v, step) {
+  const dec = step < 0.1 ? 2 : step < 1 ? 1 : 0;
+  return (Math.abs(v) < 1e-9 ? 0 : v).toFixed(dec);
+}
+
+function drawPlot() {
+  resizeCanvas();
+  const s = S();
+  const xd = s.plot.xDom, yd = s.plot.yDom;
+  ctx.fillStyle = '#faf9f6'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(PAD_L, PAD_T, W-PAD_L-PAD_R, H-PAD_T-PAD_B);
+
+  // grid
+  const xStep = niceStep(xd[1]-xd[0], 8);
+  const yStep = niceStep(yd[1]-yd[0], 6);
+  ctx.strokeStyle = '#ecebe4'; ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = Math.ceil(xd[0]/xStep)*xStep; x <= xd[1]+1e-9; x += xStep) { const sx = sxOf(x,xd); ctx.moveTo(sx, PAD_T); ctx.lineTo(sx, H-PAD_B); }
+  for (let y = Math.ceil(yd[0]/yStep)*yStep; y <= yd[1]+1e-9; y += yStep) { const sy = syOf(y,yd); ctx.moveTo(PAD_L, sy); ctx.lineTo(W-PAD_R, sy); }
+  ctx.stroke();
+
+  // axes
+  ctx.strokeStyle = '#a8a498'; ctx.beginPath(); ctx.moveTo(PAD_L, PAD_T); ctx.lineTo(PAD_L, H-PAD_B); ctx.lineTo(W-PAD_R, H-PAD_B); ctx.stroke();
+  ctx.fillStyle = '#5f5c56'; ctx.font = '11px "JetBrains Mono", monospace';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let x = Math.ceil(xd[0]/xStep)*xStep; x <= xd[1]+1e-9; x += xStep) { const sx = sxOf(x,xd); ctx.fillText(fmtTick(x,xStep), sx, H-PAD_B+6); }
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let y = Math.ceil(yd[0]/yStep)*yStep; y <= yd[1]+1e-9; y += yStep) { const sy = syOf(y,yd); ctx.fillText(fmtTick(y,yStep), PAD_L-6, sy); }
+  // axis labels
+  ctx.fillStyle = '#2c2a28'; ctx.font = '12px "Source Sans 3", sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+  ctx.fillText(s.B.name, PAD_L + (W-PAD_L-PAD_R)/2, H - 10);
+  ctx.save(); ctx.translate(18, PAD_T + (H-PAD_T-PAD_B)/2); ctx.rotate(-Math.PI/2);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(s.A.name, 0, 0); ctx.restore();
+
+  // True model (faint)
+  ctx.strokeStyle = 'rgba(26,122,96,0.35)'; ctx.lineWidth = 2; ctx.setLineDash([5,4]);
+  ctx.beginPath(); let moved = false;
+  const N = 400;
+  for (let i = 0; i <= N; i++) {
+    const x = xd[0] + (xd[1]-xd[0])*i/N; const y = model(x);
+    if (!Number.isFinite(y)) { moved = false; continue; }
+    const sx = sxOf(x,xd), sy = syOf(y,yd);
+    if (sy < PAD_T-10 || sy > H-PAD_B+10) { moved = false; continue; }
+    if (!moved) { ctx.moveTo(sx,sy); moved = true; } else ctx.lineTo(sx,sy);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Student's model curve
+  const k = parseFloat(state.kGuess);
+  if (Number.isFinite(k)) {
+    ctx.strokeStyle = kIsCorrect() ? '#3a6b5e' : '#c8553a'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); moved = false;
+    for (let i = 0; i <= N; i++) {
+      const x = xd[0] + (xd[1]-xd[0])*i/N; const y = k * Math.pow(x, s.p);
+      if (!Number.isFinite(y)) { moved = false; continue; }
+      const sx = sxOf(x,xd), sy = syOf(y,yd);
+      if (sy < PAD_T-10 || sy > H-PAD_B+10) { moved = false; continue; }
+      if (!moved) { ctx.moveTo(sx,sy); moved = true; } else ctx.lineTo(sx,sy);
+    }
+    ctx.stroke();
+  }
+
+  // Data point
+  {
+    const sx = sxOf(s.data.x, xd), sy = syOf(s.data.y, yd);
+    ctx.fillStyle = '#1a7a60'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(sx, sy, 7, 0, 2*Math.PI); ctx.fill(); ctx.stroke();
+  }
+  // Prediction point
+  {
+    const x = state.predict;
+    const y = Number.isFinite(k) ? k * Math.pow(x, s.p) : model(x);
+    if (Number.isFinite(y) && y >= yd[0] && y <= yd[1] && x >= xd[0] && x <= xd[1]) {
+      const sx = sxOf(x, xd), sy = syOf(y, yd);
+      ctx.strokeStyle = '#5a4a9e'; ctx.lineWidth = 1.2; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(sx, H-PAD_B); ctx.lineTo(sx, sy); ctx.lineTo(PAD_L, sy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = '#5a4a9e'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(sx, sy, 6, 0, 2*Math.PI); ctx.fill(); ctx.stroke();
+    }
+  }
+}
+
+// =====================================================================
+//  Events
+// =====================================================================
+kInput.addEventListener('input', e => { state.kGuess = e.target.value; render(); });
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function setPredict(v) {
+  const s = S(); state.predict = clamp(v, s.plot.xDom[0], s.plot.xDom[1]);
+  predictSlider.value = state.predict;
+  predictInput.value = Number(state.predict.toFixed(3));
+  render();
+}
+predictSlider.addEventListener('input', e => setPredict(parseFloat(e.target.value)));
+predictInput.addEventListener('change', e => { const v = parseFloat(e.target.value); if (Number.isFinite(v)) setPredict(v); });
+
+resetBtn.addEventListener('click', () => {
+  state.indepAns = null; state.kGuess = ''; state.unitAns = null; state.revealed = false;
+  kInput.value = '';
+  const s = S(); state.predict = s.predict.at; predictSlider.value = state.predict; predictInput.value = state.predict;
+  render();
+});
+revealBtn.addEventListener('click', () => {
+  state.revealed = true;
+  state.indepAns = indepCorrect();
+  state.kGuess = String(S().kTrue);
+  kInput.value = state.kGuess;
+  state.unitAns = S().unitAns;
+  render();
+});
+
+// Init
+renderChips();
+selectScenario('co2_gas');
+</script>
+</body>
+</html>

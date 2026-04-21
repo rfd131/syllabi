@@ -102,7 +102,8 @@ const navigationData = {
             href: "interactives.html",
             dropdown: [
                 { title: "Population Model Explorer", href: "interactives.html#population-models" },
-                { title: "Rotation Matrix Explorer", href: "interactives.html#rotation-matrices" }
+                { title: "Rotation Matrix Explorer", href: "interactives.html#rotation-matrices" },
+                { title: "Systems of ODEs: Phase Portraits", href: "interactives.html#systems-of-odes" }
             ]
         }
     ],

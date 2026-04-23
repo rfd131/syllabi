@@ -142,6 +142,46 @@
         font-weight: 600;
     }
 
+    .session-toggle {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+
+    .session-btn {
+        font-family: inherit;
+        font-size: 22px;
+        font-weight: 600;
+        padding: 12px 36px;
+        border: 2px solid #667eea;
+        background: white;
+        color: #667eea;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .session-btn:hover {
+        background: #eef0ff;
+    }
+
+    .session-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .session-section {
+        display: none;
+    }
+
+    .session-section.active {
+        display: block;
+    }
+
     footer {
         background: transparent;
         color: white;
@@ -173,6 +213,11 @@
         .sub-item {
             font-size: 18px;
         }
+
+        .session-btn {
+            font-size: 18px;
+            padding: 10px 24px;
+        }
     }
 
     @media print {
@@ -195,6 +240,19 @@
         .rule-item {
             page-break-inside: avoid;
         }
+
+        .session-toggle {
+            display: none;
+        }
+
+        .session-section {
+            display: block !important;
+            page-break-before: always;
+        }
+
+        .session-section:first-of-type {
+            page-break-before: auto;
+        }
     }
 </style>
 </head>
@@ -213,6 +271,12 @@
             <div id="sidebar-navigation"></div>
 
             <main>
+<div class="session-toggle">
+    <button class="session-btn active" data-target="tuesday-session" type="button">Tuesday Quiz Sessions</button>
+    <button class="session-btn" data-target="thursday-session" type="button">Thursday Quiz Hours</button>
+</div>
+
+<section id="tuesday-session" class="session-section active">
 <h1>Tuesday Quiz Sessions</h1>
 <div class="subtitle">MATH 140B - Spring 2026</div>
 
@@ -246,6 +310,58 @@
         If you stay, you must <span class="emphasis">sit quietly</span> and retrieve your things at the end of the session.
     </li>
 </ul>
+</section>
+
+<section id="thursday-session" class="session-section">
+<h1>Thursday Quiz Hours</h1>
+<div class="subtitle">MATH 140B - Spring 2026</div>
+
+<ul class="rules-list">
+    <li class="rule-item">
+        <span class="emphasis">Sign up via Course Hub</span> — due Wednesday at <span class="emphasis">5 PM</span>.
+    </li>
+
+    <li class="rule-item">
+        <span class="warning">Thursday quiz hours are optional.</span> No sign-up = no printed packet.
+    </li>
+
+    <li class="rule-item">
+        Attend the <span class="highlight">Thursday quiz hour you signed up for</span>.
+    </li>
+
+    <li class="rule-item">
+        When you arrive:
+        <ul class="sub-list">
+            <li class="sub-item">Bags/backpacks at the front of the room.</li>
+            <li class="sub-item">Pick up your packet from a proctor — packets are in <span class="emphasis">alphabetical order by first name</span>.</li>
+            <li class="sub-item"><span class="warning">No phone, calculators, smart watches or notes.</span> Pencil(s) only. Phone stays in your bag.</li>
+        </ul>
+    </li>
+
+    <li class="rule-item">
+        When you are done turn in your packet. <span class="emphasis">Show your ID</span> to a proctor. Retrieve your things.
+    </li>
+
+    <li class="rule-item">
+        <span class="emphasis">15+ minutes left?</span> You may request an extra LT quiz that was not part of your packet.
+    </li>
+
+    <li class="rule-item">
+        If you stay, you must <span class="emphasis">sit quietly</span> and retrieve your things at the end of the session.
+    </li>
+</ul>
+</section>
+
+<script>
+    document.querySelectorAll('.session-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.session-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.session-section').forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.target).classList.add('active');
+        });
+    });
+</script>
             </main>
 
             <!-- Quick Links Sidebar will be inserted here by JavaScript -->

@@ -382,6 +382,28 @@
 
                 <div class="final-exam-date">
                     <strong>Final Exam Date:</strong> {{ exams.final.date if exams.final.date else "To be announced (Check the Penn State Final Exam Schedule)" }}
+                    {% if exams.final.time %}<br>
+                    <strong>Time:</strong> {{ exams.final.time }}{% endif %}
+                    {% set instructor_locs = exams.final.instructor_locations or {} %}
+                    {% set unique_locs = instructor_locs.values() | list | unique | list %}
+                    {% if instructor_locs %}
+                    <br>
+                    {% if unique_locs|length == 1 %}
+                        <strong>Location:</strong> {{ unique_locs[0] }}
+                    {% else %}
+                        <strong>Locations:</strong>
+                        <ul style="margin: 0.25rem 0 0 1.25rem;">
+                        {% for instructor in instructors %}
+                            {% if instructor.id in instructor_locs %}
+                            <li>{{ instructor.name }}: {{ instructor_locs[instructor.id] }}</li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% elif exams.final.location and exams.final.location|lower != "varies by instructor" %}
+                    <br>
+                    <strong>Location:</strong> {{ exams.final.location }}
+                    {% endif %}
                 </div>
             </div>
         </div>

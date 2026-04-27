@@ -254,6 +254,61 @@ select:focus-visible,
   border: 2px solid var(--surface);
 }
 
+/* Custom nonlinear editor */
+.custom-row { margin-bottom: 0.55rem; }
+.custom-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text3);
+  margin-bottom: 0.25rem;
+}
+.custom-input {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface2);
+  color: var(--text);
+  resize: vertical;
+  line-height: 1.4;
+}
+.custom-input:focus {
+  border-color: var(--purple);
+  outline: 2px solid var(--purple);
+  outline-offset: 1px;
+  background: var(--surface);
+}
+.custom-hint {
+  font-size: 0.7rem;
+  color: var(--text3);
+  line-height: 1.5;
+  margin-top: 0.5rem;
+}
+.custom-hint code {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  background: var(--surface2);
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--text);
+}
+.custom-error {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--danger);
+  background: var(--danger-light);
+  border: 1px solid var(--danger);
+  border-radius: 4px;
+  padding: 0.45rem 0.55rem;
+  margin-top: 0.55rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* Viewing window */
 .window-grid {
   display: grid;
@@ -669,6 +724,24 @@ select:focus-visible,
       <div id="paramSliders"></div>
     </div>
 
+    <!-- Custom nonlinear system editor (shown when preset = custom) -->
+    <div class="panel-section" id="customEditor" style="display:none;">
+      <h2 class="panel-label">Custom system</h2>
+      <div class="custom-row">
+        <label for="customF" class="custom-label">dx/dt =</label>
+        <textarea id="customF" class="custom-input" rows="2" spellcheck="false" autocomplete="off"></textarea>
+      </div>
+      <div class="custom-row">
+        <label for="customG" class="custom-label">dy/dt =</label>
+        <textarea id="customG" class="custom-input" rows="2" spellcheck="false" autocomplete="off"></textarea>
+      </div>
+      <div class="button-row">
+        <button class="btn primary" id="customApplyBtn" type="button">Apply</button>
+      </div>
+      <div class="custom-hint">Use <code>*</code> for multiplication (e.g. <code>x*(1 - x - 0.5*y)</code>). <code>^</code> is auto-converted to <code>**</code>. Functions: <code>sin, cos, tan, exp, log, sqrt, abs</code>. Constants: <code>PI</code>, <code>E</code>.</div>
+      <div class="custom-error" id="customError" style="display:none;"></div>
+    </div>
+
     <div class="panel-section">
       <h2 class="panel-label">Viewing window</h2>
       <div class="window-grid">
@@ -812,7 +885,7 @@ const NONLINEAR_PRESETS = [
     ],
     F: (x, y, p) => p.alpha * x - p.beta * x * y,
     G: (x, y, p) => p.delta * x * y - p.gamma * y,
-    window: [0, 4, 0, 3],
+    window: [-0.2, 4, -0.15, 3],
     note: 'Classic predator-prey cycle: <em>x</em> is prey, <em>y</em> is predator. Equilibria at (0,0) (saddle) and at (γ/δ, α/β) (a center in the linearization). Trajectories off the axes are <em>closed periodic orbits</em> — populations cycle forever in this idealized model.',
   },
   {
@@ -826,12 +899,13 @@ const NONLINEAR_PRESETS = [
     ],
     F: (x, y, p) => p.r1 * x * (1 - x - p.a12 * y),
     G: (x, y, p) => p.r2 * y * (1 - y - p.a21 * x),
-    window: [0, 1.6, 0, 1.6],
+    window: [-0.08, 1.6, -0.08, 1.6],
     note: 'Two species competing for a shared resource, each with logistic self-limitation plus interspecific competition. Depending on the <em>a</em>-values, one species drives the other to extinction, they coexist, or the outcome depends on initial conditions (bistable).',
   },
   {
     id: 'vanDerPol',
     name: 'Van der Pol oscillator',
+    hidden: true,
     params: [
       { key: 'mu', label: 'μ', display: 'nonlinearity', min: 0.0, max: 4.0, step: 0.05, value: 1.0 },
     ],
@@ -854,6 +928,7 @@ const NONLINEAR_PRESETS = [
   {
     id: 'dampedPendulum',
     name: 'Damped pendulum',
+    hidden: true,
     params: [
       { key: 'g', label: 'g/L', display: 'gravity', min: 0.5, max: 4.0, step: 0.1, value: 1.0 },
       { key: 'b', label: 'b',   display: 'damping', min: 0.0, max: 1.5, step: 0.05, value: 0.3 },
@@ -866,6 +941,7 @@ const NONLINEAR_PRESETS = [
   {
     id: 'fitzhughNagumo',
     name: 'FitzHugh-Nagumo',
+    hidden: true,
     params: [
       { key: 'a', label: 'a', display: 'threshold', min: -0.5, max: 1.0, step: 0.05, value: 0.3 },
       { key: 'b', label: 'b', display: 'recovery',  min: 0.05, max: 1.5, step: 0.05, value: 0.5 },
@@ -875,6 +951,41 @@ const NONLINEAR_PRESETS = [
     G: (x, y, p) => 0.08 * (x + p.a - p.b * y),
     window: [-2.5, 2.5, -1.5, 2],
     note: 'Simplified neuron model: <em>x</em> is membrane voltage, <em>y</em> is a recovery variable. For subthreshold input <em>I</em> a single stable equilibrium sits on the left branch of the cubic x-nullcline; push <em>I</em> past a critical value and a Hopf bifurcation produces periodic spiking (a limit cycle).',
+  },
+  {
+    id: 'hareLynx',
+    name: 'Hare-Lynx (Activity)',
+    params: [
+      { key: 'alpha', label: 'α', display: 'hare growth',    min: 0.2, max: 2.0,  step: 0.05, value: 1.0  },
+      { key: 'beta',  label: 'β', display: 'predation rate', min: 0.02, max: 0.5, step: 0.01, value: 0.1  },
+      { key: 'gamma', label: 'γ', display: 'lynx death',     min: 0.2, max: 2.0,  step: 0.05, value: 1.0  },
+      { key: 'delta', label: 'δ', display: 'conversion',     min: 0.01, max: 0.2, step: 0.005, value: 0.05 },
+    ],
+    F: (x, y, p) => p.alpha * x - p.beta * x * y,
+    G: (x, y, p) => p.delta * x * y - p.gamma * y,
+    window: [-2, 40, -1, 20],
+    note: 'Hare-lynx model from the Nonlinear Systems activity: <em>x</em> is hare density (hares/km²) and <em>y</em> is lynx density (lynx/km²). Default parameters α=1, β=0.1, γ=1, δ=0.05 give the activity\'s system dx/dt = x − 0.1xy, dy/dt = 0.05xy − y. Equilibria at (0, 0) (saddle) and (γ/δ, α/β) = (20, 10) (a center in the linearization).',
+  },
+  {
+    id: 'sir',
+    name: 'SIR epidemic',
+    params: [
+      { key: 'b', label: 'b', display: 'infection rate', min: 0.05, max: 2.0, step: 0.025, value: 0.5 },
+      { key: 'k', label: 'k', display: 'recovery rate',  min: 0.05, max: 2.0, step: 0.025, value: 1 / 3 },
+    ],
+    F: (x, y, p) => -p.b * x * y,
+    G: (x, y, p) => p.b * x * y - p.k * y,
+    window: [-0.05, 1.05, -0.03, 0.6],
+    note: 'Continuous-time SIR model from the SIR activity. <em>x</em> = S (susceptible fraction), <em>y</em> = I (infected fraction); R = 1 − S − I is determined by conservation. Trajectories starting with S₀ + I₀ = 1 stay on that line. <em>Herd-immunity threshold:</em> dI/dt &gt; 0 requires S &gt; k/b, so if susceptibility starts below k/b no outbreak is possible. (Default b = 0.5, k ≈ 1/3 match the 1968 H3N2 example.)',
+  },
+  {
+    id: 'custom',
+    name: 'Custom…',
+    params: [],
+    F: null,
+    G: null,
+    window: [-0.1, 2.25, -0.1, 2.25],
+    note: 'Enter your own <em>F</em>(x,y) and <em>G</em>(x,y) in the editor on the left, then click <strong>Apply</strong>. Default view focuses on the first quadrant (matches the Lotka-Volterra competition activity). Use <code>*</code> for multiplication (e.g. <code>x*(1 - x - 0.5*y)</code>). <code>^</code> is auto-converted to <code>**</code>. Math functions <code>sin, cos, tan, exp, log, sqrt, abs</code> and constants <code>PI</code>, <code>E</code> are available.',
   },
 ];
 
@@ -892,7 +1003,20 @@ const state = {
   equilibria: [],             // [{ x, y, type, eigens, J }]
   show: { field: true, nullclines: true, equilibria: true, trajectories: true, backward: false },
   latestTraj: null,
+  custom: {                   // for 'custom' nonlinear preset
+    fStr: 'x*(1 - x - 0.5*y)',
+    gStr: 'y*(1 - y - 0.5*x)',
+    error: null,
+  },
 };
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 // Palette for trajectories (cycling)
 const TRAJ_COLORS = ['#1a7a60', '#5a4a9e', '#c8553a', '#7a5a10', '#3a6b5e', '#9c3628', '#1a5a7a'];
@@ -1088,6 +1212,7 @@ function loadPreset(id) {
     setLinearFromMatrix();
     document.getElementById('linearEditor').style.display = '';
     document.getElementById('nonlinearEditor').style.display = 'none';
+    document.getElementById('customEditor').style.display = 'none';
     document.getElementById('linearClassifyCard').style.display = '';
     document.getElementById('nonlinearClassifyCard').style.display = 'none';
     document.getElementById('matA').value = lin.A[0][0];
@@ -1105,23 +1230,76 @@ function loadPreset(id) {
   if (nl) {
     state.mode = 'nonlinear';
     state.activePresetId = id;
-    state.params = {};
-    for (const pr of nl.params) state.params[pr.key] = pr.value;
-    state.F = (x, y) => nl.F(x, y, state.params);
-    state.G = (x, y) => nl.G(x, y, state.params);
     state.window = nl.window.slice();
     state.trajectories = [];
     state.latestTraj = null;
     document.getElementById('linearEditor').style.display = 'none';
-    document.getElementById('nonlinearEditor').style.display = '';
     document.getElementById('linearClassifyCard').style.display = 'none';
-    document.getElementById('nonlinearClassifyCard').style.display = '';
-    buildParamSliders(nl);
+    // Nonlinear equilibria / Jacobian card is hidden for now — we don't introduce
+    // linearization or the Jacobian in this unit. Flip to '' to re-enable.
+    document.getElementById('nonlinearClassifyCard').style.display = 'none';
+    if (id === 'custom') {
+      document.getElementById('nonlinearEditor').style.display = 'none';
+      document.getElementById('customEditor').style.display = '';
+      document.getElementById('customF').value = state.custom.fStr;
+      document.getElementById('customG').value = state.custom.gStr;
+      applyCustomFunctionsToState();
+    } else {
+      document.getElementById('nonlinearEditor').style.display = '';
+      document.getElementById('customEditor').style.display = 'none';
+      state.params = {};
+      for (const pr of nl.params) state.params[pr.key] = pr.value;
+      state.F = (x, y) => nl.F(x, y, state.params);
+      state.G = (x, y) => nl.G(x, y, state.params);
+      buildParamSliders(nl);
+    }
     applyWindowToInputs();
     document.getElementById('presetName').textContent = nl.name;
     setNotes(nl.note);
     updateActiveChips();
     recomputeEverything();
+  }
+}
+
+// Compile the Custom preset's F/G strings into functions.
+// Returns true on success, false on parse/runtime error (in which case
+// state.F / state.G are left as safe zero functions and the error is
+// surfaced in the #customError element).
+function applyCustomFunctionsToState() {
+  const errEl = document.getElementById('customError');
+  const fRaw = document.getElementById('customF').value;
+  const gRaw = document.getElementById('customG').value;
+  state.custom.fStr = fRaw;
+  state.custom.gStr = gRaw;
+  const fStr = fRaw.replace(/\^/g, '**');
+  const gStr = gRaw.replace(/\^/g, '**');
+  const header = '"use strict"; const {sin,cos,tan,asin,acos,atan,atan2,exp,log,sqrt,abs,pow,min,max,sign,PI,E}=Math;';
+  try {
+    const Ffn = new Function('x', 'y', `${header} return (${fStr});`);
+    const Gfn = new Function('x', 'y', `${header} return (${gStr});`);
+    // Smoke-test at a few points to catch undefined-name errors now rather than mid-render.
+    for (const [tx, ty] of [[0, 0], [0.5, 0.5], [1, -1]]) {
+      const fv = Ffn(tx, ty);
+      const gv = Gfn(tx, ty);
+      if (typeof fv !== 'number' || typeof gv !== 'number') {
+        throw new Error('Expressions must return numbers.');
+      }
+    }
+    state.F = Ffn;
+    state.G = Gfn;
+    state.custom.error = null;
+    state.trajectories = [];
+    state.latestTraj = null;
+    errEl.style.display = 'none';
+    errEl.textContent = '';
+    return true;
+  } catch (e) {
+    state.custom.error = e.message;
+    errEl.style.display = '';
+    errEl.textContent = e.message;
+    state.F = () => 0;
+    state.G = () => 0;
+    return false;
   }
 }
 
@@ -1194,13 +1372,25 @@ function recomputeEverything() {
     }
     renderLinearClassification();
   } else {
-    // Nonlinear: find equilibria numerically; classify each
+    // Nonlinear: find equilibria numerically; classify each.
+    // Suppress equilibria with a singular Jacobian — these are points on a
+    // continuum of fixed points (e.g. the whole I=0 axis in the SIR model),
+    // where the numerical root-finder produces many spurious isolated-looking
+    // points along a line. The phase-portrait dot marker is meant for
+    // isolated equilibria only.
     const eqPts = findEquilibria(state.F, state.G, state.window);
-    state.equilibria = eqPts.map(([x, y]) => {
-      const J = jacobian(state.F, state.G, x, y);
-      const eigens = eigenvalues2x2(J);
-      return { x, y, eigens, J, cls: classifyByEigens(eigens) };
-    });
+    state.equilibria = eqPts
+      .map(([x, y]) => {
+        const J = jacobian(state.F, state.G, x, y);
+        const eigens = eigenvalues2x2(J);
+        return { x, y, eigens, J, cls: classifyByEigens(eigens) };
+      })
+      .filter(eq => {
+        const [[a, b], [c, d]] = eq.J;
+        const det = a * d - b * c;
+        const maxEntry = Math.max(Math.abs(a), Math.abs(b), Math.abs(c), Math.abs(d));
+        return Math.abs(det) > 1e-6 * (maxEntry * maxEntry + 1e-20);
+      });
     renderNonlinearClassification();
   }
   updateSystemDisplay();
@@ -1212,40 +1402,71 @@ function updateSystemDisplay() {
   const el = document.getElementById('systemDisplay');
   if (state.mode === 'linear') {
     const A = state.matrix;
-    el.innerHTML = `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = ${term(A[0][0])}x ${termSigned(A[0][1])}y</span>` +
-                   `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = ${term(A[1][0])}x ${termSigned(A[1][1])}y</span>`;
+    el.innerHTML = `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = ${term(A[0][0])}x ${termSigned(A[0][1])}y</span>` +
+                   `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = ${term(A[1][0])}x ${termSigned(A[1][1])}y</span>`;
   } else {
     const p = NONLINEAR_PRESETS.find(q => q.id === state.activePresetId);
     el.innerHTML = nonlinearEquationLabel(p);
   }
 }
 
+// Convert a JS-style expression (like `x*(1 - x - 0.5*y)` or `x**2 - y`)
+// into a typeset-looking string for display above the phase portrait:
+//  - `**2`, `**3`, `**4` → Unicode superscripts
+//  - remaining `**`      → `^`
+//  - `*` between a factor-like token and a letter or `(` is dropped
+//    (so `0.5*x*y` → `0.5xy`), but `*` between two numeric literals is kept.
+function typesetExpr(s) {
+  let t = String(s);
+  t = t.replace(/\*\*2\b/g, '²');
+  t = t.replace(/\*\*3\b/g, '³');
+  t = t.replace(/\*\*4\b/g, '⁴');
+  t = t.replace(/\*\*/g, '^');
+  // Apply the implicit-multiplication pass twice so chains like `a*b*c` collapse fully.
+  for (let pass = 0; pass < 2; pass++) {
+    t = t.replace(/([A-Za-z0-9_\)\.])\s*\*\s*(?=[A-Za-z\(])/g, '$1');
+  }
+  return t;
+}
+
 function nonlinearEquationLabel(p) {
   const pr = state.params;
   const fmt = v => formatNum(v);
   if (p.id === 'lotkaVolterra') {
-    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = ${fmt(pr.alpha)}x − ${fmt(pr.beta)}·xy</span>` +
-           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = ${fmt(pr.delta)}·xy − ${fmt(pr.gamma)}y</span>`;
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = ${fmt(pr.alpha)}x − ${fmt(pr.beta)}xy</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = ${fmt(pr.delta)}xy − ${fmt(pr.gamma)}y</span>`;
   }
   if (p.id === 'competitiveLV') {
-    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = ${fmt(pr.r1)}·x(1 − x − ${fmt(pr.a12)}y)</span>` +
-           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = ${fmt(pr.r2)}·y(1 − y − ${fmt(pr.a21)}x)</span>`;
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = ${fmt(pr.r1)}x(1 − x − ${fmt(pr.a12)}y)</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = ${fmt(pr.r2)}y(1 − y − ${fmt(pr.a21)}x)</span>`;
   }
   if (p.id === 'vanDerPol') {
-    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = y</span>` +
-           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = ${fmt(pr.mu)}(1 − x²)y − x</span>`;
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = y</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = ${fmt(pr.mu)}(1 − x²)y − x</span>`;
   }
   if (p.id === 'pendulum') {
-    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = y</span>` +
-           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = −${fmt(pr.g)}·sin(x)</span>`;
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = y</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = −${fmt(pr.g)}sin(x)</span>`;
   }
   if (p.id === 'dampedPendulum') {
-    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = y</span>` +
-           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = −${fmt(pr.g)}·sin(x) − ${fmt(pr.b)}y</span>`;
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = y</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = −${fmt(pr.g)}sin(x) − ${fmt(pr.b)}y</span>`;
   }
   if (p.id === 'fitzhughNagumo') {
-    return `<span class="eq-line"><span class="sys-lhs">x&prime;</span> = x − x³/3 − y + ${fmt(pr.I)}</span>` +
-           `<span class="eq-line"><span class="sys-lhs">y&prime;</span> = 0.08·(x + ${fmt(pr.a)} − ${fmt(pr.b)}y)</span>`;
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = x − x³/3 − y + ${fmt(pr.I)}</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = 0.08(x + ${fmt(pr.a)} − ${fmt(pr.b)}y)</span>`;
+  }
+  if (p.id === 'hareLynx') {
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = ${fmt(pr.alpha)}x − ${fmt(pr.beta)}xy</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = ${fmt(pr.delta)}xy − ${fmt(pr.gamma)}y</span>`;
+  }
+  if (p.id === 'sir') {
+    return `<span class="eq-line"><span class="sys-lhs">dS/dt</span> = −${fmt(pr.b)}SI</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dI/dt</span> = ${fmt(pr.b)}SI − ${fmt(pr.k)}I</span>`;
+  }
+  if (p.id === 'custom') {
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = ${escapeHtml(typesetExpr(state.custom.fStr))}</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = ${escapeHtml(typesetExpr(state.custom.gStr))}</span>`;
   }
   return '';
 }
@@ -1732,79 +1953,107 @@ phaseCanvas.addEventListener('click', (e) => {
 // ============================================================
 //  Spectrum chart (eigenvalues in complex plane) — linear only
 // ============================================================
-const spectrumCanvas = document.getElementById('spectrumCanvas');
-const specCtx = spectrumCanvas.getContext('2d');
+// Chart.js plugin that shades the stable half-plane (Re(λ) < 0) of the
+// spectrum chart before the scatter points are drawn. Mirrors the visual
+// language of the rotation / population-models interactives, but tuned
+// to the continuous-time stability boundary Re(λ) = 0 rather than |λ| = 1.
+const halfPlaneShadePlugin = {
+  id: 'halfPlaneShade',
+  beforeDatasetsDraw: (chart) => {
+    if (chart.canvas.id !== 'spectrumCanvas') return;
+    const { ctx, chartArea, scales } = chart;
+    if (!chartArea) return;
+    const zeroPx = scales.x.getPixelForValue(0);
+    const clamped = Math.max(chartArea.left, Math.min(chartArea.right, zeroPx));
+    ctx.save();
+    ctx.fillStyle = 'rgba(58, 107, 94, 0.08)'; // subtle teal — stable half-plane
+    ctx.fillRect(chartArea.left, chartArea.top, clamped - chartArea.left, chartArea.bottom - chartArea.top);
+    ctx.restore();
+  },
+};
+Chart.register(halfPlaneShadePlugin);
+
+const spectrumChart = new Chart(document.getElementById('spectrumCanvas'), {
+  type: 'scatter',
+  data: {
+    datasets: [
+      { // Real axis
+        label: 'Re axis',
+        data: [{x: -2, y: 0}, {x: 2, y: 0}],
+        borderColor: '#6b6862',
+        borderWidth: 1,
+        pointRadius: 0,
+        showLine: true,
+      },
+      { // Imaginary axis — stability boundary for continuous-time systems
+        label: 'Im axis (stability boundary)',
+        data: [{x: 0, y: -2}, {x: 0, y: 2}],
+        borderColor: '#a67a1e',
+        borderWidth: 1.5,
+        borderDash: [4, 4],
+        pointRadius: 0,
+        showLine: true,
+      },
+      { // Eigenvalues
+        label: 'Eigenvalues',
+        data: [],
+        borderColor: '#5a4a9e',
+        backgroundColor: '#5a4a9e',
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        showLine: false,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 150 },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        filter: ctx => ctx.dataset.label === 'Eigenvalues',
+        callbacks: {
+          label: ctx => {
+            const p = ctx.raw;
+            const sign = p.y >= 0 ? '+' : '−';
+            const mod = Math.hypot(p.x, p.y);
+            return `λ = ${p.x.toFixed(3)} ${sign} ${Math.abs(p.y).toFixed(3)}i   |λ| = ${mod.toFixed(3)}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        type: 'linear',
+        min: -1.5, max: 1.5,
+        title: { display: true, text: 'Re(λ)', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#b8b4ab88' },
+      },
+      y: {
+        type: 'linear',
+        min: -1.5, max: 1.5,
+        title: { display: true, text: 'Im(λ)', font: { family: "'Source Sans 3'", size: 12 } },
+        ticks: { stepSize: 0.5, font: { family: "'Source Sans 3'", size: 11 } },
+        grid: { color: '#b8b4abaa' },
+      },
+    },
+  },
+});
 
 function drawSpectrum() {
   if (state.mode !== 'linear') return;
-  const rect = spectrumCanvas.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  spectrumCanvas.width = Math.max(1, Math.round(rect.width * dpr));
-  spectrumCanvas.height = Math.max(1, Math.round(rect.height * dpr));
-  specCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  specCtx.clearRect(0, 0, rect.width, rect.height);
-
   const eigens = eigenvalues2x2(state.matrix);
-  const maxAbs = Math.max(1.2, ...eigens.map(e => Math.max(Math.abs(e.re), Math.abs(e.im))) ) * 1.25;
-  const xmin = -maxAbs, xmax = maxAbs, ymin = -maxAbs, ymax = maxAbs;
-  const toPx = (x, y) => [
-    (x - xmin) / (xmax - xmin) * rect.width,
-    rect.height - (y - ymin) / (ymax - ymin) * rect.height
-  ];
-
-  // Grid and axes
-  specCtx.strokeStyle = '#ecebe4';
-  specCtx.lineWidth = 1;
-  const step = niceTick(xmax - xmin);
-  for (let v = Math.ceil(xmin / step) * step; v <= xmax; v += step) {
-    const [px] = toPx(v, 0);
-    specCtx.beginPath(); specCtx.moveTo(px, 0); specCtx.lineTo(px, rect.height); specCtx.stroke();
-    const [, py] = toPx(0, v);
-    specCtx.beginPath(); specCtx.moveTo(0, py); specCtx.lineTo(rect.width, py); specCtx.stroke();
-  }
-
-  // Axes
-  specCtx.strokeStyle = '#a8a498';
-  specCtx.lineWidth = 1.2;
-  const [, py0] = toPx(0, 0);
-  specCtx.beginPath(); specCtx.moveTo(0, py0); specCtx.lineTo(rect.width, py0); specCtx.stroke();
-  const [px0] = toPx(0, 0);
-  specCtx.beginPath(); specCtx.moveTo(px0, 0); specCtx.lineTo(px0, rect.height); specCtx.stroke();
-
-  // Imaginary axis highlight (dashed at Re=0) — indicates stability boundary
-  specCtx.strokeStyle = '#a67a1e';
-  specCtx.lineWidth = 1.2;
-  specCtx.setLineDash([4, 4]);
-  specCtx.beginPath();
-  specCtx.moveTo(px0, 0); specCtx.lineTo(px0, rect.height);
-  specCtx.stroke();
-  specCtx.setLineDash([]);
-
-  // Axis labels
-  specCtx.fillStyle = '#6a6862';
-  specCtx.font = `10px 'JetBrains Mono', monospace`;
-  specCtx.fillText('Re', rect.width - 20, py0 - 4);
-  specCtx.fillText('Im', px0 + 4, 10);
-
-  // Shade stable half-plane subtly (Re < 0)
-  specCtx.fillStyle = 'rgba(26, 122, 96, 0.05)';
-  specCtx.fillRect(0, 0, px0, rect.height);
-
-  // Plot eigenvalues
-  for (const e of eigens) {
-    const [px, py] = toPx(e.re, e.im);
-    specCtx.fillStyle = '#ffffff';
-    specCtx.strokeStyle = '#5a4a9e';
-    specCtx.lineWidth = 2;
-    specCtx.beginPath();
-    specCtx.arc(px, py, 6, 0, Math.PI * 2);
-    specCtx.fill();
-    specCtx.stroke();
-    specCtx.fillStyle = '#5a4a9e';
-    specCtx.beginPath();
-    specCtx.arc(px, py, 3, 0, Math.PI * 2);
-    specCtx.fill();
-  }
+  const maxAbs = Math.max(1.2, ...eigens.map(e => Math.max(Math.abs(e.re), Math.abs(e.im)))) * 1.25;
+  spectrumChart.data.datasets[0].data = [{x: -maxAbs, y: 0}, {x: maxAbs, y: 0}];
+  spectrumChart.data.datasets[1].data = [{x: 0, y: -maxAbs}, {x: 0, y: maxAbs}];
+  spectrumChart.data.datasets[2].data = eigens.map(e => ({x: e.re, y: e.im}));
+  spectrumChart.options.scales.x.min = -maxAbs;
+  spectrumChart.options.scales.x.max = maxAbs;
+  spectrumChart.options.scales.y.min = -maxAbs;
+  spectrumChart.options.scales.y.max = maxAbs;
+  spectrumChart.update('none');
 }
 
 // ============================================================
@@ -1894,6 +2143,7 @@ function buildPresetChips() {
     lin.appendChild(btn);
   }
   for (const p of NONLINEAR_PRESETS) {
+    if (p.hidden) continue;
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'chip';
@@ -1958,6 +2208,22 @@ document.getElementById('clearTrajBtn').addEventListener('click', () => {
   drawPhasePortrait();
   updateTimeSeries();
 });
+
+// Custom-system Apply button: recompile F/G from the textareas and redraw.
+document.getElementById('customApplyBtn').addEventListener('click', () => {
+  if (state.activePresetId !== 'custom') return;
+  applyCustomFunctionsToState();
+  recomputeEverything();
+});
+// Ctrl/Cmd+Enter inside either textarea triggers Apply as a convenience.
+for (const id of ['customF', 'customG']) {
+  document.getElementById(id).addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('customApplyBtn').click();
+    }
+  });
+}
 document.getElementById('sampleBtn').addEventListener('click', () => {
   // Drop a ring of seeds to illustrate the flow
   const [xmin, xmax, ymin, ymax] = state.window;

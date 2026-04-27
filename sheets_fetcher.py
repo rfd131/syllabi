@@ -445,6 +445,7 @@ class SheetsFetcher:
                         "date": date_str,
                         "time": record.get("Time", ""),
                         "location": record.get("Location", ""),
+                        "instructor_locations": self._extract_instructor_locations(record),
                     }
 
             return result
@@ -847,6 +848,27 @@ class SheetsFetcher:
         except:
             pass
         return ""
+
+    def _extract_instructor_locations(self, record: Dict[str, Any]) -> Dict[str, str]:
+        """Extract per-instructor exam locations from a record.
+
+        Looks for columns like "Location: russ-deforest" and returns
+        a dict mapping instructor ID to that instructor's location.
+        Empty/TBD values are skipped so absent data does not render.
+        """
+        locations: Dict[str, str] = {}
+        for key, value in record.items():
+            if not key or not isinstance(key, str):
+                continue
+            if not key.lower().startswith("location:"):
+                continue
+            instructor_id = key.split(":", 1)[1].strip()
+            if not instructor_id:
+                continue
+            loc = (value or "").strip() if isinstance(value, str) else ""
+            if loc and loc.upper() != "TBD":
+                locations[instructor_id] = loc
+        return locations
 
     def _parse_objectives_list(self, objectives_str: str) -> List[str]:
         """Parse a string of objectives into a list.

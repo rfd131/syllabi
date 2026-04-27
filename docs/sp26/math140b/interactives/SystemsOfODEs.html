@@ -228,6 +228,23 @@ select:focus-visible,
   font-weight: 500;
   color: var(--purple);
 }
+.param-num {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--purple);
+  width: 5.5em;
+  text-align: right;
+  padding: 0.18rem 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.param-num:focus {
+  border-color: var(--purple);
+  outline: 2px solid var(--purple);
+  outline-offset: 1px;
+}
 .param-row input[type="range"] {
   width: 100%;
   height: 4px;
@@ -459,6 +476,20 @@ select:focus-visible,
   height: 100%;
   display: block;
   border-radius: 6px;
+}
+.phase-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(44, 42, 40, 0.92);
+  color: #fdfcf8;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 5;
+  transform: translate(10px, -50%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
 .phase-legend {
   display: flex;
@@ -774,7 +805,7 @@ select:focus-visible,
         <button class="btn ghost" id="sampleBtn" type="button">Seed samples</button>
       </div>
       <div style="font-size:0.72rem;color:var(--text3);margin-top:0.5rem;line-height:1.5;">
-        Click anywhere on the phase plane to launch a trajectory from that point. Time step <code style="font-family:var(--mono);">dt = 0.02</code>, RK4 integrator, stops on exit or step cap.
+        Click anywhere on the phase plane to launch a trajectory from that point. Time step <code style="font-family:var(--mono);">dt = 0.02</code>, RK4 integrator, stops on exit, step cap (<code style="font-family:var(--mono);">t = 240</code>), or near-equilibrium.
       </div>
     </div>
   </div>
@@ -790,6 +821,7 @@ select:focus-visible,
       <div class="system-display" id="systemDisplay"></div>
       <div class="phase-wrap">
         <canvas id="phaseCanvas" role="img" aria-label="Phase portrait"></canvas>
+        <div class="phase-tooltip" id="phaseTooltip" style="display:none;"></div>
       </div>
       <div class="phase-legend">
         <span class="legend-item"><span class="legend-line" style="background:#5a4a9e;"></span>x-nullcline (F = 0)</span>
@@ -827,10 +859,11 @@ select:focus-visible,
         Time series
         <span class="counter" id="tsCount">no trajectory</span>
       </div>
-      <div class="card-subtitle">x(t) and y(t) of the most recently launched trajectory.</div>
+      <div class="card-subtitle" id="tsSubtitle">x(t) and y(t) of the most recently launched trajectory.</div>
       <div class="legend-row">
-        <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e"></span>x(t)</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#1a7a60"></span>y(t)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#5a4a9e"></span><span id="tsLabel0">x(t)</span></span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1a7a60"></span><span id="tsLabel1">y(t)</span></span>
+        <span class="legend-item" id="tsLegend2" style="display:none;"><span class="legend-dot" style="background:#a67a1e"></span>R(t)</span>
       </div>
       <div class="chart-wrap"><canvas id="tsCanvas" role="img" aria-label="Time series of the most recent trajectory"></canvas></div>
     </div>
@@ -970,12 +1003,12 @@ const NONLINEAR_PRESETS = [
     id: 'sir',
     name: 'SIR epidemic',
     params: [
-      { key: 'b', label: 'b', display: 'infection rate', min: 0.05, max: 2.0, step: 0.025, value: 0.5 },
-      { key: 'k', label: 'k', display: 'recovery rate',  min: 0.05, max: 2.0, step: 0.025, value: 1 / 3 },
+      { key: 'b', label: 'b', display: 'infection rate', min: 0.05, max: 4.0, step: 0.005, value: 0.5 },
+      { key: 'k', label: 'k', display: 'recovery rate',  min: 0.05, max: 2.0, step: 0.005, value: 1 / 3 },
     ],
     F: (x, y, p) => -p.b * x * y,
     G: (x, y, p) => p.b * x * y - p.k * y,
-    window: [-0.05, 1.05, -0.03, 0.6],
+    window: [-0.05, 1.05, -0.04, 0.8],
     note: 'Continuous-time SIR model from the SIR activity. <em>x</em> = S (susceptible fraction), <em>y</em> = I (infected fraction); R = 1 − S − I is determined by conservation. Trajectories starting with S₀ + I₀ = 1 stay on that line. <em>Herd-immunity threshold:</em> dI/dt &gt; 0 requires S &gt; k/b, so if susceptibility starts below k/b no outbreak is possible. (Default b = 0.5, k ≈ 1/3 match the 1968 H3N2 example.)',
   },
   {
@@ -1303,6 +1336,14 @@ function applyCustomFunctionsToState() {
   }
 }
 
+function decimalsFromStep(step) {
+  if (!step || step >= 1) return 0;
+  const s = String(step);
+  const idx = s.indexOf('.');
+  if (idx < 0) return 0;
+  return s.length - idx - 1;
+}
+
 function buildParamSliders(preset) {
   const wrap = document.getElementById('paramSliders');
   wrap.innerHTML = '';
@@ -1310,33 +1351,49 @@ function buildParamSliders(preset) {
     const blk = document.createElement('div');
     blk.className = 'param-block';
     const v = state.params[pr.key];
+    const dec = decimalsFromStep(pr.step);
     blk.innerHTML = `
       <div class="param-header">
         <span class="param-name">${pr.label} <em>${pr.display}</em></span>
-        <span class="param-val" id="pv_${pr.key}">${formatNum(v)}</span>
+        <input type="number" class="param-num" id="pn_${pr.key}" min="${pr.min}" max="${pr.max}" step="${pr.step}" value="${v.toFixed(dec)}" aria-label="${pr.label} (${pr.display}) value">
       </div>
       <div class="param-row">
         <input type="range" min="${pr.min}" max="${pr.max}" step="${pr.step}" value="${v}" id="ps_${pr.key}" aria-label="${pr.label} (${pr.display})">
       </div>`;
     wrap.appendChild(blk);
-    const slider = blk.querySelector('input');
-    const valEl = blk.querySelector(`#pv_${pr.key}`);
-    slider.addEventListener('input', () => {
-      const val = parseFloat(slider.value);
+    const slider = blk.querySelector(`#ps_${pr.key}`);
+    const numIn = blk.querySelector(`#pn_${pr.key}`);
+    const apply = (raw, src) => {
+      let val = parseFloat(raw);
+      if (!Number.isFinite(val)) return;
+      val = Math.min(pr.max, Math.max(pr.min, val));
       state.params[pr.key] = val;
-      valEl.textContent = formatNum(val);
+      if (src !== 'slider') slider.value = val;
+      if (src !== 'num') numIn.value = val.toFixed(dec);
       state.F = (x, y) => preset.F(x, y, state.params);
       state.G = (x, y) => preset.G(x, y, state.params);
       state.trajectories = [];
       state.latestTraj = null;
       recomputeEverything();
+    };
+    slider.addEventListener('input', () => apply(slider.value, 'slider'));
+    numIn.addEventListener('change', () => {
+      apply(numIn.value, 'num');
+      // Reformat to canonical precision after commit
+      const val = parseFloat(numIn.value);
+      if (Number.isFinite(val)) numIn.value = Math.min(pr.max, Math.max(pr.min, val)).toFixed(dec);
+    });
+    numIn.addEventListener('input', () => {
+      const val = parseFloat(numIn.value);
+      if (Number.isFinite(val) && val >= pr.min && val <= pr.max) apply(val, 'num');
     });
   }
 }
 
 function formatNum(v) {
   if (Math.abs(v) >= 10) return v.toFixed(1);
-  return v.toFixed(2);
+  if (Math.abs(v) >= 1) return v.toFixed(2);
+  return v.toFixed(3);
 }
 
 function updateActiveChips() {
@@ -1396,6 +1453,7 @@ function recomputeEverything() {
   updateSystemDisplay();
   drawPhasePortrait();
   drawSpectrum();
+  updateTimeSeries();
 }
 
 function updateSystemDisplay() {
@@ -1926,10 +1984,10 @@ function drawEquilibria(ctx, rect) {
 // ============================================================
 function launchTrajectory(x0, y0) {
   if (!Number.isFinite(x0) || !Number.isFinite(y0)) return;
-  const forward = integrate(state.F, state.G, x0, y0, +1, 4000, state.window);
+  const forward = integrate(state.F, state.G, x0, y0, +1, 12000, state.window);
   let allPts = forward;
   if (state.show.backward) {
-    const backward = integrate(state.F, state.G, x0, y0, -1, 4000, state.window);
+    const backward = integrate(state.F, state.G, x0, y0, -1, 12000, state.window);
     backward.reverse();
     // Merge: backward ends at (x0,y0); forward starts at (x0,y0)
     allPts = backward.concat(forward.slice(1));
@@ -1948,6 +2006,29 @@ phaseCanvas.addEventListener('click', (e) => {
   const py = e.clientY - rect.top;
   const [x, y] = pxToWorld(px, py, rect);
   launchTrajectory(x, y);
+});
+
+// SIR-only: show "S = k/b = …" when hovering near the vertical I-nullcline.
+phaseCanvas.addEventListener('mousemove', (e) => {
+  const tip = document.getElementById('phaseTooltip');
+  if (state.activePresetId !== 'sir') { tip.style.display = 'none'; return; }
+  const rect = phaseCanvas.getBoundingClientRect();
+  const px = e.clientX - rect.left;
+  const py = e.clientY - rect.top;
+  const Sstar = state.params.k / state.params.b;
+  const [pxStar] = worldToPx(Sstar, 0, rect);
+  if (Number.isFinite(pxStar) && Math.abs(px - pxStar) <= 8 &&
+      pxStar >= 0 && pxStar <= rect.width) {
+    tip.style.display = '';
+    tip.style.left = `${pxStar}px`;
+    tip.style.top = `${py}px`;
+    tip.textContent = `I-nullcline: S = k/b = ${Sstar.toFixed(3)}`;
+  } else {
+    tip.style.display = 'none';
+  }
+});
+phaseCanvas.addEventListener('mouseleave', () => {
+  document.getElementById('phaseTooltip').style.display = 'none';
 });
 
 // ============================================================
@@ -2068,6 +2149,8 @@ const tsChart = new Chart(document.getElementById('tsCanvas'), {
         backgroundColor: '#5a4a9e14', borderWidth: 2, pointRadius: 0, tension: 0, fill: false },
       { label: 'y(t)', data: [], borderColor: '#1a7a60',
         backgroundColor: '#1a7a6014', borderWidth: 2, pointRadius: 0, borderDash: [6, 4], tension: 0, fill: false },
+      { label: 'R(t)', data: [], borderColor: '#a67a1e',
+        backgroundColor: '#a67a1e14', borderWidth: 2, pointRadius: 0, borderDash: [2, 4], tension: 0, fill: false, hidden: true },
     ],
   },
   options: {
@@ -2089,10 +2172,27 @@ const tsChart = new Chart(document.getElementById('tsCanvas'), {
 
 function updateTimeSeries() {
   const counter = document.getElementById('tsCount');
+  const isSIR = state.activePresetId === 'sir';
+  // Update labels and legend visibility every call (preset can change between trajectories)
+  tsChart.data.datasets[0].label = isSIR ? 'S(t)' : 'x(t)';
+  tsChart.data.datasets[1].label = isSIR ? 'I(t)' : 'y(t)';
+  tsChart.data.datasets[2].hidden = !isSIR;
+  const lbl0 = document.getElementById('tsLabel0');
+  const lbl1 = document.getElementById('tsLabel1');
+  const leg2 = document.getElementById('tsLegend2');
+  if (lbl0) lbl0.textContent = isSIR ? 'S(t)' : 'x(t)';
+  if (lbl1) lbl1.textContent = isSIR ? 'I(t)' : 'y(t)';
+  if (leg2) leg2.style.display = isSIR ? '' : 'none';
+  const sub = document.getElementById('tsSubtitle');
+  if (sub) sub.textContent = isSIR
+    ? 'S(t), I(t), and R(t) of the most recently launched trajectory.'
+    : 'x(t) and y(t) of the most recently launched trajectory.';
+
   if (!state.latestTraj) {
     tsChart.data.labels = [];
     tsChart.data.datasets[0].data = [];
     tsChart.data.datasets[1].data = [];
+    tsChart.data.datasets[2].data = [];
     tsChart.update('none');
     counter.textContent = 'no trajectory';
     return;
@@ -2113,14 +2213,19 @@ function updateTimeSeries() {
   const labels = [];
   const xs = [];
   const ys = [];
+  const rs = [];
   for (let i = 0; i < forwardPts.length; i += step) {
     labels.push((i * dt).toFixed(2));
-    xs.push(forwardPts[i][0]);
-    ys.push(forwardPts[i][1]);
+    const xv = forwardPts[i][0];
+    const yv = forwardPts[i][1];
+    xs.push(xv);
+    ys.push(yv);
+    if (isSIR) rs.push(1 - xv - yv);
   }
   tsChart.data.labels = labels;
   tsChart.data.datasets[0].data = xs;
   tsChart.data.datasets[1].data = ys;
+  tsChart.data.datasets[2].data = isSIR ? rs : [];
   tsChart.update('none');
   counter.textContent = `${forwardPts.length} steps · t ∈ [0, ${(forwardPts.length * dt).toFixed(2)}]`;
 }

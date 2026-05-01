@@ -925,15 +925,18 @@ const NONLINEAR_PRESETS = [
     id: 'competitiveLV',
     name: 'Competitive Lotka-Volterra',
     params: [
-      { key: 'r1',  label: 'r₁',  display: 'growth 1',    min: 0.2, max: 2.0, step: 0.05, value: 1.0 },
-      { key: 'r2',  label: 'r₂',  display: 'growth 2',    min: 0.2, max: 2.0, step: 0.05, value: 1.0 },
-      { key: 'a12', label: 'a₁₂', display: '1 from 2',    min: 0.2, max: 2.0, step: 0.05, value: 0.5 },
-      { key: 'a21', label: 'a₂₁', display: '2 from 1',    min: 0.2, max: 2.0, step: 0.05, value: 0.5 },
+      { key: 'r1',  label: 'r₁',  display: 'growth 1',     min: 0.1, max: 5.0, step: 0.05, value: 3.0  },
+      { key: 'a11', label: 'a₁₁', display: 'self 1',       min: 0.05, max: 2.0, step: 0.05, value: 1.0 },
+      { key: 'a12', label: 'a₁₂', display: '1 from 2',     min: 0.0, max: 2.0, step: 0.05, value: 1.0 },
+      { key: 'r2',  label: 'r₂',  display: 'growth 2',     min: 0.1, max: 5.0, step: 0.05, value: 3.0  },
+      { key: 'a22', label: 'a₂₂', display: 'self 2',       min: 0.05, max: 2.0, step: 0.05, value: 1.0 },
+      { key: 'a21', label: 'a₂₁', display: '2 from 1',     min: 0.0, max: 2.0, step: 0.05, value: 1.0 },
     ],
-    F: (x, y, p) => p.r1 * x * (1 - x - p.a12 * y),
-    G: (x, y, p) => p.r2 * y * (1 - y - p.a21 * x),
-    window: [-0.08, 1.6, -0.08, 1.6],
-    note: 'Two species competing for a shared resource, each with logistic self-limitation plus interspecific competition. Depending on the <em>a</em>-values, one species drives the other to extinction, they coexist, or the outcome depends on initial conditions (bistable).',
+    F: (x, y, p) => x * (p.r1 - p.a11 * x - p.a12 * y),
+    G: (x, y, p) => y * (p.r2 - p.a22 * y - p.a21 * x),
+    window: [-0.5, 14, -0.5, 14],
+    showOverrides: { nullclines: false, equilibria: false },
+    note: 'Two species competing for a shared resource, each with logistic self-limitation (<em>a₁₁</em>, <em>a₂₂</em>) plus interspecific competition (<em>a₁₂</em>, <em>a₂₁</em>). The full form is dx/dt = x(r₁ − a₁₁x − a₁₂y), dy/dt = y(r₂ − a₂₂y − a₂₁x). Single-species carrying capacities are r₁/a₁₁ and r₂/a₂₂. Adjust the parameters to model your system, then toggle <em>Nullclines</em> and <em>Equilibria</em> to check your work.',
   },
   {
     id: 'vanDerPol',
@@ -1287,6 +1290,16 @@ function loadPreset(id) {
       buildParamSliders(nl);
     }
     applyWindowToInputs();
+    if (nl.showOverrides) {
+      for (const k of Object.keys(nl.showOverrides)) {
+        state.show[k] = nl.showOverrides[k];
+      }
+      document.getElementById('tglField').checked    = state.show.field;
+      document.getElementById('tglNull').checked     = state.show.nullclines;
+      document.getElementById('tglEq').checked       = state.show.equilibria;
+      document.getElementById('tglTraj').checked     = state.show.trajectories;
+      document.getElementById('tglBackward').checked = state.show.backward;
+    }
     document.getElementById('presetName').textContent = nl.name;
     setNotes(nl.note);
     updateActiveChips();
@@ -1495,8 +1508,8 @@ function nonlinearEquationLabel(p) {
            `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = ${fmt(pr.delta)}xy − ${fmt(pr.gamma)}y</span>`;
   }
   if (p.id === 'competitiveLV') {
-    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = ${fmt(pr.r1)}x(1 − x − ${fmt(pr.a12)}y)</span>` +
-           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = ${fmt(pr.r2)}y(1 − y − ${fmt(pr.a21)}x)</span>`;
+    return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = x(${fmt(pr.r1)} − ${fmt(pr.a11)}x − ${fmt(pr.a12)}y)</span>` +
+           `<span class="eq-line"><span class="sys-lhs">dy/dt</span> = y(${fmt(pr.r2)} − ${fmt(pr.a22)}y − ${fmt(pr.a21)}x)</span>`;
   }
   if (p.id === 'vanDerPol') {
     return `<span class="eq-line"><span class="sys-lhs">dx/dt</span> = y</span>` +

@@ -9,9 +9,15 @@
 data/
 
 # Development notes
-myprompts.md
-PDF_GENERATION_STATUS.md
-PDF_SYLLABUS_GUIDE.md
+notes/
+
+# Local build toolchain (site is deployed as pre-built docs/; these are local-only)
+build.py
+sheets_fetcher.py
+populate_lt_details.py
+populate_141b_lt_details.py
+requirements.txt
+templates/
 
 # Python
 __pycache__/

@@ -79,6 +79,7 @@ const navigationData = {
         { title: "Student Resources", href: "resources.html" }
     ],
     quickLinks: [
+        { icon: "🔑", title: "Math 486 Webapp", href: "webapp.html" },
         { icon: "📅", title: "Schedule of Topics", href: "schedule.html" },
         { icon: "📊", title: "How Your Grade is Determined", href: "grading.html" },
         { icon: "📝", title: "Late Work & Exceptions", href: "policies.html#late-work" },

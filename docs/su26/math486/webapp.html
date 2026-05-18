@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 486: Mathematical Theory of Games - Summer 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    .webapp-card {
+        background-color: var(--light-gray);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .webapp-cta {
+        display: inline-block;
+        padding: 0.9rem 1.8rem;
+        background-color: var(--penn-state-blue);
+        color: var(--white);
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin: 1rem 0 0.5rem;
+    }
+    .webapp-cta:hover {
+        background-color: var(--penn-state-navy);
+    }
+    .webapp-footnote {
+        font-size: 0.9rem;
+        color: #666;
+        margin: 0.25rem 0 0;
+    }
+    .trouble-box {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem 1.25rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+    .trouble-box ul {
+        margin: 0.5rem 0 0;
+        padding-left: 1.25rem;
+    }
+    .trouble-box code {
+        background-color: rgba(0,0,0,0.05);
+        padding: 0.1rem 0.35rem;
+        border-radius: 3px;
+        font-size: 0.95em;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 486: Mathematical Theory of Games - Summer 2026</h1>
+        <div class="subtitle">Math 486 Webapp</div>
+    </header>
+
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<h2>Math 486 Webapp</h2>
+
+<p>The Math 486 webapp is where you'll find course-specific surfaces:
+    weekly assignments, quizzes, reflection prompts, interactive games, and
+    your grades. Sign in with your Penn State Google account to continue.</p>
+
+<div class="webapp-card">
+    <a href="https://math486-webapp-439747830278.us-east4.run.app/auth/start" class="webapp-cta">
+        Sign in with your @psu.edu account
+    </a>
+    <p class="webapp-footnote">
+        You'll be sent to Google's sign-in page, then back to your dashboard
+        on the webapp.
+    </p>
+</div>
+
+<h3 id="trouble">Trouble reaching the webapp?</h3>
+
+<div class="trouble-box">
+    <p style="margin: 0 0 0.5rem;">
+        If your browser shows an error like
+        <code>ERR_TOO_MANY_ACCEPT_CH_RESTARTS</code> or
+        "this site can't be reached" when you click the button above:
+    </p>
+    <ul>
+        <li>Try opening the link in an <strong>incognito (private) window</strong>.
+            This bypasses a known Chrome bug that occasionally affects
+            <code>*.run.app</code> sites.</li>
+        <li>Or, in Chrome's settings, clear site data for
+            <code>*.run.app</code> and try again from a regular window.</li>
+    </ul>
+    <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">
+        If neither of these works, please email the instructor with the
+        error message you see.
+    </p>
+</div>
+            </main>
+
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 486 Summer 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <script src="static/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('webapp.html');
+        });
+    </script>
+</body>
+</html>

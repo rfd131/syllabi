@@ -54,8 +54,7 @@ const navigationData = {
             href: "help.html",
             dropdown: [
                 { title: "Office Hours", href: "help.html#office-hours" },
-                { title: "Piazza", href: "help.html#piazza" },
-                { title: "Penn State Learning", href: "help.html#tutoring" }
+                { title: "Web App Help Page", href: "help.html#webapp-help" }
             ]
         },
         {

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 486: Mathematical Theory of Games - Summer 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+    main h3 {
+        color: var(--penn-state-navy);
+        font-size: 1.4rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .overview-card {
+        background-color: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid var(--penn-state-blue);
+    }
+    .grade-table {
+        width: 100%;
+        background-color: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin: 1.5rem 0;
+    }
+    .grade-table th {
+        background-color: var(--penn-state-navy);
+        color: var(--white);
+        padding: 1rem;
+        text-align: center;
+    }
+    .grade-table td {
+        padding: 0.75rem;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+    .grade-table tr:last-child td { border-bottom: none; }
+    .letter-grade {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        font-size: 1.1rem;
+    }
+    .points-table {
+        width: 100%;
+        background-color: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        margin: 1rem 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .points-table th {
+        background-color: var(--penn-state-blue);
+        color: var(--white);
+        padding: 0.75rem;
+        text-align: left;
+    }
+    .points-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #ddd;
+        vertical-align: top;
+    }
+    .points-table .points-cell {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        white-space: nowrap;
+        text-align: right;
+    }
+    .alert {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 4px;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 486: Mathematical Theory of Games - Summer 2026</h1>
+        <div class="subtitle">How Your Grade is Determined</div>
+    </header>
+
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<h2 id="overview">Grading Overview</h2>
+
+<div class="overview-card">
+    <p>MATH 486 uses a <strong>traditional points-based</strong>
+        grading scheme. Your final grade is determined by the total points you
+        earn out of a 400-point course total, with up to
+        20 points of extra credit available through
+        participation in interactive games and other opportunities announced
+        during the term.</p>
+</div>
+
+<h3 id="points">Point Distribution</h3>
+
+<table class="points-table">
+    <thead>
+        <tr>
+            <th>Component</th>
+            <th style="text-align: right; white-space: nowrap;">Points</th>
+            <th>Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Written Homeworks</strong></td>
+            <td class="points-cell">200</td>
+            <td>10 assignments × 20 points each. Due weekly on Tuesdays.</td>
+        </tr>
+        <tr>
+            <td><strong>Online Quizzes</strong></td>
+            <td class="points-cell">50</td>
+            <td>Weekly Gradescope quizzes covering the previous lesson.</td>
+        </tr>
+        <tr>
+            <td><strong>Take-home Midterm</strong></td>
+            <td class="points-cell">50</td>
+            <td>Unproctored take-home covering Lessons 1–6 (approx.).</td>
+        </tr>
+        <tr>
+            <td><strong>Take-home portion of Final</strong></td>
+            <td class="points-cell">30</td>
+            <td>Unproctored take-home covering Lessons 7–10 (approx.).</td>
+        </tr>
+        <tr>
+            <td><strong>In-person portion of Final</strong></td>
+            <td class="points-cell">20</td>
+            <td>Shorter in-person component scheduled at the end of the term.</td>
+        </tr>
+        <tr>
+            <td><strong>Participation</strong></td>
+            <td class="points-cell">50</td>
+            <td>Reflection assignments and interactive games.</td>
+        </tr>
+        <tr>
+            <td><strong>Total</strong></td>
+            <td class="points-cell">400</td>
+            <td>Up to 20 points of extra credit may also be available.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 id="letter-grades">Letter Grades</h3>
+
+<p>Final course grades are assigned from the raw point total as follows:</p>
+
+<table class="grade-table">
+    <thead>
+        <tr>
+            <th>Grade</th>
+            <th>Raw Score</th>
+            <th>Percent</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="letter-grade">A</td>
+            <td>
+                368 – 400 points
+            </td>
+            <td>92%–100%</td>
+        </tr>
+        <tr>
+            <td class="letter-grade">A-</td>
+            <td>
+                356 – 367 points
+            </td>
+            <td>89%–91%</td>
+        </tr>
+        <tr>
+            <td class="letter-grade">B+</td>
+            <td>
+                340 – 355 points
+            </td>
+            <td>85%–88%</td>
+        </tr>
+        <tr>
+            <td class="letter-grade">B</td>
+            <td>
+                324 – 339 points
+            </td>
+            <td>81%–84%</td>
+        </tr>
+        <tr>
+            <td class="letter-grade">B-</td>
+            <td>
+                312 – 323 points
+            </td>
+            <td>78%–80%</td>
+        </tr>
+        <tr>
+            <td class="letter-grade">C+</td>
+            <td>
+                292 – 311 points
+            </td>
+            <td>73%–77%</td>
+        </tr>
+        <tr>
+            <td class="letter-grade">C</td>
+            <td>
+                264 – 291 points
+            </td>
+            <td>66%–72%</td>
+        </tr>
+        <tr>
+            <td class="letter-grade">D</td>
+            <td>
+                216 – 263 points
+            </td>
+            <td>54%–65%</td>
+        </tr>
+        <tr>
+            <td class="letter-grade">F</td>
+            <td>
+                0 – 215 points
+            </td>
+            <td>0%–53%</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 id="revisions">Homework Revisions and Exceptions</h3>
+
+<div class="overview-card">
+    <h4 style="color: var(--penn-state-navy); margin-top: 0;">Late homework</h4>
+    <p>48 hours past the due date for 80% credit.</p>
+
+    <h4 style="color: var(--penn-state-navy);">Homework revisions</h4>
+    <p>Following grading of each Written Homework, you may submit a Homework Revision (guidelines posted on Canvas). A revision can earn back up to 50% of any points missed on the assignment. If the original was submitted late, the revised score is also subject to the 80% late cap.
+</p>
+
+    <h4 style="color: var(--penn-state-navy);">Exceptions (two per semester)</h4>
+    <p>You have two exceptions per semester. Using an exception lets you submit a Written Homework as a revision and still earn full credit for the assignment. To use an exception, notify the instructor (via the Google Form in Canvas) before the due date passes, then submit the completed homework as a revision by the revision due date. Indicate use of the exception on your cover page.
+</p>
+</div>
+
+<div class="alert">
+    <strong>Be mindful of the relative importance of homework.</strong>
+    Homework accounts for 200 of the
+    400 total course points. Consistent work on
+    homework, quizzes, and participation throughout the course is the best
+    way to support your learning.
+</div>
+            </main>
+
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 486 Summer 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <script src="static/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('grading.html');
+        });
+    </script>
+</body>
+</html>

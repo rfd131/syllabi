@@ -1,0 +1,616 @@
+/* =============================================
+   Course Syllabi - Common Styles
+   ============================================= */
+
+/* Color Variables */
+:root {
+    --penn-state-navy: #001E44;
+    --penn-state-blue: #1E407C;
+    --penn-state-light-blue: #96BEE6;
+    --nittany-navy: #041E42;
+    --white: #FFFFFF;
+    --light-gray: #F5F5F5;
+    --text-gray: #333333;
+    --gray: #666;
+    --border-gray: #ddd;
+    --warning-yellow: #FFF3CD;
+    --warning-border: #FFC107;
+    --info-blue: #E8F4FD;
+    --success-green: #4CAF50;
+    --light-blue: #1e407c;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-gray);
+    background-color: var(--light-gray);
+}
+
+/* =============================================
+   Header
+   ============================================= */
+
+header {
+    background: linear-gradient(135deg, var(--penn-state-navy) 0%, var(--light-blue) 100%);
+    color: var(--white);
+    padding: 2rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+header h1 a {
+    color: var(--white);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+header h1 a:hover {
+    opacity: 0.9;
+}
+
+header .subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+    opacity: 0.95;
+}
+
+/* =============================================
+   Top Navigation Bar
+   ============================================= */
+
+nav {
+    background-color: var(--penn-state-navy);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav .nav-item {
+    position: relative;
+}
+
+nav .nav-item > a {
+    display: block;
+    color: var(--white);
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    transition: background-color 0.3s;
+}
+
+nav .nav-item:hover > a,
+nav .nav-item.current-page > a {
+    background-color: rgba(255,255,255,0.1);
+}
+
+nav .dropdown-arrow {
+    font-size: 0.8em;
+    margin-left: 0.3rem;
+}
+
+nav .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--white);
+    min-width: 250px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+    z-index: 1001;
+}
+
+nav .nav-item:hover .dropdown-menu {
+    display: block;
+}
+
+nav .dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: var(--penn-state-navy);
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+nav .dropdown-menu a:hover {
+    background-color: var(--light-gray);
+}
+
+/* =============================================
+   Page Layout - 3 Column
+   ============================================= */
+
+.page-wrapper {
+    min-height: calc(100vh - 200px);
+    background-color: var(--white);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+/* =============================================
+   Sidebar Navigation
+   ============================================= */
+
+/* Wrapper div for sidebar - flex item */
+#sidebar-navigation {
+    width: 280px;
+    min-width: 280px;
+    flex-shrink: 0;
+}
+
+.sidebar-navigation {
+    width: 100%;
+    background-color: var(--light-gray);
+    padding: 2rem 1rem;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    border-right: 2px solid var(--penn-state-blue);
+    z-index: 1;
+}
+
+.sidebar-navigation h2 {
+    font-size: 1.1rem;
+    color: var(--penn-state-navy);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--penn-state-blue);
+}
+
+.sidebar-navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-navigation .nav-item {
+    position: relative;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-navigation .nav-item > a {
+    color: var(--penn-state-blue);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.sidebar-navigation .nav-item > a:hover,
+.sidebar-navigation .nav-item > a:focus {
+    background-color: var(--white);
+    text-decoration: underline;
+    outline: 2px solid var(--penn-state-blue);
+    outline-offset: 2px;
+}
+
+.sidebar-navigation .nav-item.current-page > a {
+    background-color: var(--penn-state-blue);
+    color: var(--white);
+}
+
+.sidebar-navigation .dropdown-arrow {
+    font-size: 0.8em;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-navigation .nav-item.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.sidebar-navigation .dropdown-menu {
+    display: none;
+    background-color: var(--white);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    position: static;
+    margin-left: 0.5rem;
+    margin-top: 0.25rem;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.sidebar-navigation .nav-item.active .dropdown-menu {
+    display: block;
+}
+
+.sidebar-navigation .dropdown-menu a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-navigation .dropdown-menu a:hover {
+    background-color: var(--light-gray);
+}
+
+/* =============================================
+   Main Content Area
+   ============================================= */
+
+main {
+    flex: 1;
+    background-color: var(--white);
+    min-width: 0;
+}
+
+/* Typography */
+h2 {
+    color: var(--penn-state-navy);
+    margin: 2rem 0 1rem 0;
+    font-size: 1.5rem;
+}
+
+h3 {
+    color: var(--penn-state-blue);
+    margin: 1.5rem 0 0.75rem 0;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+ul, ol {
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+nav ul {
+    margin-left: 0;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+a {
+    color: var(--penn-state-blue);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* =============================================
+   Quick Links Sidebar
+   ============================================= */
+
+/* Wrapper div for quick links - flex item */
+#quick-links-sidebar {
+    width: 280px;
+    min-width: 280px;
+    flex-shrink: 0;
+}
+
+.quick-links {
+    width: 100%;
+    background-color: var(--light-gray);
+    padding: 2rem 1rem;
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    border-left: 2px solid var(--penn-state-blue);
+    z-index: 1;
+}
+
+.quick-links h2 {
+    font-size: 1.1rem;
+    color: var(--penn-state-navy);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--penn-state-blue);
+}
+
+.quick-links ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.quick-links li {
+    margin-bottom: 0.75rem;
+}
+
+.quick-links a {
+    color: var(--penn-state-blue);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 4px;
+    background-color: var(--white);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border: 1px solid #ddd;
+}
+
+.quick-links a:hover {
+    background-color: var(--penn-state-blue);
+    color: var(--white);
+    transform: translateX(-4px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    text-decoration: none;
+}
+
+.quick-links .icon {
+    margin-right: 0.5rem;
+    font-size: 1.1em;
+}
+
+.important-dates-box {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: var(--warning-yellow);
+    border-radius: 4px;
+    border-left: 4px solid var(--warning-border);
+}
+
+.important-dates-box h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+    color: var(--penn-state-navy);
+}
+
+.important-dates-box ul {
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.important-dates-box li {
+    margin-bottom: 0.25rem;
+}
+
+/* =============================================
+   Common Components
+   ============================================= */
+
+/* Alert Boxes */
+.alert {
+    background-color: var(--warning-yellow);
+    border-left: 4px solid var(--warning-border);
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+}
+
+.info-box {
+    background-color: var(--info-blue);
+    border-left: 4px solid var(--penn-state-blue);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+/* Tables */
+.data-table {
+    width: 100%;
+    background-color: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.data-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    background-color: var(--penn-state-navy);
+    color: var(--white);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.data-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tr:hover {
+    background-color: var(--light-gray);
+}
+
+/* =============================================
+   Footer
+   ============================================= */
+
+footer {
+    background-color: var(--penn-state-navy);
+    color: var(--white);
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+footer a {
+    color: var(--white);
+    text-decoration: underline;
+}
+
+/* =============================================
+   Responsive Design
+   ============================================= */
+
+@media (max-width: 1400px) {
+    #quick-links-sidebar {
+        width: 240px;
+        min-width: 240px;
+    }
+}
+
+@media (max-width: 1200px) {
+    #quick-links-sidebar {
+        display: none;
+    }
+
+    main {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 1024px) {
+    #sidebar-navigation {
+        width: 240px;
+        min-width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    #sidebar-navigation {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .sidebar-navigation {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 2px solid var(--penn-state-blue);
+        padding: 1rem;
+    }
+
+    .nav-container {
+        flex-direction: column;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    nav .dropdown-menu {
+        position: static;
+        display: none;
+    }
+
+    nav .nav-item:hover .dropdown-menu {
+        display: none;
+    }
+
+    .sidebar-navigation .dropdown-menu {
+        position: static !important;
+        margin-top: 0;
+        box-shadow: none;
+        border: none;
+        background-color: var(--light-gray);
+    }
+
+    .sidebar-navigation .nav-item.active .dropdown-menu {
+        margin-left: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .data-table {
+        overflow-x: auto;
+    }
+
+    .data-table table {
+        min-width: 500px;
+    }
+}
+
+/* =============================================
+   Print Styles
+   ============================================= */
+
+@media print {
+    #sidebar-navigation,
+    #quick-links-sidebar,
+    .sidebar-navigation,
+    .quick-links,
+    nav {
+        display: none;
+    }
+
+    .container {
+        display: block;
+    }
+
+    main {
+        padding: 0;
+    }
+
+    header {
+        background: none;
+        color: var(--text-gray);
+        border: 2px solid var(--penn-state-navy);
+    }
+
+    header h1 {
+        color: var(--text-gray);
+    }
+
+    header h1 a {
+        color: var(--text-gray);
+    }
+}

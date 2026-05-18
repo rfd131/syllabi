@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATH 486: Mathematical Theory of Games - Summer 2026</title>
+    <link rel="stylesheet" href="static/styles.css">
+<style>
+    main h2 {
+        color: var(--penn-state-navy);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--penn-state-blue);
+    }
+    main h3 {
+        color: var(--penn-state-navy);
+        font-size: 1.4rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .schedule-table {
+        width: 100%;
+        background-color: var(--white);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin: 1.5rem 0;
+    }
+    .schedule-table th {
+        background-color: var(--penn-state-navy);
+        color: var(--white);
+        padding: 0.75rem;
+        text-align: left;
+    }
+    .schedule-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #eee;
+        vertical-align: top;
+    }
+    .schedule-table tr:last-child td {
+        border-bottom: none;
+    }
+    .lesson-num {
+        font-weight: bold;
+        color: var(--penn-state-navy);
+        white-space: nowrap;
+    }
+    .alert {
+        background-color: var(--warning-yellow);
+        border-left: 4px solid var(--warning-border);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 4px;
+    }
+    .exam-card {
+        background-color: var(--info-blue);
+        border-left: 4px solid var(--penn-state-blue);
+        border-radius: 8px;
+        padding: 1.25rem 1.5rem;
+        margin: 1rem 0;
+    }
+    .exam-card h4 {
+        color: var(--penn-state-navy);
+        margin: 0 0 0.5rem 0;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <h1>MATH 486: Mathematical Theory of Games - Summer 2026</h1>
+        <div class="subtitle">Schedule of Topics</div>
+    </header>
+
+    <div id="top-navigation"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div id="sidebar-navigation"></div>
+
+            <main>
+<h2>Schedule of Topics</h2>
+
+<p>The course outline generally follows the textbook,
+    <em>Game Theory in Action</em> by Steve Schecter and Herbert Gintis.
+    The 10 lessons are spread over approximately 12 weeks
+    (May 18 – Aug 12, 2026). Lesson dates are tentative and will be confirmed
+    at the start of the term.</p>
+
+<div class="alert">
+    <strong>Tentative dates.</strong> The week assignments below are based on
+    the SU24 schedule. Exact dates depend on the SU26 academic calendar and
+    the timing of the midterm window.
+</div>
+
+<h3 id="non-cooperative">Lessons 1–7: Non-cooperative Game Theory</h3>
+
+<table class="schedule-table">
+    <thead>
+        <tr>
+            <th style="width: 6rem;">Lesson</th>
+            <th style="width: 7rem;">Week</th>
+            <th>Topics</th>
+            <th>Readings</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="lesson-num">Lesson 1</td>
+            <td>Week 1</td>
+            <td>Extensive form games; Information in extensive form games; Normal form games; Backward induction; Threats and commitments</td>
+            <td>Sections 1.1–1.8 and lecture notes</td>
+        </tr>
+        <tr>
+            <td class="lesson-num">Lesson 2</td>
+            <td>Week 2</td>
+            <td>Continuous strategy games; Stackelberg duopoly; Dominated strategies; Prisoner's dilemma; Best responses</td>
+            <td>Sections 1.9–1.13 and 2.1–2.4</td>
+        </tr>
+        <tr>
+            <td class="lesson-num">Lesson 3</td>
+            <td>Week 3</td>
+            <td>Dominant and dominated strategies; Auctions and weakly dominated strategies; Iterated elimination of dominated strategies; Backward induction and iterated elimination</td>
+            <td>Sections 2.5–2.13</td>
+        </tr>
+        <tr>
+            <td class="lesson-num">Lesson 4</td>
+            <td>Week 4</td>
+            <td>Nash equilibrium; Applications of Nash equilibrium; Cournot duopoly</td>
+            <td>Sections 3.1–3.11</td>
+        </tr>
+        <tr>
+            <td class="lesson-num">Lesson 5</td>
+            <td>Week 5</td>
+            <td>Expected payoffs; Extensive form games with incomplete information; Mixed strategies</td>
+            <td>Sections 4.1–4.6 and 5.1–5.2</td>
+        </tr>
+        <tr>
+            <td class="lesson-num">Lesson 6</td>
+            <td>Week 6</td>
+            <td>Mixed strategy Nash equilibria; Nash's Existence Theorem; Fundamental Theorem of Nash equilibria</td>
+            <td>Sections 5.1–5.11</td>
+        </tr>
+        <tr>
+            <td class="lesson-num">Lesson 7</td>
+            <td>Week 8</td>
+            <td>Subgame perfect equilibria; Repeated games; Strategies in the Repeated prisoners' dilemma game; The Folk Theorem; Bargaining</td>
+            <td>Sections 6.1–6.11</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 id="evolutionary">Lessons 8–10: Evolutionary Game Theory</h3>
+
+<table class="schedule-table">
+    <thead>
+        <tr>
+            <th style="width: 6rem;">Lesson</th>
+            <th style="width: 7rem;">Week</th>
+            <th>Topics</th>
+            <th>Readings</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="lesson-num">Lesson 8</td>
+            <td>Week 9</td>
+            <td>Introduction to evolutionary games; Evolutionary stability; Applications</td>
+            <td>Sections 8.1, 8.3–8.5</td>
+        </tr>
+        <tr>
+            <td class="lesson-num">Lesson 9</td>
+            <td>Week 10</td>
+            <td>Autonomous Differential equations; Phase lines and equilibria; Vectorfields; Stability; Linear systems of Differential equations; Linearization of nonlinear systems of differential equations; Phase plane analysis</td>
+            <td>Sections 9.1–9.5</td>
+        </tr>
+        <tr>
+            <td class="lesson-num">Lesson 10</td>
+            <td>Week 11</td>
+            <td>The Replicator dynamic; Evolutionary dynamics for two and three strategy games; Phase plane analysis and evolutionary dynamics</td>
+            <td>Sections 10.1–10.11</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 id="exams">Exams</h3>
+
+<div class="exam-card">
+    <h4>Take-home Midterm</h4>
+    <p><strong>Window:</strong> During Week 7 (dates TBD)</p>
+    <p>The midterm is an unproctored take-home exam, similar in style to a longer written homework that reviews the first half of the course.
+</p>
+</div>
+
+<h4 style="color: var(--penn-state-navy); margin-top: 2rem;">Final exam (split format — new for SU26)</h4>
+
+<div class="exam-card">
+    <h4>Take-home portion</h4>
+    <p><strong>Window:</strong> During Week 12 (dates TBD)</p>
+    <p>An unproctored take-home component covering the second half of the course, similar in style to a longer written homework.
+</p>
+</div>
+<div class="exam-card">
+    <h4>In-person portion</h4>
+    <p><strong>Window:</strong> Date and Time TBD (to take place between Wed Aug 12 and Fri Aug 14)</p>
+    <p>An in-person proctored final component following the take-home portion of the final.
+</p>
+</div>
+
+<div class="alert">
+    <strong>Be mindful of the relative importance of homework in the overall
+        grade.</strong> Focus your efforts on consistent work on homework,
+    quizzes, and participation throughout the course. This is the best way
+    to support your learning and ensure the outcome you hope for.
+</div>
+            </main>
+
+            <div id="quick-links-sidebar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>MATH 486 Summer 2026 | Penn State University | <a href="policies.html#disability">Accessibility Statement</a></p>
+    </footer>
+
+    <script src="static/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation('schedule.html');
+        });
+    </script>
+</body>
+</html>

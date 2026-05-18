@@ -86,10 +86,11 @@ const navigationData = {
         { icon: "🕐", title: "Office Hours", href: "help.html#office-hours" }
     ],
     importantDates: [
-        "Term: May 11 – Aug 7, 2026 (TBD)",
-        "Midterm window: TBD (~Week 7)",
-        "Final (take-home): TBD (~Week 12)",
-        "Final (in-person): TBD"
+        "Term: May 18 – Aug 14, 2026",
+        "Midterm: Week 7 (exact dates TBD)",
+        "Late Drop: Friday, July 24 (11:59 PM ET)",
+        "Final (take-home): Week 12 (exact dates TBD)",
+        "Final (in-person): TBD (Wed Aug 12 – Fri Aug 14)"
     ]
 };
 

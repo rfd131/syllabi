@@ -154,12 +154,13 @@ const navigationData = {
         // Study Guides removed
     ],
     importantDates: [
-        // These will be replaced by the build process
-        "Regular Drop Deadline: TBD",
-        "Midterm One: TBD",
-        "Midterm Two: TBD",
-        "Late Drop: TBD",
-        "Finals Week: TBD"
+        "Regular Drop Deadline: 8/29/2026",
+        "Midterm One: 9/22/2026",
+        "Midterm Two: 10/27/2026",
+        "Make-up Quiz Session: 10/21/2026",
+        "Make-up Quiz Session: 12/2/2026",
+        "Late Drop: 11/13/2026",
+        "Finals Week: 12/14/2026 - 12/18/2026"
     ]
 };
 
@@ -366,7 +367,7 @@ function generateQuickLinks() {
 
     navigationData.quickLinks.forEach(link => {
         // Skip placeholder links
-        if (link.href === '#COURSE_HUB_URL#') return;
+        if (link.href === 'https://coursehub2-6413757358.us-east4.run.app') return;
 
         const external = link.external ? ' target="_blank" rel="noopener noreferrer"' : '';
         html += `

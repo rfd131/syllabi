@@ -36,7 +36,7 @@ const navigationData = {
             href: "materials.html",
             dropdown: [
                 { title: "Textbooks", href: "materials.html#textbooks" },
-                { title: "Canvas Resources", href: "materials.html#canvas" }
+                { title: "CourseHub Resources", href: "materials.html#coursehub-resources" }
             ]
         },
         {

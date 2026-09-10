@@ -120,6 +120,11 @@ const navigationData = {
             href: "../../coursehub2-login.html"
         },
         {
+            icon: "📄",
+            title: "Download Syllabus (PDF)",
+            href: "math141b-fa26-syllabus.pdf"
+        },
+        {
             icon: "📊",
             title: "How Your Grade is Determined",
             href: "grading.html"

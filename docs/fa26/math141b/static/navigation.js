@@ -57,8 +57,7 @@ const navigationData = {
                 { title: "Overview", href: "grading.html#overview" },
                 { title: "Final Course Grades", href: "grading.html#final-grades" },
                 { title: "Experience Points", href: "grading.html#xp" },
-                { title: "XP Modifications", href: "grading.html#modifiers" }
-                // Math 197 link added conditionally in templates
+                { title: "XP Modifications", href: "grading.html#modifiers" },
             ]
         },
         {
